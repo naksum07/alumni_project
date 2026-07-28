@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Dashboard | Alumni Connect</title>
+
+<link rel="stylesheet" href="admin.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<header>
+
+<nav>
+
+<div class="logo">
+
+<i class="fa-solid fa-user-shield"></i>
+
+Alumni Connect
+
+</div>
+
+<ul>
+
+<li><a href="index.html">Home</a></li>
+
+<li><a href="dashboard.html">Dashboard</a></li>
+
+<li><a href="networking.html">Networking</a></li>
+
+<li><a href="jobs.html">Jobs</a></li>
+
+<li><a href="events.html">Events</a></li>
+
+<li><a href="admin.html" class="active">Admin</a></li>
+
+</ul>
+
+</nav>
+
+</header>
+
+<section class="hero">
+
+<h1>Admin Dashboard</h1>
+
+<p>
+
+Manage alumni records, events, jobs, announcements, and user feedback from one place.
+
+</p>
+
+</section>
+
+<section class="dashboard">
+
+<div class="card">
+
+<i class="fa-solid fa-users"></i>
+
+<h2 id="totalAlumni">245</h2>
+
+<p>Total Alumni</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-briefcase"></i>
+
+<h2 id="totalJobs">38</h2>
+
+<p>Active Jobs</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-calendar-days"></i>
+
+<h2 id="totalEvents">16</h2>
+
+<p>Upcoming Events</p>
+
+</div>
+
+<div class="card">
+
+<i class="fa-solid fa-comments"></i>
+
+<h2 id="totalFeedback">124</h2>
+
+<p>Feedback Received</p>
+
+</div>
+
+</section>
+
+<section class="management">
+
+<h2>
+
+<i class="fa-solid fa-gears"></i>
+
+Management Panel
+
+</h2>
+
+<div class="table-container">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+
+<th>Name</th>
+
+<th>Email</th>
+
+<th>Department</th>
+
+<th>Status</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+<tr>
+
+<td>101</td>
+
+<td>Rahul Sharma</td>
+
+<td>rahul@gmail.com</td>
+
+<td>Computer Science</td>
+
+<td><span class="active-status">Active</span></td>
+
+<td>
+
+<button class="edit-btn">
+
+<i class="fa-solid fa-pen"></i>
+
+Edit
+
+</button>
+
+<button class="delete-btn">
+
+<i class="fa-solid fa-trash"></i>
+
+Delete
+
+</button>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>102</td>
+
+<td>Priya Singh</td>
+
+<td>priya@gmail.com</td>
+
+<td>Information Technology</td>
+
+<td><span class="active-status">Active</span></td>
+
+<td>
+
+<button class="edit-btn">
+
+<i class="fa-solid fa-pen"></i>
+
+Edit
+
+</button>
+
+<button class="delete-btn">
+
+<i class="fa-solid fa-trash"></i>
+
+Delete
+
+</button>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>103</td>
+
+<td>Amit Das</td>
+
+<td>amit@gmail.com</td>
+
+<td>Business Administration</td>
+
+<td><span class="inactive-status">Inactive</span></td>
+
+<td>
+
+<button class="edit-btn">
+
+<i class="fa-solid fa-pen"></i>
+
+Edit
+
+</button>
+
+<button class="delete-btn">
+
+<i class="fa-solid fa-trash"></i>
+
+Delete
+
+</button>
+
+</td>
+
+</tr>
+<tr>
+
+<td>104</td>
+
+<td>Neha Gupta</td>
+
+<td>neha@gmail.com</td>
+
+<td>Electronics</td>
+
+<td><span class="active-status">Active</span></td>
+
+<td>
+
+<button class="edit-btn">
+
+<i class="fa-solid fa-pen"></i>
+
+Edit
+
+</button>
+
+<button class="delete-btn">
+
+<i class="fa-solid fa-trash"></i>
+
+Delete
+
+</button>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>105</td>
+
+<td>Arjun Roy</td>
+
+<td>arjun@gmail.com</td>
+
+<td>Mechanical</td>
+
+<td><span class="active-status">Active</span></td>
+
+<td>
+
+<button class="edit-btn">
+
+<i class="fa-solid fa-pen"></i>
+
+Edit
+
+</button>
+
+<button class="delete-btn">
+
+<i class="fa-solid fa-trash"></i>
+
+Delete
+
+</button>
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+<div class="action-buttons">
+
+<button id="addAlumni">
+
+<i class="fa-solid fa-user-plus"></i>
+
+Add New Alumni
+
+</button>
+
+</div>
+
+</section>
+
+<section class="activities">
+
+<h2>
+
+<i class="fa-solid fa-clock-rotate-left"></i>
+
+Recent Activities
+
+</h2>
+
+<div class="activity-list">
+
+<div class="activity">
+
+<i class="fa-solid fa-user-check"></i>
+
+<p>Rahul Sharma updated his profile.</p>
+
+<span>10 mins ago</span>
+
+</div>
+
+<div class="activity">
+
+<i class="fa-solid fa-briefcase"></i>
+
+<p>A new job opportunity was posted.</p>
+
+<span>30 mins ago</span>
+
+</div>
+
+<div class="activity">
+
+<i class="fa-solid fa-calendar-check"></i>
+
+<p>Annual Alumni Meet event created.</p>
+
+<span>1 hour ago</span>
+
+</div>
+
+<div class="activity">
+
+<i class="fa-solid fa-bullhorn"></i>
+
+<p>New announcement published.</p>
+
+<span>Today</span>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="quick-actions">
+
+<h2>
+
+<i class="fa-solid fa-bolt"></i>
+
+Quick Actions
+
+</h2>
+
+<div class="quick-grid">
+
+<div class="quick-card">
+
+<i class="fa-solid fa-user-plus"></i>
+
+<h3>Add Alumni</h3>
+
+<p>Create a new alumni profile.</p>
+
+</div>
+
+<div class="quick-card">
+
+<i class="fa-solid fa-briefcase"></i>
+
+<h3>Post Job</h3>
+
+<p>Add new job opportunities.</p>
+
+</div>
+
+<div class="quick-card">
+
+<i class="fa-solid fa-calendar-plus"></i>
+
+<h3>Create Event</h3>
+
+<p>Publish upcoming alumni events.</p>
+
+</div>
+
+<div class="quick-card">
+
+<i class="fa-solid fa-bullhorn"></i>
+
+<h3>Announcement</h3>
+
+<p>Share important notices instantly.</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- Add Alumni Modal -->
+
+<div id="addModal" class="modal">
+
+<div class="modal-content">
+
+<span class="close" id="closeModal">&times;</span>
+
+<h2><i class="fa-solid fa-user-plus"></i> Add New Alumni</h2>
+
+<form id="alumniForm">
+
+<div class="input-group">
+
+<label>Full Name</label>
+
+<input type="text" id="alumniName" required>
+
+</div>
+
+<div class="input-group">
+
+<label>Email</label>
+
+<input type="email" id="alumniEmail" required>
+
+</div>
+
+<div class="input-group">
+
+<label>Department</label>
+
+<select id="alumniDepartment" required>
+
+<option value="">Select Department</option>
+
+<option>Computer Science</option>
+
+<option>Information Technology</option>
+
+<option>Business Administration</option>
+
+<option>Electronics</option>
+
+<option>Mechanical</option>
+
+</select>
+
+</div>
+
+<div class="input-group">
+
+<label>Status</label>
+
+<select id="alumniStatus" required>
+
+<option value="">Select Status</option>
+
+<option>Active</option>
+
+<option>Inactive</option>
+
+</select>
+
+</div>
+
+<div class="modal-buttons">
+
+<button type="submit" class="save-btn">
+
+<i class="fa-solid fa-floppy-disk"></i>
+
+Save Alumni
+
+</button>
+
+<button type="button" id="cancelBtn" class="cancel-btn">
+
+Cancel
+
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+<footer>
+
+<div class="footer-container">
+
+<div class="footer-box">
+
+<h2>Alumni Connect</h2>
+
+<p>
+
+Admin Dashboard for managing alumni records, jobs, events, announcements, and feedback efficiently.
+
+</p>
+
+</div>
+
+<div class="footer-box">
+
+<h3>Quick Links</h3>
+
+<ul>
+
+<li><a href="index.html">Home</a></li>
+
+<li><a href="dashboard.html">Dashboard</a></li>
+
+<li><a href="jobs.html">Jobs</a></li>
+
+<li><a href="events.html">Events</a></li>
+
+<li><a href="contact.html">Contact</a></li>
+
+</ul>
+
+</div>
+
+<div class="footer-box">
+
+<h3>Contact</h3>
+
+<p><i class="fa-solid fa-location-dot"></i> Gangtok, Sikkim, India</p>
+
+<p><i class="fa-solid fa-phone"></i> +91 9876543210</p>
+
+<p><i class="fa-solid fa-envelope"></i> alumni@gmail.com</p>
+
+</div>
+
+</div>
+
+<hr>
+
+<p class="copyright">
+
+© 2026 Alumni Connect | All Rights Reserved
+
+</p>
+
+</footer>
+
+<script src="admin.js"></script>
+
+</body>
+
+</html>
