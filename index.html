@@ -1,31 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>AlumniConnect | Alumni Network Portal</title>
-
 <meta name="description" content="AlumniConnect helps students and alumni connect, share experiences, discover opportunities and build professional relationships.">
-
 <meta name="keywords" content="Alumni Portal, Alumni Network, College Alumni, Mentorship, Career Opportunities">
-
 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135755.png">
-
 
 <!-- Tailwind CSS -->
 <script src="https://cdn.tailwindcss.com"></script>
 
-
 <!--  Animation -->
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-
 <style>
-
 html{
 scroll-behavior:smooth;
 }
@@ -37,118 +26,43 @@ scroll-behavior:smooth;
 <header>
 
 <!-- NAVBAR -->
-
 <nav class="sticky top-0 z-50 bg-blue-900 text-white shadow-lg">
 <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-
 <!-- LOGO -->
-
-<a href="index.html" 
-class="flex items-center gap-3">
-
-
-<span class="text-4xl">
-🎓
-</span>
-
-
-<h1 class="text-2xl font-bold">
-AlumniConnect
-</h1>
+<a href="index.html" class="flex items-center gap-3">
+    <span class="text-4xl">🎓</span>
+    <h1 class="text-2xl font-bold">AlumniConnect</h1>
 </a>
 
 <!-- DESKTOP MENU -->
-
 <div class="hidden md:flex items-center gap-8">
-<a href="#home"
-class="hover:text-yellow-300 transition">
-Home
-</a>
-
-<a href="#about"
-class="hover:text-yellow-300 transition">
-About
-</a>
-
-<a href="#alumni"
-class="hover:text-yellow-300 transition">
-Alumni
-</a>
-
-<a href="#events"
-class="hover:text-yellow-300 transition">
-Events
-</a>
-
-<a href="#contact"
-class="hover:text-yellow-300 transition">
-Contact
-</a>
+    <a href="#home" class="hover:text-yellow-300 transition">Home</a>
+    <a href="#about" class="hover:text-yellow-300 transition">About</a>
+    <a href="#alumni" class="hover:text-yellow-300 transition">Alumni</a>
+    <a href="#events" class="hover:text-yellow-300 transition">Events</a>
+    <a href="#contact"class="hover:text-yellow-300 transition">Contact</a>
 </div>
 
 <!-- BUTTONS -->
-
 <div class="hidden md:flex gap-3">
-<a href="login.html"
-class="border border-white px-5 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">
-Login
-</a>
-
-<a href="register.html"
-class="bg-yellow-400 text-blue-900 font-semibold px-5 py-2 rounded-lg hover:bg-yellow-300 transition">
-Register
-</a>
+    <a href="login.html" class="border border-white px-5 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Login</a>
+    <a href="register.html"class="bg-yellow-400 text-blue-900 font-semibold px-5 py-2 rounded-lg hover:bg-yellow-300 transition">Register</a>
 </div>
 
 <!-- MOBILE BUTTON -->
-<button 
-onclick="toggleMenu()"
-aria-label="Open Menu"
-class="md:hidden text-3xl">
-☰
-</button>
+<button onclick="toggleMenu()" aria-label="Open Menu" class="md:hidden text-3xl">☰</button>
 </div>
 <!-- MOBILE MENU -->
-
-<div id="mobileMenu"
-class="hidden md:hidden px-6 pb-6">
-
-<a href="#home"
-class="block py-3 hover:text-yellow-300">
-Home
-</a>
-
-<a href="#about"
-class="block py-3 hover:text-yellow-300">
-About
-</a>
-
-<a href="#alumni"
-class="block py-3 hover:text-yellow-300">
-Alumni
-</a>
-
-<a href="#events"
-class="block py-3 hover:text-yellow-300">
-Events
-</a>
-
-<a href="#contact"
-class="block py-3 hover:text-yellow-300">
-Contact
-</a>
-
+<div id="mobileMenu" class="hidden md:hidden px-6 pb-6">
+    <a href="#home" class="block py-3 hover:text-yellow-300">Home</a>
+    <a href="#about" class="block py-3 hover:text-yellow-300">About</a>
+    <a href="#alumni" class="block py-3 hover:text-yellow-300">Alumni</a>
+    <a href="#events" class="block py-3 hover:text-yellow-300">Events</a>
+    <a href="#contact" class="block py-3 hover:text-yellow-300">Contact</a>
 <div class="mt-4 space-y-3">
-
-<a href="login.html"
-class="block text-center border border-white py-2 rounded-lg">
-Login
-</a>
-<a href="register.html"
-class="block text-center bg-yellow-400 text-blue-900 py-2 rounded-lg font-semibold">
-Register
-</a>
+    <a href="login.html" class="block text-center border border-white py-2 rounded-lg">Login</a>
+    <a href="register.html" class="block text-center bg-yellow-400 text-blue-900 py-2 rounded-lg font-semibold">Register</a>
 </div>
 </div>
 </nav>
@@ -158,235 +72,106 @@ Register
 <main id="home">
 
 <!-- HERO SECTION -->
-<section 
-data-aos="fade-up"
-class="min-h-screen flex items-center bg-gray-100">
-<div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+<section data-aos="fade-up" class="min-h-screen flex items-center bg-gray-100">
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
 
 <!-- LEFT -->
-<div>
-<h2 class="text-5xl font-bold text-blue-900 leading-tight">
-Connect With Your Alumni Network
-</h2>
+    <div>
+        <h2 class="text-5xl font-bold text-blue-900 leading-tight">Connect With Your Alumni Network</h2>
+        <p class="mt-6 text-lg text-gray-600">
+        A platform where students and alumni connect,
+        share experiences, discover opportunities,
+        and build professional relationships.
+        </p>
 
-<p class="mt-6 text-lg text-gray-600">
-A platform where students and alumni connect,
-share experiences, discover opportunities,
-and build professional relationships.
-</p>
-
-<div class="mt-8 flex flex-wrap gap-4">
-<a href="register.html"
-class="bg-blue-900 text-white px-8 py-3 rounded-lg shadow-lg hover:bg-blue-800 hover:scale-105 transition">
-🚀 Get Started
-</a>
-
-<a href="#alumni"
-class="border border-blue-900 text-blue-900 px-8 py-3 rounded-lg hover:bg-blue-100 hover:scale-105 transition">
-👥 Explore Alumni
-</a>
-</div>
-</div>
+    <div class="mt-8 flex flex-wrap gap-4">
+    <a href="register.html" class="bg-blue-900 text-white px-8 py-3 rounded-lg shadow-lg hover:bg-blue-800 hover:scale-105 transition">🚀 Get Started</a>
+    <a href="#alumni"class="border border-blue-900 text-blue-900 px-8 py-3 rounded-lg hover:bg-blue-100 hover:scale-105 transition">👥 Explore Alumni</a>
+    </div>
+    </div>
 
 <!-- IMAGE -->
 <div class="flex justify-center">
-<img
-loading="lazy"
-src="https://images.unsplash.com/photo-1523240795612-9a054b0db644"
-alt="Students networking together"
-class="rounded-2xl shadow-xl w-full max-w-lg">
+    <img
+        loading="lazy"src="https://images.unsplash.com/photo-1523240795612-9a054b0db644"
+        alt="Students networking together"
+        class="rounded-2xl shadow-xl w-full max-w-lg">
 </div>
 </div>
 </section>
 
 <!-- SEARCH ALUMNI -->
-<section 
-id="alumni"
-data-aos="fade-up"
-class="py-20 bg-white">
-<div class="max-w-6xl mx-auto px-6">
-<h2 class="text-4xl font-bold text-center text-blue-900">
-Find Alumni
-</h2>
-<p class="text-center text-gray-500 mt-3">
-Search alumni by name, department, company or batch.
-</p>
-
-<div class="grid md:grid-cols-4 gap-4 mt-10">
-<input
-type="text"
-placeholder="Search Name"
-class="border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-900">
-<select class="border rounded-lg p-3">
-<option>
-Department
-</option>
-<option>
-CSE
-</option>
-
-<option>
-ECE
-</option>
-
-<option>
-ME
-</option>
-
-</select>
-<select class="border rounded-lg p-3">
-
-<option>
-Batch
-</option>
-
-<option>
-2022
-</option>
-
-<option>
-2023
-</option>
-
-<option>
-2024
-</option>
-
-<option>
-2025
-</option>
-
-</select>
-<button
-class="bg-blue-900 text-white rounded-lg px-6 py-3 hover:bg-blue-800 transition">
-🔍 Search Alumni
-
-</button>
+<section id="alumni" data-aos="fade-up" class="py-20 bg-white">
+    <div class="max-w-6xl mx-auto px-6">
+    <h2 class="text-4xl font-bold text-center text-blue-900">Find Alumni</h2>
+    <p class="text-center text-gray-500 mt-3">Search alumni by name, department, company or batch.</p>
+    <div class="grid md:grid-cols-4 gap-4 mt-10">
+        <input type="text"
+            placeholder="Search Name"
+            class="border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-900">
+        <select class="border rounded-lg p-3">
+            <option>Department</option>
+            <option>CSE</option>
+            <option>ECE</option>
+            <option>ME</option>
+        </select>
+        <select class="border rounded-lg p-3">
+            <option>Batch</option>
+            <option>2022</option>
+            <option>2023</option>
+            <option>2024</option>
+            <option>2025</option>
+        </select>
+    <button class="bg-blue-900 text-white rounded-lg px-6 py-3 hover:bg-blue-800 transition">🔍 Search Alumni</button>
 </div>
 </div>
 </section>
 
 <!-- FEATURES SECTION -->
-<section 
-data-aos="fade-up"
-class="py-20 bg-gray-100">
-
-<div class="max-w-7xl mx-auto px-6">
-<div class="text-center mb-12">
-
-<h2 class="text-4xl font-bold text-blue-900">
-Our Features
-</h2>
-
-<p class="mt-4 text-gray-600">
-Everything you need to connect, collaborate, and grow.
-</p>
-
-</div>
-<div class="grid md:grid-cols-3 gap-8">
+<section data-aos="fade-up" class="py-20 bg-gray-100">
+    <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-12">
+    <h2 class="text-4xl font-bold text-blue-900">Our Features</h2>
+    <p class="mt-4 text-gray-600">Everything you need to connect, collaborate, and grow.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
 
 <!-- CARD 1 -->
-
-<div 
-data-aos="zoom-in"
-class="bg-white p-8 rounded-xl shadow hover:shadow-xl transition">
-
-<div class="text-5xl mb-5">
-🎓
-</div>
-
-<h3 class="text-xl font-bold text-blue-900">
-Alumni Directory
-</h3>
-
-<p class="mt-3 text-gray-600">
-Search and connect with alumni based on department,
-batch, company and location.
-</p>
-
-</div>
+    <div data-aos="zoom-in" class="bg-white p-8 rounded-xl shadow hover:shadow-xl transition">
+    <div class="text-5xl mb-5">🎓</div>
+    <h3 class="text-xl font-bold text-blue-900">Alumni Directory</h3>
+    <p class="mt-3 text-gray-600">Search and connect with alumni based on department,batch, company and location.</p>
+    </div>
 
 <!-- CARD 2 -->
-<div 
-data-aos="zoom-in"
-class="bg-white p-8 rounded-xl shadow hover:shadow-xl transition">
-
-<div class="text-5xl mb-5">
-💼
-</div>
-
-<h3 class="text-xl font-bold text-blue-900">
-Career Opportunities
-</h3>
-
-<p class="mt-3 text-gray-600">
-Find internships, jobs and career guidance
-from experienced alumni.
-</p>
-
+<div data-aos="zoom-in" class="bg-white p-8 rounded-xl shadow hover:shadow-xl transition">
+<div class="text-5xl mb-5">💼</div>
+    <h3 class="text-xl font-bold text-blue-900">Career Opportunities</h3>
+    <p class="mt-3 text-gray-600">Find internships, jobs and career guidance from experienced alumni.</p>
 </div>
 
 <!-- CARD 3 -->
-<div 
-data-aos="zoom-in"
-class="bg-white p-8 rounded-xl shadow hover:shadow-xl transition">
-
-<div class="text-5xl mb-5">
-🤝
-</div>
-
-<h3 class="text-xl font-bold text-blue-900">
-Mentorship Network
-</h3>
-
-<p class="mt-3 text-gray-600">
-Build professional relationships and get guidance
-from industry experts.
-</p>
-
+<div data-aos="zoom-in" class="bg-white p-8 rounded-xl shadow hover:shadow-xl transition">
+<div class="text-5xl mb-5">🤝</div>
+    <h3 class="text-xl font-bold text-blue-900">Mentorship Network</h3>
+    <p class="mt-3 text-gray-600">Build professional relationships and get guidance from industry experts.</p>
 </div>
 
 <!-- CARD 4 -->
-<div 
-data-aos="zoom-in"
-class="bg-white p-8 rounded-xl shadow hover:shadow-xl transition">
-
-<div class="text-5xl mb-5">
-📅
-</div>
-
-<h3 class="text-xl font-bold text-blue-900">
-Alumni Events
-</h3>
-
-<p class="mt-3 text-gray-600">
-Join reunions, workshops, webinars and networking
-events.
-</p>
-
+<div data-aos="zoom-in" class="bg-white p-8 rounded-xl shadow hover:shadow-xl transition">
+<div class="text-5xl mb-5">📅</div>
+    <h3 class="text-xl font-bold text-blue-900">Alumni Events</h3>
+    <p class="mt-3 text-gray-600">Join reunions, workshops, webinars and networking events.</p>
 </div>
 <!-- CARD 5 -->
 
-<div 
-data-aos="zoom-in"
-class="bg-white p-8 rounded-xl shadow hover:shadow-xl transition">
-<div class="text-5xl mb-5">
-💬
-</div>
-
-<h3 class="text-xl font-bold text-blue-900">
-Community Discussion
-</h3>
-
-<p class="mt-3 text-gray-600">
-Share experiences, ask questions and learn
-from the community.
-</p>
-
+<div data-aos="zoom-in"class="bg-white p-8 rounded-xl shadow hover:shadow-xl transition">
+<div class="text-5xl mb-5">💬</div>
+    <h3 class="text-xl font-bold text-blue-900">Community Discussion</h3>
+    <p class="mt-3 text-gray-600">Share experiences, ask questions and learn from the community.</p>
 </div>
 
 <!-- CARD 6 -->
-
 <div 
 data-aos="zoom-in"
 class="bg-white p-8 rounded-xl shadow hover:shadow-xl transition">
@@ -906,36 +691,21 @@ relationships.
 <!-- LINKS -->
 
 <div>
-<h3 class="text-xl font-semibold mb-5">
-Quick Links
-</h3>
-
-<ul class="space-y-3 text-gray-300">
-
-<li>
-<a href="#home" class="hover:text-yellow-400">
-Home
-</a>
-</li>
-
-<li>
-<a href="#about" class="hover:text-yellow-400">
-About
-</a>
-</li>
-
-<li>
-<a href="#alumni" class="hover:text-yellow-400">
-Alumni
-</a>
-</li>
-<li>
-<a href="#events" class="hover:text-yellow-400">
-Events
-</a>
-</li>
-
-</ul>
+    <h3 class="text-xl font-semibold mb-5">Quick Links</h3>
+    <ul class="space-y-3 text-gray-300">
+        <li>
+            <a href="#home" class="hover:text-yellow-400">Home</a>
+        </li>
+        <li>
+            <a href="#about" class="hover:text-yellow-400">About</a>
+        </li>
+        <li>
+            <a href="#alumni" class="hover:text-yellow-400">Alumni</a>
+        </li>
+        <li>
+            <a href="#events" class="hover:text-yellow-400">Events</a>
+        </li>
+    </ul>
 </div>
 
 <!-- RESOURCES -->
@@ -1003,102 +773,58 @@ Privacy Policy | Terms & Conditions
 <!-- AOS SCRIPT -->
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
 <script>
-AOS.init({
-
-duration:1000,
-
-once:true
-
+    AOS.init({
+        duration:1000,
+        once:true
 });
-
 function toggleMenu(){
-
-const menu=document.getElementById("mobileMenu");
-
-menu.classList.toggle("hidden");
-
+    const menu=document.getElementById("mobileMenu");
+    menu.classList.toggle("hidden");
 }
-
 </script>
 </main>
+
 <script>
-
 const counters = document.querySelectorAll(".counter");
-
 const startCounter = (counter) => {
-
     counter.innerText = "0";
-
     const target = Number(counter.getAttribute("data-target"));
-
     const duration = 2000; // 2 seconds
     const increment = target / (duration / 20);
-
-
     const updateCounter = () => {
-
         const current = Number(counter.innerText.replace(/,/g,''));
-
-
         if(current < target){
-
             counter.innerText = Math.ceil(current + increment).toLocaleString();
-
             setTimeout(updateCounter,20);
-
         }
-
         else{
-
             counter.innerText = target.toLocaleString() + "+";
-
         }
-
     };
-
-
     updateCounter();
-
 };
 
-
 // Run animation whenever section appears
-
 const observer = new IntersectionObserver((entries)=>{
-
 entries.forEach(entry=>{
-
-if(entry.isIntersecting){
-
-counters.forEach(counter=>{
-
-startCounter(counter);
-
-});
-
+    if(entry.isIntersecting){
+        counters.forEach(counter=>{
+        startCounter(counter);
+    }
+);
 }
-
 });
-
-
 },
-{
-threshold:0.5
-});
+    {
+        threshold:0.5
+    });
 
 // Observe the About section
-
 const aboutSection = document.querySelector("#about");
-
-
-if(aboutSection){
-
-observer.observe(aboutSection);
-
+    if(aboutSection){
+        observer.observe(aboutSection);
 }
-
 </script>
 </body>
 </html>
