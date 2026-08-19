@@ -114,7 +114,7 @@ scroll-behavior:smooth;
             <option>CSE</option>
             <option>ECE</option>
             <option>ME</option>
-        </select>
+        </select> 
         <select class="border rounded-lg p-3">
             <option>Batch</option>
             <option>2022</option>
@@ -825,6 +825,13 @@ const aboutSection = document.querySelector("#about");
     if(aboutSection){
         observer.observe(aboutSection);
 }
+
+/* Fetch data from your Node.js backend
+fetch('/api/test')
+  .then(response => response.text())
+  .then(data => {
+    console.log(data); // This will print "Backend is connected!"
+  });// Handle errors **/
 </script>
 </body>
-</html>
+</html>         

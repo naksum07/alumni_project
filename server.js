@@ -3,16 +3,25 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
+const authRoutes = require('./routes/authRoutes');
+const alumniRoutes = require('./routes/alumniRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const eventRoutes = require('./routes/eventRoutes');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve your existing frontend files
 app.use(express.static(path.join(__dirname)));
+
+app.use('/api/auth', authRoutes);
+app.use('/api/alumni', alumniRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/events', eventRoutes);
 
 app.get('/api/test', (req, res) => {
   res.send('Backend is connected!');
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

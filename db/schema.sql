@@ -1,0 +1,55 @@
+-- ============================================
+-- Alumni Tracking and Networking Portal
+-- PostgreSQL schema
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS users (
+    id              SERIAL PRIMARY KEY,
+    full_name       VARCHAR(150) NOT NULL,
+    email           VARCHAR(150) UNIQUE NOT NULL,
+    phone           VARCHAR(20),
+    password_hash   TEXT NOT NULL,
+    role            VARCHAR(20) NOT NULL DEFAULT 'student',
+    department      VARCHAR(100),
+    graduation_year INT,
+    current_role    VARCHAR(150),
+    company         VARCHAR(150),
+    created_at      TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS password_resets (
+    id          SERIAL PRIMARY KEY,
+    user_id     INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token       TEXT NOT NULL,
+    expires_at  TIMESTAMP NOT NULL,
+    created_at  TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS events (
+    id           SERIAL PRIMARY KEY,
+    name         VARCHAR(150) NOT NULL,
+    event_date   DATE NOT NULL,
+    event_time   VARCHAR(50),
+    venue        VARCHAR(150),
+    description  TEXT,
+    created_at   TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS event_registrations (
+    id           SERIAL PRIMARY KEY,
+    event_id     INT NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+    user_id      INT REFERENCES users(id) ON DELETE SET NULL,
+    full_name    VARCHAR(150) NOT NULL,
+    email        VARCHAR(150) NOT NULL,
+    phone        VARCHAR(20),
+    message      TEXT,
+    registered_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+INSERT INTO events (name, event_date, event_time, venue, description)
+VALUES
+('Annual Alumni Meet', '2026-08-15', '10:00 AM - 5:00 PM', 'College Auditorium', 'A special gathering where alumni, students, and faculty members connect and celebrate memories.'),
+('Annual Career Fair', '2026-09-20', '9:30 AM - 4:30 PM', 'College Seminar Hall', 'Meet top companies, explore career opportunities, attend interviews, and connect with recruiters.'),
+('Alumni Networking Session', '2026-10-10', '11:00 AM - 3:00 PM', 'College Conference Hall', 'Connect with alumni, industry professionals, and students to exchange ideas and explore career opportunities.')
+ON CONFLICT DO NOTHING;
+ 
