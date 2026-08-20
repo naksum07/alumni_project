@@ -1,0 +1,69 @@
+-- ============================================
+-- Alumni Tracking and Networking Portal
+-- PostgreSQL schema
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS users (
+    id              SERIAL PRIMARY KEY,
+    full_name       VARCHAR(150) NOT NULL,
+    email           VARCHAR(150) UNIQUE NOT NULL,
+    phone           VARCHAR(20),
+    password_hash   TEXT NOT NULL,
+    role            VARCHAR(20) NOT NULL DEFAULT 'student',
+    department      VARCHAR(100),
+    graduation_year INT,
+    current_role    VARCHAR(150),
+    company         VARCHAR(150),
+    is_approved     BOOLEAN DEFAULT TRUE,
+    status          VARCHAR(20) NOT NULL DEFAULT 'active',
+    created_at      TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Migrations/Alter statements for existing database instances:
+ALTER TABLE users ADD COLUMN IF NOT EXISTS is_approved BOOLEAN DEFAULT TRUE;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS status VARCHAR(20) NOT NULL DEFAULT 'active';
+
+CREATE TABLE IF NOT EXISTS password_resets (
+    id          SERIAL PRIMARY KEY,
+    user_id     INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token       TEXT NOT NULL,
+    expires_at  TIMESTAMP NOT NULL,
+    created_at  TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS events (
+    id           SERIAL PRIMARY KEY,
+    name         VARCHAR(150) NOT NULL,
+    event_date   DATE NOT NULL,
+    event_time   VARCHAR(50),
+    venue        VARCHAR(150),
+    description  TEXT,
+    created_at   TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS event_registrations (
+    id           SERIAL PRIMARY KEY,
+    event_id     INT NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+    user_id      INT REFERENCES users(id) ON DELETE SET NULL,
+    full_name    VARCHAR(150) NOT NULL,
+    email        VARCHAR(150) NOT NULL,
+    phone        VARCHAR(20),
+    message      TEXT,
+    registered_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+-- Seed initial events
+INSERT INTO events (name, event_date, event_time, venue, description)
+VALUES
+('Annual Alumni Meet', '2026-08-15', '10:00 AM - 5:00 PM', 'College Auditorium', 'A special gathering where alumni, students, and faculty members connect and celebrate memories.'),
+('Annual Career Fair', '2026-09-20', '9:30 AM - 4:30 PM', 'College Seminar Hall', 'Meet top companies, explore career opportunities, attend interviews, and connect with recruiters.'),
+('Alumni Networking Session', '2026-10-10', '11:00 AM - 3:00 PM', 'College Conference Hall', 'Connect with alumni, industry professionals, and students to exchange ideas and explore career opportunities.')
+ON CONFLICT DO NOTHING;
+
+-- Seed default Admin user (password: AdminPass123!)
+INSERT INTO users (full_name, email, phone, password_hash, role, department, graduation_year, current_role, company, is_approved, status)
+VALUES
+('System Administrator', 'admin@alumni.com', '+91 9876500000', '$2a$10$WqL9B2R0b6G3xQ7eR5m8UuU0S4i.4h0gq4v.b2E9mX3X3x3X3x3X3', 'admin', 'Computer Science', 2018, 'Portal Administrator', 'AlumniConnect', true, 'active')
+ON CONFLICT (email) DO NOTHING;
+
+ 
