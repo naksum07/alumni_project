@@ -12,12 +12,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use(express.static(path.join(__dirname)));
+// Serve HTML pages as the public site (this is now the "web root")
+app.use(express.static(path.join(__dirname, 'frontend', 'pages')));
 
-app.use('/api/auth', authRoutes);
-app.use('/api/alumni', alumniRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/events', eventRoutes);
+// Serve CSS and JS from their own folders, mounted at /styles and /scripts
+app.use('/styles', express.static(path.join(__dirname, 'frontend', 'styles')));
+app.use('/scripts', express.static(path.join(__dirname, 'frontend', 'scripts')));
+app.use('/public', express.static(path.join(__dirname, 'frontend', 'public')));
 
 app.get('/api/test', (req, res) => {
   res.send('Backend is connected!');
@@ -25,3 +26,5 @@ app.get('/api/test', (req, res) => {
 
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
