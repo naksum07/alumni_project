@@ -8,6 +8,7 @@ const authRoutes = require('./routes/authRoutes');
 const alumniRoutes = require('./routes/alumniRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const eventRoutes = require('./routes/eventRoutes');
+const jobRoutes = require('./routes/jobRoutes');
 
 const app = express();
 app.use(cors());
@@ -22,6 +23,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/alumni', alumniRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/events', eventRoutes);
+app.use('/api/jobs', jobRoutes);
 
 app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'frontend', 'pages', 'admin.html'));
