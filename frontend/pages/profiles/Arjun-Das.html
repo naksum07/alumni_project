@@ -1,91 +1,779 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Arjun's Career Journey</title>
+
+<title>Arjun Das | Professional Profile</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-body{
-    font-family: Arial, sans-serif;
-    background:#f4f4f4;
-    margin:0;
-    padding:40px;
+
+html{
+    scroll-behavior:smooth;
 }
-.container{
-    max-width:700px;
-    margin:auto;
-    background:white;
-    padding:30px;
-    border-radius:10px;
-    box-shadow:0 5px 15px rgba(0,0,0,.2);
-}
-h1{
-    color:#0066cc;
-    text-align:center;
-}
-.timeline{
-    border-left:4px solid #0066cc;
-    padding-left:20px;
-}
-.item{
-    margin-bottom:25px;
-    position:relative;
-}
-.item::before{
-    content:"";
-    width:14px;
-    height:14px;
-    background:#0066cc;
-    border-radius:50%;
-    position:absolute;
-    left:-28px;
-    top:5px;
-}
-.year{
-    color:gray;
-}
-.role{
-    font-size:20px;
-    font-weight:bold;
-}
+
 </style>
+
 </head>
 
-<body>
 
-<div class="container">
-<h1>Arjun's Career Journey</h1>
+<body class="bg-gray-50 text-gray-800">
 
-<div class="timeline">
 
-<div class="item">
-<div class="year">2017</div>
-<div class="role">Graduate Trainee</div>
+
+<!-- HEADER -->
+
+<header class="fixed top-0 left-0 w-full bg-blue-800 text-white shadow-lg z-50">
+
+<div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+
+
+<h1 class="text-2xl font-bold">
+Arjun Das
+</h1>
+
+
+
+<nav class="hidden md:flex items-center gap-6">
+
+
+<a href="#about" class="hover:text-blue-200">
+About
+</a>
+
+
+<a href="#skills" class="hover:text-blue-200">
+Skills
+</a>
+
+
+<a href="#journey" class="hover:text-blue-200">
+Journey
+</a>
+
+
+<a href="#chat" class="hover:text-blue-200">
+Chat
+</a>
+
+
+<button onclick="goBack()"
+class="bg-white text-blue-800 px-4 py-2 rounded-full hover:bg-blue-100">
+
+← Previous Page
+
+</button>
+
+
+</nav>
+
+
 </div>
 
-<div class="item">
-<div class="year">2018</div>
-<div class="role">Junior Developer</div>
+</header>
+
+
+
+
+
+
+
+<main class="pt-28 max-w-6xl mx-auto px-6">
+
+
+
+
+
+
+<!-- PROFILE -->
+
+
+<section id="about"
+class="bg-white rounded-3xl shadow-xl p-12 text-center">
+
+
+<h2 class="text-5xl font-bold text-blue-800">
+
+Arjun Das
+
+</h2>
+
+
+
+<p class="text-2xl text-gray-600 mt-4">
+
+Solution Architect | Software Engineer | Technology Leader
+
+</p>
+
+
+
+<p class="max-w-4xl mx-auto mt-8 leading-8">
+
+Arjun Das is a passionate technology professional with expertise
+in software engineering, system architecture, and digital
+solution development.
+
+He focuses on creating scalable, secure, and efficient systems
+that solve real-world business challenges. His journey reflects
+continuous learning, innovation, and dedication towards technology.
+
+</p>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- SUMMARY -->
+
+
+<section class="mt-14 bg-white rounded-3xl shadow-xl p-10">
+
+
+<h2 class="text-3xl font-bold text-blue-800">
+
+Professional Summary
+
+</h2>
+
+
+<p class="mt-5 leading-8">
+
+Arjun started his career with a strong interest in programming
+and technology. Over the years, he gained experience in software
+development, architecture design, technical leadership, and
+building enterprise-level applications.
+
+He believes in writing quality software, teamwork, innovation,
+and delivering solutions that create long-term value.
+
+</p>
+
+
+
+<div class="grid md:grid-cols-3 gap-6 mt-8">
+
+
+<div class="bg-blue-50 p-6 rounded-xl">
+
+<h3 class="font-bold text-xl text-blue-700">
+Experience
+</h3>
+
+<p>
+8+ years in software engineering and technology.
+</p>
+
 </div>
 
-<div class="item">
-<div class="year">2020</div>
-<div class="role">Software Engineer</div>
-</div>
 
-<div class="item">
-<div class="year">2022</div>
-<div class="role">Senior Software Engineer</div>
-</div>
 
-<div class="item">
-<div class="year">2025</div>
-<div class="role">Solution Architect</div>
-</div>
+<div class="bg-blue-50 p-6 rounded-xl">
+
+<h3 class="font-bold text-xl text-blue-700">
+Expertise
+</h3>
+
+<p>
+Software architecture, cloud solutions and system design.
+</p>
 
 </div>
+
+
+
+<div class="bg-blue-50 p-6 rounded-xl">
+
+<h3 class="font-bold text-xl text-blue-700">
+Leadership
+</h3>
+
+<p>
+Project ownership and technical mentoring.
+</p>
+
 </div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+<!-- SKILLS -->
+
+
+<section id="skills"
+class="mt-14 bg-white rounded-3xl shadow-xl p-10">
+
+
+<h2 class="text-3xl font-bold text-blue-800">
+
+Core Skills
+
+</h2>
+
+
+<div class="flex flex-wrap gap-4 mt-6">
+
+
+<span class="skill">
+Software Engineering
+</span>
+
+
+<span class="skill">
+System Architecture
+</span>
+
+
+<span class="skill">
+Cloud Computing
+</span>
+
+
+<span class="skill">
+Java Development
+</span>
+
+
+<span class="skill">
+Database Management
+</span>
+
+
+<span class="skill">
+Problem Solving
+</span>
+
+
+<span class="skill">
+Technical Leadership
+</span>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+<!-- CAREER -->
+
+
+<section id="journey"
+class="mt-14 bg-white rounded-3xl shadow-xl p-10">
+
+
+<h2 class="text-3xl font-bold text-blue-800">
+
+Career Journey
+
+</h2>
+
+
+
+<div class="border-l-4 border-blue-800 pl-8 mt-8 space-y-10">
+
+
+<div>
+
+<p class="text-gray-500">
+2017
+</p>
+
+<h3 class="text-xl font-bold">
+Graduate Trainee
+</h3>
+
+<p>
+Started professional career and learned software development fundamentals.
+</p>
+
+</div>
+
+
+
+
+<div>
+
+<p class="text-gray-500">
+2018
+</p>
+
+<h3 class="text-xl font-bold">
+Junior Developer
+</h3>
+
+<p>
+Worked on applications and improved programming knowledge.
+</p>
+
+</div>
+
+
+
+
+
+<div>
+
+<p class="text-gray-500">
+2020
+</p>
+
+<h3 class="text-xl font-bold">
+Software Engineer
+</h3>
+
+<p>
+Designed and developed software solutions.
+</p>
+
+</div>
+
+
+
+
+
+<div>
+
+<p class="text-gray-500">
+2022
+</p>
+
+<h3 class="text-xl font-bold">
+Senior Software Engineer
+</h3>
+
+<p>
+Managed projects and supported development teams.
+</p>
+
+</div>
+
+
+
+
+
+<div>
+
+<p class="text-gray-500">
+2025
+</p>
+
+<h3 class="text-xl font-bold">
+Solution Architect
+</h3>
+
+<p>
+Designing scalable systems and technology strategies.
+</p>
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+<!-- ACHIEVEMENTS -->
+
+
+<section class="mt-14 bg-white rounded-3xl shadow-xl p-10">
+
+
+<h2 class="text-3xl font-bold text-blue-800">
+
+Achievements
+
+</h2>
+
+
+<ul class="mt-5 list-disc ml-6 space-y-3">
+
+<li>
+Delivered successful software solutions.
+</li>
+
+<li>
+Designed scalable technology architectures.
+</li>
+
+<li>
+Improved system performance and reliability.
+</li>
+
+<li>
+Guided teams through technical challenges.
+</li>
+
+</ul>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- VISION -->
+
+
+<section class="mt-14 bg-white rounded-3xl shadow-xl p-10">
+
+
+<h2 class="text-3xl font-bold text-blue-800">
+
+Future Vision
+
+</h2>
+
+
+<p class="mt-5 leading-8">
+
+Arjun aims to continue exploring emerging technologies,
+creating innovative solutions, and helping organizations
+achieve digital transformation through effective technology
+strategies.
+
+</p>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- CHAT -->
+
+
+<section id="chat"
+class="mt-14 bg-white rounded-3xl shadow-xl overflow-hidden">
+
+
+<div class="bg-blue-800 text-white p-5 text-xl text-center font-bold">
+
+Ask About Arjun
+
+</div>
+
+
+
+<div id="chatBox" class="p-8">
+
+
+<div class="bg-blue-50 p-4 rounded-xl">
+
+Hello! Choose a question below.
+
+</div>
+
+
+
+<div class="flex flex-wrap gap-3 mt-6">
+
+
+<button onclick="ask('journey')" class="chatBtn">
+How did Arjun start?
+</button>
+
+
+<button onclick="ask('skills')" class="chatBtn">
+Skills
+</button>
+
+
+<button onclick="ask('experience')" class="chatBtn">
+Experience
+</button>
+
+
+<button onclick="ask('goal')" class="chatBtn">
+Future Goal
+</button>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+</main>
+
+
+
+
+
+
+
+
+
+<!-- FOOTER -->
+
+
+<footer class="mt-16 bg-blue-800 text-white text-center py-8">
+
+
+<h2 class="text-xl font-bold">
+Arjun Das
+</h2>
+
+
+<p>
+Solution Architect | Technology Professional
+</p>
+
+
+<p class="mt-3">
+© 2026 Arjun Das. All Rights Reserved.
+</p>
+
+
+</footer>
+
+
+
+
+
+
+
+
+<!-- TOP BUTTON -->
+
+
+<button id="topBtn"
+onclick="goTop()"
+class="hidden fixed bottom-8 right-8 bg-blue-800 text-white w-14 h-14 rounded-full text-3xl shadow-xl">
+
+↑
+
+</button>
+
+
+
+
+
+
+
+<script>
+
+
+function goBack(){
+
+history.back();
+
+}
+
+
+
+
+function ask(type){
+
+
+let chat=document.getElementById("chatBox");
+
+let question="";
+let answer="";
+
+
+
+if(type=="journey"){
+
+question="How did Arjun start?";
+
+answer="Arjun started his professional journey in 2017 as a Graduate Trainee and developed his career through continuous learning and practical experience.";
+
+}
+
+
+
+if(type=="skills"){
+
+question="What are Arjun's skills?";
+
+answer="Arjun specializes in software engineering, architecture design, cloud technology, databases and leadership.";
+
+}
+
+
+
+if(type=="experience"){
+
+question="Tell me about Arjun's experience";
+
+answer="Arjun has progressed from Graduate Trainee to Solution Architect by working on software projects and technology solutions.";
+
+}
+
+
+
+if(type=="goal"){
+
+question="What is Arjun's future goal?";
+
+answer="Arjun wants to build innovative solutions and contribute to modern technology transformation.";
+
+}
+
+
+
+
+chat.innerHTML += `
+
+<div class="mt-5 bg-blue-800 text-white p-4 rounded-xl">
+
+${question}
+
+</div>
+
+
+<div class="mt-3 bg-blue-50 p-4 rounded-xl">
+
+${answer}
+
+</div>
+
+`;
+
+}
+
+
+
+
+window.onscroll=function(){
+
+
+let btn=document.getElementById("topBtn");
+
+
+if(window.scrollY>300){
+
+btn.classList.remove("hidden");
+
+}
+
+else{
+
+btn.classList.add("hidden");
+
+}
+
+
+};
+
+
+
+function goTop(){
+
+window.scrollTo({
+
+top:0,
+
+behavior:"smooth"
+
+});
+
+}
+
+
+
+</script>
+
+
+
+
+
+
+<style>
+
+
+.skill{
+
+background:#1e40af;
+color:white;
+padding:10px 20px;
+border-radius:999px;
+
+}
+
+
+
+.chatBtn{
+
+background:#1e40af;
+color:white;
+padding:10px 18px;
+border-radius:999px;
+
+}
+
+
+.chatBtn:hover,
+.skill:hover{
+
+background:#1e3a8a;
+
+}
+
+
+</style>
+
+
 
 </body>
+
 </html>

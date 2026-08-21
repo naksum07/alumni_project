@@ -1,91 +1,793 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rahul's Career Journey</title>
+
+<title>Rahul | Professional Profile</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-body{
-    font-family: Arial, sans-serif;
-    background:#f4f4f4;
-    margin:0;
-    padding:40px;
-}
-.container{
-    max-width:700px;
-    margin:auto;
-    background:white;
-    padding:30px;
-    border-radius:10px;
-    box-shadow:0 5px 15px rgba(0,0,0,.2);
-}
-h1{
-    color:#0066cc;
-    text-align:center;
-}
-.timeline{
-    border-left:4px solid #0066cc;
-    padding-left:20px;
-}
-.item{
-    margin-bottom:25px;
-    position:relative;
-}
-.item::before{
-    content:"";
-    width:14px;
-    height:14px;
-    background:#0066cc;
-    border-radius:50%;
-    position:absolute;
-    left:-28px;
-    top:5px;
-}
-.year{
-    color:gray;
-}
-.role{
-    font-size:20px;
-    font-weight:bold;
+html{
+    scroll-behavior:smooth;
 }
 </style>
+
 </head>
 
-<body>
 
-<div class="container">
-<h1>Rahul's Career Journey</h1>
+<body class="bg-gray-50 text-gray-800">
 
-<div class="timeline">
 
-<div class="item">
-<div class="year">2018</div>
-<div class="role">Intern at ABC Tech</div>
+
+<!-- HEADER -->
+
+<header class="fixed top-0 left-0 w-full bg-blue-800 text-white shadow-lg z-50">
+
+<div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+
+
+<h1 class="text-2xl font-bold">
+Rahul
+</h1>
+
+
+
+<nav class="hidden md:flex items-center gap-6">
+
+
+<a href="index.html" class="hover:text-blue-200">
+Home
+</a>
+
+
+<a href="#about" class="hover:text-blue-200">
+About
+</a>
+
+
+<a href="#skills" class="hover:text-blue-200">
+Skills
+</a>
+
+
+<a href="#journey" class="hover:text-blue-200">
+Journey
+</a>
+
+
+<a href="#chat" class="hover:text-blue-200">
+Chat
+</a>
+
+
+
+<button onclick="goBack()"
+class="bg-white text-blue-800 px-4 py-2 rounded-full">
+
+← Previous Page
+
+</button>
+
+
+</nav>
+
+
 </div>
 
-<div class="item">
-<div class="year">2019</div>
-<div class="role">Software Engineer</div>
+</header>
+
+
+
+
+
+
+
+
+<main class="pt-28 max-w-6xl mx-auto px-6">
+
+
+
+
+
+
+
+<!-- PROFILE -->
+
+<section id="about"
+class="bg-white rounded-3xl shadow-xl p-12 text-center">
+
+
+<h2 class="text-5xl font-bold text-blue-800">
+
+Rahul Sharma
+
+</h2>
+
+
+
+<p class="text-2xl text-gray-600 mt-4">
+
+Engineering Manager | Software Engineer | Technology Professional
+
+</p>
+
+
+
+<p class="max-w-4xl mx-auto mt-8 leading-8">
+
+
+Rahul is a dedicated technology professional with experience in
+software engineering, technical leadership, and managing
+engineering teams.
+
+He focuses on developing high-quality software solutions,
+improving engineering practices, and delivering successful
+technology projects.
+
+
+</p>
+
+
+
+</section>
+
+
+
+
+
+
+<!-- SUMMARY -->
+
+<section class="mt-14 bg-white rounded-3xl shadow-xl p-10">
+
+
+<h2 class="text-3xl font-bold text-blue-800">
+
+Professional Summary
+
+</h2>
+
+
+<p class="mt-5 leading-8">
+
+
+Rahul started his professional journey in 2018 as an Intern at ABC
+Tech. Through continuous learning, technical improvement, and
+dedication, he progressed through different engineering roles.
+
+He developed expertise in software development, system design,
+team leadership, and managing technology projects.
+
+
+</p>
+
+
+
+
+
+<div class="grid md:grid-cols-3 gap-6 mt-8">
+
+
+<div class="bg-blue-50 p-6 rounded-xl">
+
+<h3 class="text-xl font-bold text-blue-700">
+Experience
+</h3>
+
+<p>
+7+ years of experience in software engineering and leadership.
+</p>
+
 </div>
 
-<div class="item">
-<div class="year">2021</div>
-<div class="role">Senior Software Engineer</div>
-</div>
 
-<div class="item">
-<div class="year">2023</div>
-<div class="role">Tech Lead</div>
-</div>
 
-<div class="item">
-<div class="year">2025</div>
-<div class="role">Engineering Manager</div>
-</div>
+
+<div class="bg-blue-50 p-6 rounded-xl">
+
+<h3 class="text-xl font-bold text-blue-700">
+Specialization
+</h3>
+
+<p>
+Software development, engineering management and technical solutions.
+</p>
 
 </div>
+
+
+
+
+<div class="bg-blue-50 p-6 rounded-xl">
+
+<h3 class="text-xl font-bold text-blue-700">
+Leadership
+</h3>
+
+<p>
+Team management, mentoring and project delivery.
+</p>
+
 </div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+
+<!-- SKILLS -->
+
+
+<section id="skills"
+class="mt-14 bg-white rounded-3xl shadow-xl p-10">
+
+
+<h2 class="text-3xl font-bold text-blue-800">
+
+Core Skills
+
+</h2>
+
+
+
+<div class="flex flex-wrap gap-4 mt-6">
+
+
+<span class="skill">
+Software Development
+</span>
+
+
+<span class="skill">
+System Design
+</span>
+
+
+<span class="skill">
+Technical Leadership
+</span>
+
+
+<span class="skill">
+Project Management
+</span>
+
+
+<span class="skill">
+Problem Solving
+</span>
+
+
+<span class="skill">
+Team Collaboration
+</span>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- CAREER -->
+
+<section id="journey"
+class="mt-14 bg-white rounded-3xl shadow-xl p-10">
+
+
+<h2 class="text-3xl font-bold text-blue-800">
+
+Rahul's Career Journey
+
+</h2>
+
+
+
+<div class="border-l-4 border-blue-800 pl-8 mt-8 space-y-10">
+
+
+
+
+
+<div>
+
+<p class="text-gray-500">
+2018
+</p>
+
+<h3 class="text-xl font-bold">
+Intern at ABC Tech
+</h3>
+
+<p>
+Started professional journey and gained practical software development experience.
+</p>
+
+</div>
+
+
+
+
+
+<div>
+
+<p class="text-gray-500">
+2019
+</p>
+
+<h3 class="text-xl font-bold">
+Software Engineer
+</h3>
+
+<p>
+Worked on software applications and improved technical skills.
+</p>
+
+</div>
+
+
+
+
+
+<div>
+
+<p class="text-gray-500">
+2021
+</p>
+
+<h3 class="text-xl font-bold">
+Senior Software Engineer
+</h3>
+
+<p>
+Handled complex projects and supported engineering activities.
+</p>
+
+</div>
+
+
+
+
+
+<div>
+
+<p class="text-gray-500">
+2023
+</p>
+
+<h3 class="text-xl font-bold">
+Tech Lead
+</h3>
+
+<p>
+Led development teams and guided technical decisions.
+</p>
+
+</div>
+
+
+
+
+
+<div>
+
+<p class="text-gray-500">
+2025
+</p>
+
+<h3 class="text-xl font-bold">
+Engineering Manager
+</h3>
+
+<p>
+Managing engineering teams and delivering successful technology solutions.
+</p>
+
+</div>
+
+
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ACHIEVEMENTS -->
+
+<section class="mt-14 bg-white rounded-3xl shadow-xl p-10">
+
+
+<h2 class="text-3xl font-bold text-blue-800">
+
+Achievements
+
+</h2>
+
+
+
+<ul class="mt-5 list-disc ml-6 space-y-3">
+
+
+<li>
+Delivered successful software projects.
+</li>
+
+
+<li>
+Improved engineering team performance.
+</li>
+
+
+<li>
+Mentored developers and supported technical growth.
+</li>
+
+
+<li>
+Successfully managed technology initiatives.
+</li>
+
+
+</ul>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- FUTURE VISION -->
+
+<section class="mt-14 bg-white rounded-3xl shadow-xl p-10">
+
+
+<h2 class="text-3xl font-bold text-blue-800">
+
+Future Vision
+
+</h2>
+
+
+
+<p class="mt-5 leading-8">
+
+
+Rahul aims to continue growing as a technology leader by building
+strong engineering teams, creating innovative solutions, and
+contributing to modern digital transformation.
+
+
+</p>
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- CHAT -->
+
+<section id="chat"
+class="mt-14 bg-white rounded-3xl shadow-xl overflow-hidden">
+
+
+<div class="bg-blue-800 text-white p-5 text-xl text-center font-bold">
+
+Ask About Rahul
+
+</div>
+
+
+
+<div id="chatBox" class="p-8">
+
+
+<div class="bg-blue-50 p-4 rounded-xl">
+
+Hello! Choose a question to know more about Rahul.
+
+</div>
+
+
+
+<div class="flex flex-wrap gap-3 mt-6">
+
+
+<button onclick="ask('start')" class="chatBtn">
+How did Rahul start?
+</button>
+
+
+<button onclick="ask('skills')" class="chatBtn">
+Skills
+</button>
+
+
+<button onclick="ask('career')" class="chatBtn">
+Career Journey
+</button>
+
+
+<button onclick="ask('goal')" class="chatBtn">
+Future Goal
+</button>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+
+
+
+</main>
+
+
+
+
+
+
+
+
+
+<!-- FOOTER -->
+
+
+<footer class="mt-16 bg-blue-800 text-white text-center py-8">
+
+
+<h2 class="text-xl font-bold">
+Rahul
+</h2>
+
+
+<p>
+Engineering Manager | Technology Professional
+</p>
+
+
+<p class="mt-3">
+© 2026 Rahul. All Rights Reserved.
+</p>
+
+
+</footer>
+
+
+
+
+
+
+
+
+<!-- TOP BUTTON -->
+
+
+<button id="topBtn"
+onclick="goTop()"
+class="hidden fixed bottom-8 right-8 bg-blue-800 text-white w-14 h-14 rounded-full text-3xl shadow-xl">
+
+↑
+
+</button>
+
+
+
+
+
+
+
+<script>
+
+
+function goBack(){
+
+history.back();
+
+}
+
+
+
+
+function ask(type){
+
+
+let chat=document.getElementById("chatBox");
+
+let q="";
+let a="";
+
+
+
+if(type=="start"){
+
+q="How did Rahul start?";
+
+a="Rahul started his career in 2018 as an Intern at ABC Tech and built his foundation in software engineering.";
+
+}
+
+
+
+if(type=="skills"){
+
+q="What are Rahul's skills?";
+
+a="Rahul's skills include software development, system design, leadership, project management and problem solving.";
+
+}
+
+
+
+if(type=="career"){
+
+q="Tell me about Rahul's career journey";
+
+a="Rahul progressed from Intern at ABC Tech in 2018 to Engineering Manager in 2025 through continuous learning and professional growth.";
+
+}
+
+
+
+if(type=="goal"){
+
+q="What is Rahul's future goal?";
+
+a="Rahul aims to lead innovative engineering teams and create impactful technology solutions.";
+
+}
+
+
+
+
+chat.innerHTML += `
+
+<div class="mt-5 bg-blue-800 text-white p-4 rounded-xl">
+
+${q}
+
+</div>
+
+
+<div class="mt-3 bg-blue-50 p-4 rounded-xl">
+
+${a}
+
+</div>
+
+`;
+
+}
+
+
+
+
+
+window.onscroll=function(){
+
+
+let btn=document.getElementById("topBtn");
+
+
+if(window.scrollY>300){
+
+btn.classList.remove("hidden");
+
+}
+
+else{
+
+btn.classList.add("hidden");
+
+}
+
+
+};
+
+
+
+
+function goTop(){
+
+window.scrollTo({
+
+top:0,
+
+behavior:"smooth"
+
+});
+
+}
+
+
+</script>
+
+
+
+
+
+<style>
+
+
+.skill{
+
+background:#1e40af;
+color:white;
+padding:10px 20px;
+border-radius:999px;
+
+}
+
+
+
+.chatBtn{
+
+background:#1e40af;
+color:white;
+padding:10px 18px;
+border-radius:999px;
+
+}
+
+
+
+.skill:hover,
+.chatBtn:hover{
+
+background:#1e3a8a;
+
+}
+
+
+</style>
+
+
 
 </body>
+
 </html>

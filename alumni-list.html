@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Search Alumni | AlumniConnect</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135755.png">
+
+</head>
+
+
+<body class="bg-gray-100 pt-28">
+
+
+<!-- ================= HEADER ================= -->
+
+
+<header class="fixed top-0 left-0 w-full bg-gradient-to-r from-blue-900 to-blue-600 text-white shadow-lg z-50">
+
+
+<div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+
+
+<h2 class="text-2xl font-bold">
+🎓 AlumniConnect
+</h2>
+
+
+
+<nav class="hidden md:block space-x-6">
+
+
+<a href="index.html" class="hover:text-yellow-300">
+Home
+</a>
+
+
+<a href="events.html" class="hover:text-yellow-300">
+Events
+</a>
+
+
+
+
+<a href="register.html" class="hover:text-yellow-300">
+Register
+</a>
+
+
+<a href="login.html" class="hover:text-yellow-300">
+Login
+</a>
+
+
+</nav>
+
+
+</div>
+
+
+</header>
+
+
+
+
+
+
+
+<!-- ================= MAIN CONTENT ================= -->
+
+
+<div class="max-w-6xl mx-auto px-5">
+
+
+
+<h1 class="text-3xl font-bold text-center text-blue-900 mb-6">
+
+🔍 Find Alumni
+
+</h1>
+
+
+
+
+
+<!-- SEARCH -->
+
+
+<input
+
+type="text"
+
+id="search"
+
+placeholder="Search by name, department or batch..."
+
+onkeyup="searchAlumni()"
+
+class="w-full p-4 rounded-lg border shadow mb-8 focus:ring-2 focus:ring-blue-900 outline-none"
+
+>
+
+
+
+
+
+
+<!-- ALUMNI CARDS -->
+
+
+<div id="alumniList" class="grid md:grid-cols-3 gap-6">
+
+
+
+
+
+<!-- CARD 1 -->
+
+<div class="alumni bg-white p-6 rounded-xl shadow">
+
+
+<div class="text-5xl text-center">
+👨‍🎓
+</div>
+
+
+<h2 class="text-xl font-bold text-blue-900 text-center mt-3">
+Rahul Sharma
+</h2>
+
+
+<p class="text-gray-600 mt-2">
+🎓 Department: Computer Science
+</p>
+
+
+<p class="text-gray-600">
+📅 Batch: 2025
+</p>
+
+
+<p class="text-gray-600">
+💼 Software Engineer
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- CARD 2 -->
+
+
+<div class="alumni bg-white p-6 rounded-xl shadow">
+
+
+<div class="text-5xl text-center">
+👩‍🎓
+</div>
+
+
+<h2 class="text-xl font-bold text-blue-900 text-center mt-3">
+Priya Singh
+</h2>
+
+
+<p class="text-gray-600 mt-2">
+🎓 Department: Electronics
+</p>
+
+
+<p class="text-gray-600">
+📅 Batch: 2024
+</p>
+
+
+<p class="text-gray-600">
+💼 Data Analyst
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- CARD 3 -->
+
+
+<div class="alumni bg-white p-6 rounded-xl shadow">
+
+
+<div class="text-5xl text-center">
+👨‍💻
+</div>
+
+
+<h2 class="text-xl font-bold text-blue-900 text-center mt-3">
+Amit Kumar
+</h2>
+
+
+<p class="text-gray-600 mt-2">
+🎓 Department: Mechanical
+</p>
+
+
+<p class="text-gray-600">
+📅 Batch: 2023
+</p>
+
+
+<p class="text-gray-600">
+💼 Design Engineer
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- CARD 4 -->
+
+
+<div class="alumni bg-white p-6 rounded-xl shadow">
+
+
+<div class="text-5xl text-center">
+👩‍💼
+</div>
+
+
+<h2 class="text-xl font-bold text-blue-900 text-center mt-3">
+Sneha Das
+</h2>
+
+
+<p class="text-gray-600 mt-2">
+🎓 Department: Civil
+</p>
+
+
+<p class="text-gray-600">
+📅 Batch: 2022
+</p>
+
+
+<p class="text-gray-600">
+💼 Project Manager
+</p>
+
+
+</div>
+
+<!-- CARD 5 -->
+
+<div class="alumni bg-white p-6 rounded-xl shadow">
+
+<div class="text-5xl text-center">
+👨‍🎓
+</div>
+
+<h2 class="text-xl font-bold text-blue-900 text-center mt-3">
+Arjun Verma
+</h2>
+
+<p class="text-gray-600 mt-2">
+🎓 Department: Computer Science
+</p>
+
+<p class="text-gray-600">
+📅 Batch: 2022
+</p>
+
+<p class="text-gray-600">
+💼 Web Developer
+</p>
+
+</div>
+
+
+
+
+
+<!-- CARD 6 -->
+
+<div class="alumni bg-white p-6 rounded-xl shadow">
+
+<div class="text-5xl text-center">
+👩‍🎓
+</div>
+
+<h2 class="text-xl font-bold text-blue-900 text-center mt-3">
+Ananya Roy
+</h2>
+
+<p class="text-gray-600 mt-2">
+🎓 Department: Electrical Engineering
+</p>
+
+<p class="text-gray-600">
+📅 Batch: 2025
+</p>
+
+<p class="text-gray-600">
+💼 Electrical Engineer
+</p>
+
+</div>
+
+
+
+
+
+
+<!-- CARD 7 -->
+
+<div class="alumni bg-white p-6 rounded-xl shadow">
+
+<div class="text-5xl text-center">
+👨‍💼
+</div>
+
+<h2 class="text-xl font-bold text-blue-900 text-center mt-3">
+Vikash Singh
+</h2>
+
+<p class="text-gray-600 mt-2">
+🎓 Department: Mechanical Engineering
+</p>
+
+<p class="text-gray-600">
+📅 Batch: 2024
+</p>
+
+<p class="text-gray-600">
+💼 Project Engineer
+</p>
+
+</div>
+
+
+
+
+
+
+<!-- CARD 8 -->
+
+<div class="alumni bg-white p-6 rounded-xl shadow">
+
+<div class="text-5xl text-center">
+👩‍💻
+</div>
+
+<h2 class="text-xl font-bold text-blue-900 text-center mt-3">
+Riya Sharma
+</h2>
+
+<p class="text-gray-600 mt-2">
+🎓 Department: Civil Engineering
+</p>
+
+<p class="text-gray-600">
+📅 Batch: 2023
+</p>
+
+<p class="text-gray-600">
+💼 Civil Engineer
+</p>
+
+</div>
+
+
+
+
+
+
+<!-- CARD 9 -->
+
+<div class="alumni bg-white p-6 rounded-xl shadow">
+
+<div class="text-5xl text-center">
+👨‍💻
+</div>
+
+<h2 class="text-xl font-bold text-blue-900 text-center mt-3">
+Karan Mehta
+</h2>
+
+<p class="text-gray-600 mt-2">
+🎓 Department: Computer Science
+</p>
+
+<p class="text-gray-600">
+📅 Batch: 2021
+</p>
+
+<p class="text-gray-600">
+💼 Software Developer
+</p>
+
+</div>
+
+
+
+
+
+
+
+<!-- CARD 10 -->
+
+<div class="alumni bg-white p-6 rounded-xl shadow">
+
+<div class="text-5xl text-center">
+👩‍🔬
+</div>
+
+<h2 class="text-xl font-bold text-blue-900 text-center mt-3">
+Neha Patel
+</h2>
+
+<p class="text-gray-600 mt-2">
+🎓 Department: Electronics Engineering
+</p>
+
+<p class="text-gray-600">
+📅 Batch: 2022
+</p>
+
+<p class="text-gray-600">
+💼 Electronics Engineer
+</p>
+
+</div>
+
+
+
+
+
+
+
+<!-- CARD 11 -->
+
+<div class="alumni bg-white p-6 rounded-xl shadow">
+
+<div class="text-5xl text-center">
+👨‍🏫
+</div>
+
+<h2 class="text-xl font-bold text-blue-900 text-center mt-3">
+Rohit Das
+</h2>
+
+<p class="text-gray-600 mt-2">
+🎓 Department: Electrical Engineering
+</p>
+
+<p class="text-gray-600">
+📅 Batch: 2020
+</p>
+
+<p class="text-gray-600">
+💼 Assistant Professor
+</p>
+
+</div>
+
+
+
+
+
+
+<!-- CARD 12 -->
+
+<div class="alumni bg-white p-6 rounded-xl shadow">
+
+<div class="text-5xl text-center">
+👩‍💼
+</div>
+
+<h2 class="text-xl font-bold text-blue-900 text-center mt-3">
+Simran Kaur
+</h2>
+
+<p class="text-gray-600 mt-2">
+🎓 Department: MBA
+</p>
+
+<p class="text-gray-600">
+📅 Batch: 2025
+</p>
+
+<p class="text-gray-600">
+💼 Marketing Manager
+</p>
+
+</div>
+
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+<!-- PREVIOUS PAGE BUTTON -->
+
+
+<div class="text-center mt-10">
+
+
+<button onclick="history.back()"
+
+class="bg-blue-900 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+
+
+← Previous Page
+
+
+</button>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- FOOTER -->
+
+
+<footer class="bg-gray-900 text-white text-center py-5 mt-12">
+
+
+<p class="font-semibold text-lg">
+🎓 AlumniConnect
+</p>
+
+
+<p class="text-sm mt-2">
+Email: support@alumniconnect.com | Phone: +91 98765 43210
+</p>
+
+
+<p class="text-xs mt-2">
+© 2026 AlumniConnect | All Rights Reserved
+</p>
+
+
+</footer>
+
+
+
+
+
+
+
+
+<!-- UP ARROW BUTTON -->
+
+
+<button onclick="scrollTopPage()"
+
+class="fixed bottom-6 right-6 bg-blue-900 text-white w-12 h-12 rounded-full text-2xl shadow-lg hover:bg-blue-700">
+
+
+↑
+
+</button>
+
+
+
+
+
+
+
+
+<script>
+
+
+// SEARCH FUNCTION
+
+
+function searchAlumni(){
+
+
+let input=document
+.getElementById("search")
+.value
+.toLowerCase();
+
+
+
+let cards=document
+.getElementsByClassName("alumni");
+
+
+
+for(let i=0;i<cards.length;i++){
+
+
+let text=cards[i]
+.innerText
+.toLowerCase();
+
+
+
+if(text.includes(input)){
+
+
+cards[i].style.display="block";
+
+
+}
+
+else{
+
+
+cards[i].style.display="none";
+
+
+}
+
+
+}
+
+
+}
+
+
+
+
+
+
+// SCROLL TO TOP
+
+
+function scrollTopPage(){
+
+
+window.scrollTo({
+
+top:0,
+
+behavior:"smooth"
+
+});
+
+
+}
+
+
+
+</script>
+
+
+
+
+</body>
+
+</html>
