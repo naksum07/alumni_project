@@ -52,6 +52,32 @@ CREATE TABLE IF NOT EXISTS event_registrations (
     registered_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS jobs (
+    id           SERIAL PRIMARY KEY,
+    posted_by    INT REFERENCES users(id) ON DELETE SET NULL,
+    title        VARCHAR(150) NOT NULL,
+    company      VARCHAR(150) NOT NULL,
+    location     VARCHAR(150),
+    job_type     VARCHAR(50),
+    salary       VARCHAR(100),
+    skills       TEXT,
+    description  TEXT,
+    status       VARCHAR(20) NOT NULL DEFAULT 'open',
+    created_at   TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS job_applications (
+    id            SERIAL PRIMARY KEY,
+    job_id        INT NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
+    applicant_id  INT REFERENCES users(id) ON DELETE SET NULL,
+    full_name     VARCHAR(150) NOT NULL,
+    email         VARCHAR(150) NOT NULL,
+    phone         VARCHAR(20),
+    cover_letter  TEXT,
+    resume_url    TEXT,
+    applied_at    TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
 -- Seed initial events
 INSERT INTO events (name, event_date, event_time, venue, description)
 VALUES
