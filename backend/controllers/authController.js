@@ -3,6 +3,11 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const pool = require('../config/db');
 
+// Roles a person is allowed to self-select at registration.
+// 'admin' is intentionally excluded so nobody can grant themselves
+// admin access by sending role: 'admin' in the request body.
+const SELF_REGISTERABLE_ROLES = ['student', 'alumni'];
+
 // POST /api/auth/register
 async function register(req, res) {
   const { fullName, email, phone, password, role, department, graduationYear } = req.body;
@@ -10,6 +15,8 @@ async function register(req, res) {
   if (!fullName || !email || !password) {
     return res.status(400).json({ message: 'Full name, email, and password are required' });
   }
+
+  const safeRole = SELF_REGISTERABLE_ROLES.includes(role) ? role : 'student';
 
   try {
     const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
@@ -23,7 +30,7 @@ async function register(req, res) {
       `INSERT INTO users (full_name, email, phone, password_hash, role, department, graduation_year)
        VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING id, full_name, email, role`,
-      [fullName, email, phone, passwordHash, role || 'student', department, graduationYear]
+      [fullName, email, phone, passwordHash, safeRole, department, graduationYear]
     );
 
     res.status(201).json({ message: 'Registration successful', user: result.rows[0] });
@@ -52,6 +59,20 @@ async function login(req, res) {
     const passwordMatches = await bcrypt.compare(password, user.password_hash);
     if (!passwordMatches) {
       return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Enforce account state — pending/rejected/suspended/banned accounts cannot log in.
+    if (!user.is_approved) {
+      return res.status(403).json({ message: 'Your account is pending admin approval' });
+    }
+    if (user.status === 'rejected') {
+      return res.status(403).json({ message: 'Your account registration was rejected' });
+    }
+    if (user.status === 'suspended') {
+      return res.status(403).json({ message: 'Your account has been suspended. Contact an administrator.' });
+    }
+    if (user.status === 'banned') {
+      return res.status(403).json({ message: 'Your account has been banned' });
     }
 
     const token = jwt.sign(
