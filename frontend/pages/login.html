@@ -21,6 +21,7 @@
 </div>
 
 <!-- FORM -->
+<p id="formMessage" class="text-center text-sm font-medium mb-4 hidden"></p>
 <form id="loginForm">
 
 <!-- EMAIL -->
@@ -103,21 +104,63 @@ function togglePassword(){
     }
 }
 
-// BASIC FORM VALIDATION
-document.getElementById("loginForm")
-.addEventListener("submit",function(event){
+const loginForm = document.getElementById("loginForm");
+const formMessage = document.getElementById("formMessage");
+const loginBtn = loginForm.querySelector("button[type=submit]");
+
+function showMessage(text, isError){
+    formMessage.textContent = text;
+    formMessage.classList.remove("hidden", "text-red-600", "text-green-600");
+    formMessage.classList.add(isError ? "text-red-600" : "text-green-600");
+}
+
+// LOGIN — CALLS THE BACKEND API
+loginForm.addEventListener("submit", async function(event){
     event.preventDefault();
-    let email=document.getElementById("email").value;
-    let password=document.getElementById("put").value;
-        if(email==="" || password===""){
-            alert("Please fill all fields");
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("put").value;
+
+    if(email === "" || password === ""){
+        showMessage("Please fill all fields", true);
+        return;
+    }
+
+    loginBtn.disabled = true;
+    const originalBtnText = loginBtn.textContent;
+    loginBtn.textContent = "Logging in...";
+
+    try {
+        const response = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if(!response.ok){
+            showMessage(data.message || "Login failed. Please try again.", true);
             return;
         }
-    alert("Login successful!");
 
-// Later connect backend API here
-}
-);
+        // Persist the JWT + user info so other pages (jobs, dashboard, admin) can use them
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        showMessage("Login successful! Redirecting...", false);
+
+        setTimeout(() => {
+            window.location.href = "index.html";
+        }, 800);
+    } catch (err) {
+        console.error(err);
+        showMessage("Could not reach the server. Please try again later.", true);
+    } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = originalBtnText;
+    }
+});
 </script>
 </body>
 </html>

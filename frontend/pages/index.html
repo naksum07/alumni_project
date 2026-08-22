@@ -53,7 +53,7 @@ scroll-behavior:smooth;
 </div>
 
 <!-- MOBILE BUTTON -->
-<button onclick="toggleMenu()" aria-label="Open Menu" class="md:hidden text-3xl">☰</button>
+<button id="menuBtn" onclick="toggleMenu()" aria-label="Open Menu" class="md:hidden text-3xl">☰</button>
 </div>
 <!-- MOBILE MENU -->
 <div id="mobileMenu" class="hidden md:hidden px-6 pb-6">
@@ -780,9 +780,12 @@ fetch('/api/test')
 </script>
 
 <script>
-  document.getElementById("profileBtn").addEventListener("click", function () {
-    window.location.href = "my-profile.html";
-  });
+  const profileBtn = document.getElementById("profileBtn");
+  if (profileBtn) {
+    profileBtn.addEventListener("click", function () {
+      window.location.href = "my-profile.html";
+    });
+  }
 
 
 
