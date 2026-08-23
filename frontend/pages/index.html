@@ -42,7 +42,7 @@ scroll-behavior:smooth;
     <a href="#home" class="hover:text-yellow-300 transition">Home</a>
     <a href="#about" class="hover:text-yellow-300 transition">About</a>
     <a href="#alumni" class="hover:text-yellow-300 transition">Alumni</a>
-    <a href="#events" class="hover:text-yellow-300 transition">Events</a>
+    <a href="events.html" class="hover:text-yellow-300 transition">Events</a>
     <a href="#contact"class="hover:text-yellow-300 transition">Contact</a>
 </div>
 
@@ -562,17 +562,12 @@ class="bg-blue-950 text-white py-16">
 
 <!-- LOGO -->
 <div>
-<h2 class="text-3xl font-bold">
-🎓 AlumniConnect
-</h2>
-
-<p class="mt-4 text-gray-400">
-
-Connecting students and alumni to create
-career opportunities, mentorship and lifelong
-relationships.
-
-</p>
+    <h2 class="text-3xl font-bold">🎓 AlumniConnect</h2>
+    <p class="mt-4 text-gray-400">
+    Connecting students and alumni to create
+    career opportunities, mentorship and lifelong
+    relationships.
+    </p>
 </div>
 
 <!-- LINKS -->
@@ -597,63 +592,26 @@ relationships.
 
 <!-- RESOURCES -->
 <div>
-
-<h3 class="text-xl font-semibold mb-5">
-Resources
-</h3>
-
-<ul class="space-y-3 text-gray-300">
-
-<li>
-Career Opportunities
-</li>
-
-<li>
-Mentorship
-</li>
-
-<li>
-Jobs
-</li>
-
-<li>
-FAQ
-</li>
-
-</ul>
+    <h3 class="text-xl font-semibold mb-5">Resources</h3>
+    <ul class="space-y-3 text-gray-300">
+        <li>Career Opportunities</li>
+        <li>Mentorship</li>
+        <li>Jobs</li>
+        <li>FAQ</li>
+    </ul>
 </div>
 
 <!-- CONTACT -->
-
 <div>
-<h3 class="text-xl font-semibold mb-5">
-Contact Us
-</h3>
-
-<p>
-📧 alumni@university.com
-</p>
-
-<p class="mt-3">
-📍 University Campus
-</p>
-
-<p class="mt-3">
-📞 +91 98765 43210
-</p>
-
+    <h3 class="text-xl font-semibold mb-5">Contact Us</h3>
+        <p>📧 alumni@university.com</p>
+        <p class="mt-3">📍 University Campus</p>
+        <p class="mt-3">📞 +91 98765 43210</p>
 </div>
-
 </div>
 <div class="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400">
-<p>
-© 2026 AlumniConnect. All Rights Reserved.
-</p>
-
-<p class="mt-2 text-sm">
-Privacy Policy | Terms & Conditions
-</p>
-
+    <p>© 2026 AlumniConnect. All Rights Reserved.</p>
+    <p class="mt-2 text-sm">Privacy Policy | Terms & Conditions</p>
 </div>
 </footer>
 
@@ -666,18 +624,10 @@ Privacy Policy | Terms & Conditions
 onclick="goTop()"
 
 class="hidden fixed bottom-8 right-8 bg-blue-800 text-white w-14 h-14 rounded-full text-3xl font-bold shadow-2xl hover:bg-blue-950 transition">
-
-
 ↑
-
-
 </button>
 
-
-
-
 <!-- AOS SCRIPT -->
-
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script>
     AOS.init({
@@ -786,64 +736,25 @@ fetch('/api/test')
       window.location.href = "my-profile.html";
     });
   }
-
-
-
-
-
-
   
 // SCROLL BUTTON
 
 
 window.onscroll=function(){
-
-
-
-let btn=document.getElementById("topBtn");
-
-
-
-if(window.scrollY > 400){
-
-
-btn.classList.remove("hidden");
-
-
-}
-
-else{
-
-
-btn.classList.add("hidden");
-
-
-}
-
-
-
+    let btn=document.getElementById("topBtn");
+        if(window.scrollY > 400){
+            btn.classList.remove("hidden");
+        }
+        else{
+            btn.classList.add("hidden");
+        }
 };
-
-
 function goTop(){
-
-
-window.scrollTo({
-
-
-top:0,
-
-
-behavior:"smooth"
-
-
+    window.scrollTo({
+    top:0,
+    behavior:"smooth"
 });
-
-
 }
-
 </script>
-
-
 </body>
 </html>         
