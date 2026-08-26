@@ -1,116 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Search Alumni | AlumniConnect</title>
-
 <script src="https://cdn.tailwindcss.com"></script>
-
 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135755.png">
-
 </head>
-
-
 <body class="bg-gray-100 pt-28">
 
-
-<!-- ================= HEADER ================= -->
-
-
+<!-- header -->
 <header class="fixed top-0 left-0 w-full bg-gradient-to-r from-blue-900 to-blue-600 text-white shadow-lg z-50">
-
-
 <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-
-
-<h2 class="text-2xl font-bold">
-🎓 AlumniConnect
-</h2>
-
-
-
-<nav class="hidden md:block space-x-6">
-
-
-<a href="index.html" class="hover:text-yellow-300">
-Home
-</a>
-
-
-<a href="events.html" class="hover:text-yellow-300">
-Events
-</a>
-
-
-
-
-<a href="register.html" class="hover:text-yellow-300">
+  <h2 class="text-2xl font-bold">🎓 AlumniConnect</h2>
+    <nav class="hidden md:block space-x-6">
+    <a href="index.html" class="hover:text-yellow-300">Home</a>
+    <a href="events.html" class="hover:text-yellow-300">Events</a>
+    <a href="register.html" class="hover:text-yellow-300">
 Register
 </a>
-
-
 <a href="login.html" class="hover:text-yellow-300">
 Login
 </a>
-
-
 </nav>
-
-
 </div>
-
-
 </header>
 
-
-
-
-
-
-
 <!-- ================= MAIN CONTENT ================= -->
-
-
 <div class="max-w-6xl mx-auto px-5">
-
-
-
-<h1 class="text-3xl font-bold text-center text-blue-900 mb-6">
-
-🔍 Find Alumni
-
-</h1>
-
-
-
-
+<h1 class="text-3xl font-bold text-center text-blue-900 mb-6">🔍 Find Alumni</h1>
 
 <!-- SEARCH -->
-
-
 <input
-
-type="text"
-
-id="search"
-
-placeholder="Search by name, department or batch..."
-
-onkeyup="searchAlumni()"
-
-class="w-full p-4 rounded-lg border shadow mb-8 focus:ring-2 focus:ring-blue-900 outline-none"
-
->
-
-
-
-
-
+  type="text"
+  id="search"
+  placeholder="Search by name, department or batch..."
+  onkeyup="searchAlumni()"
+class="w-full p-4 rounded-lg border shadow mb-8 focus:ring-2 focus:ring-blue-900 outline-none">
 
 <!-- ALUMNI CARDS -->
 
@@ -296,10 +222,6 @@ Arjun Verma
 
 </div>
 
-
-
-
-
 <!-- CARD 6 -->
 
 <div class="alumni bg-white p-6 rounded-xl shadow">
@@ -325,10 +247,6 @@ Ananya Roy
 </p>
 
 </div>
-
-
-
-
 
 
 <!-- CARD 7 -->
@@ -357,11 +275,6 @@ Vikash Singh
 
 </div>
 
-
-
-
-
-
 <!-- CARD 8 -->
 
 <div class="alumni bg-white p-6 rounded-xl shadow">
@@ -387,11 +300,6 @@ Riya Sharma
 </p>
 
 </div>
-
-
-
-
-
 
 <!-- CARD 9 -->
 
@@ -419,12 +327,6 @@ Karan Mehta
 
 </div>
 
-
-
-
-
-
-
 <!-- CARD 10 -->
 
 <div class="alumni bg-white p-6 rounded-xl shadow">
@@ -450,12 +352,6 @@ Neha Patel
 </p>
 
 </div>
-
-
-
-
-
-
 
 <!-- CARD 11 -->
 
@@ -483,11 +379,6 @@ Rohit Das
 
 </div>
 
-
-
-
-
-
 <!-- CARD 12 -->
 
 <div class="alumni bg-white p-6 rounded-xl shadow">
@@ -514,42 +405,20 @@ Simran Kaur
 
 </div>
 
-
-
 </div>
 
 </div>
-
-
-
-
-
-
 
 <!-- PREVIOUS PAGE BUTTON -->
-
-
 <div class="text-center mt-10">
 
 
 <button onclick="history.back()"
-
-class="bg-blue-900 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-
-
-← Previous Page
-
-
+  class="bg-blue-900 text-white px-6 py-3 rounded-lg hover:bg-blue-700">Previous Page
 </button>
 
 
 </div>
-
-
-
-
-
-
 
 <!-- FOOTER -->
 
@@ -719,7 +588,7 @@ behavior:"smooth"
   fetch('/api/alumni', { headers: { 'Authorization': 'Bearer ' + token } })
     .then(r => r.ok ? r.json() : [])
     .then(alumni => {
-      const container = document.getElementById('alumniListContainer');
+      const container = document.getElementById('alumniList');
       if (!container) return;
       if (alumni.length === 0) {
         container.innerHTML = '<p class="text-gray-500">No alumni found.</p>';

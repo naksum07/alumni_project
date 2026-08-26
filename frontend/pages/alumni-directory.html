@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -1855,10 +1855,6 @@
 
 
 <script>
-/* =========================================================
-   ALUMNI DIRECTORY — Backend API wiring
-   Fetches alumni from GET /api/alumni and populates the page.
-   ========================================================= */
 (function () {
   const token = localStorage.getItem('token');
   if (!token) {
@@ -1866,7 +1862,6 @@
     return;
   }
 
-  // Populate user name in header if element exists
   const user = JSON.parse(localStorage.getItem('user') || 'null');
   if (user) {
     document.querySelectorAll('[data-user-name]').forEach(el => {
@@ -1874,7 +1869,6 @@
     });
   }
 
-  // Logout
   document.querySelectorAll('[data-logout]').forEach(btn => {
     btn.addEventListener('click', function () {
       localStorage.removeItem('token');
@@ -1883,54 +1877,50 @@
     });
   });
 
-  // Fetch alumni — runs when the page loads
-  async function loadAlumni(params) {
-    const qs = new URLSearchParams(params || {}).toString();
-    const url = '/api/alumni' + (qs ? '?' + qs : '');
+  const alumniGrid = document.getElementById('alumniGrid');
+  const resultCount = document.getElementById('resultCount');
+
+  async function loadLiveAlumni(search = '') {
     try {
+      const url = '/api/alumni' + (search ? `?search=${encodeURIComponent(search)}` : '');
       const res = await fetch(url, {
         headers: { 'Authorization': 'Bearer ' + token }
       });
-      if (!res.ok) throw new Error('Failed');
-      return await res.json();
+      if (!res.ok) return;
+      const alumni = await res.json();
+      if (alumni && alumni.length > 0) {
+        renderDynamicAlumni(alumni);
+      }
     } catch (e) {
-      return null;
+      console.warn('Could not load dynamic alumni, keeping local directory cards:', e);
     }
   }
 
-  // If there is a live search form, wire it up
-  const searchForm = document.getElementById('alumniSearchForm');
-  if (searchForm) {
-    searchForm.addEventListener('submit', async function (e) {
-      e.preventDefault();
-      const search = (document.getElementById('alumniSearch') || {}).value || '';
-      const dept   = (document.getElementById('alumniDept')   || {}).value || '';
-      const year   = (document.getElementById('alumniYear')   || {}).value || '';
-      const alumni = await loadAlumni({ search, department: dept, year });
-      renderAlumni(alumni);
-    });
+  function renderDynamicAlumni(alumni) {
+    if (!alumniGrid) return;
+    if (resultCount) resultCount.textContent = `Showing ${alumni.length} alumni`;
+    alumniGrid.innerHTML = alumni.map(a => {
+      const initial = (a.full_name || '?').charAt(0).toUpperCase();
+      return `
+        <div class="alumni-card bg-white rounded-xl shadow-md p-6 text-center border border-gray-100 hover:-translate-y-1 hover:shadow-lg transition"
+             data-search="${(a.full_name || '').toLowerCase()} ${(a.current_role || '').toLowerCase()} ${(a.department || '').toLowerCase()} ${(a.company || '').toLowerCase()}">
+          <div class="w-20 h-20 mx-auto rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-3xl font-bold">
+            ${initial}
+          </div>
+          <h3 class="text-xl font-bold mt-5">${a.full_name}</h3>
+          <p class="text-blue-700 mt-1 font-medium">${a.current_role || 'Alumni'}</p>
+          <p class="text-gray-500 text-sm mt-2">${a.department || 'Department'} ${a.graduation_year ? `• Batch ${a.graduation_year}` : ''}</p>
+          <p class="text-gray-500 text-sm mt-1">${a.company || 'AlumniConnect'}</p>
+          <a href="my-profile.html" class="block mt-5 bg-blue-700 text-white py-2.5 rounded-lg hover:bg-blue-800 transition">
+            View Profile
+          </a>
+        </div>
+      `;
+    }).join('');
   }
 
-  function renderAlumni(alumni) {
-    const container = document.getElementById('alumniLiveList');
-    if (!container || !alumni) return;
-    if (alumni.length === 0) {
-      container.innerHTML = '<p class="text-gray-500 col-span-3 text-center py-8">No alumni found.</p>';
-      return;
-    }
-    container.innerHTML = alumni.map(a => `
-      <div class="bg-white rounded-xl shadow p-5 hover:shadow-md transition">
-        <p class="font-bold text-lg text-blue-700">${a.full_name}</p>
-        <p class="text-sm text-gray-500 mt-1">${a.department || ''} · ${a.graduation_year || ''}</p>
-        <p class="text-sm text-gray-600 mt-2">${a.current_role || ''}${a.company ? ' @ ' + a.company : ''}</p>
-      </div>
-    `).join('');
-  }
-
-  // Initial load (no filters)
-  loadAlumni().then(renderAlumni);
+  loadLiveAlumni();
 })();
 </script>
 </body>
-
 </html>

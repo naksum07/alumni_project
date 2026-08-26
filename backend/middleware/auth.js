@@ -2,13 +2,10 @@ const jwt = require('jsonwebtoken');
 
 function verifyToken(req, res, next) {
   const authHeader = req.headers['authorization']; // expected: "Bearer <token>"
-
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ message: 'No token provided' });
   }
-
   const token = authHeader.split(' ')[1];
-
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded; // { id, email, role }
@@ -19,11 +16,8 @@ function verifyToken(req, res, next) {
 }
 
 // Decodes the token if one is provided, but never blocks the request.
-// Useful for public endpoints (like job applications) that behave slightly
-// differently for logged-in users without requiring login.
 function optionalAuth(req, res, next) {
   const authHeader = req.headers['authorization'];
-
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.split(' ')[1];
     try {
@@ -35,15 +29,12 @@ function optionalAuth(req, res, next) {
   } else {
     req.user = null;
   }
-
   next();
 }
-
 function verifyAdmin(req, res, next) {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ message: 'Admin access only' });
   }
   next();
 }
-
 module.exports = { verifyToken, verifyAdmin, optionalAuth };

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -7,6 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Career Fair Registration</title>
+<script src="https://cdn.tailwindcss.com"></script>
 
 <style>
 
@@ -285,6 +286,27 @@ nav a{
 <p><strong>📅 Date:</strong> 20 September 2026</p>
 
 <p><strong>🕤 Time:</strong> 9:30 AM – 4:30 PM</p>
+</header>
+
+<!-- ================= PREVIOUS PAGE BUTTON ================= -->
+
+<div class="back-btn">
+<button onclick="history.back()">⬅ Previous Page</button>
+</div>
+
+<!-- ================= MAIN CONTENT ================= -->
+
+<div class="container">
+
+<h1>💼 Career Fair Registration</h1>
+
+<div class="event-info">
+
+<p><strong>💼 Event Name:</strong> Annual Career Fair</p>
+
+<p><strong>📅 Date:</strong> 20 September 2026</p>
+
+<p><strong>🕤 Time:</strong> 9:30 AM – 4:30 PM</p>
 
 <p><strong>📍 Venue:</strong> College Seminar Hall</p>
 
@@ -295,20 +317,19 @@ Meet leading companies, interact with HR professionals, attend placement drives,
 
 </div>
 
-<form>
+<form id="careerFairForm">
 
 <label>Full Name</label>
-<input type="text" placeholder="Enter your full name" required>
+<input type="text" id="cfName" placeholder="Enter your full name" required>
 
 <label>Email Address</label>
-<input type="email" placeholder="Enter your email address" required>
+<input type="email" id="cfEmail" placeholder="Enter your email address" required>
 
 <label>Phone Number</label>
-<input type="tel" placeholder="Enter your phone number" required>
+<input type="tel" id="cfPhone" placeholder="Enter your phone number">
 
 <label>Qualification</label>
-
-<select required>
+<select id="cfQualification" required>
 <option value="">Select Qualification</option>
 <option>B.Tech</option>
 <option>BCA</option>
@@ -320,8 +341,7 @@ Meet leading companies, interact with HR professionals, attend placement drives,
 </select>
 
 <label>Branch / Department</label>
-
-<select required>
+<select id="cfDept" required>
 <option value="">Select Department</option>
 <option>Computer Science</option>
 <option>Information Technology</option>
@@ -333,26 +353,24 @@ Meet leading companies, interact with HR professionals, attend placement drives,
 </select>
 
 <label>Skills</label>
-
-<input type="text" placeholder="Example: Java, Python, Web Development">
+<input type="text" id="cfSkills" placeholder="Example: Java, Python, Web Development">
 
 <label>Preferred Company</label>
-
-<input type="text" placeholder="Enter preferred company (Optional)">
+<input type="text" id="cfCompany" placeholder="Enter preferred company (Optional)">
 
 <label>Message</label>
+<textarea id="cfMessage" rows="4" placeholder="Write your message here..."></textarea>
 
-<textarea rows="5" placeholder="Write your message here..."></textarea>
+<p id="cfStatusMsg" class="text-sm font-medium mb-3 hidden"></p>
 
-<button type="submit">
+<button type="submit" id="cfSubmitBtn">
 🚀 Register Now
 </button>
-<<<<<<< Updated upstream:frontend/pages/career_fair.html
 </form>
+
 </div>
 
-<!-- Fixed Footer -->
-
+<!-- Canonical Footer -->
 <footer class="bg-blue-950 text-white py-16">
   <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
 
@@ -398,31 +416,12 @@ Meet leading companies, interact with HR professionals, attend placement drives,
     <p class="mt-2 text-sm">Privacy Policy | Terms &amp; Conditions</p>
   </div>
 </footer>
-=======
 
-</form>
-
-</div>
-
-<!-- ================= FOOTER ================= -->
-
-<footer>
-
-<p><strong>ABC College Career Development Cell</strong></p>
-
-<p>Email: careers@abccollege.edu | Phone: +91 98765 43210</p>
-
-<p>© 2026 ICFAI University College | All Rights Reserved</p>
-
-</footer>
-
-<!-- ================= BACK TO TOP ================= -->
-
+<!-- Back to Top -->
 <a href="#" class="top-btn" title="Back to Top">↑</a>
 
->>>>>>> Stashed changes:career_fair.html
-
 <script>
+// Mobile navigation toggle
 (function () {
   const btn  = document.getElementById('menuBtn');
   const menu = document.getElementById('mobileMenu');
@@ -448,6 +447,58 @@ Meet leading companies, interact with HR professionals, attend placement drives,
     }
   });
 })();
+
+// Career Fair Registration Form Submission
+document.getElementById('careerFairForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const fullName = document.getElementById('cfName').value.trim();
+  const email = document.getElementById('cfEmail').value.trim();
+  const phone = document.getElementById('cfPhone').value.trim();
+  const qual = document.getElementById('cfQualification').value;
+  const dept = document.getElementById('cfDept').value;
+  const skills = document.getElementById('cfSkills').value.trim();
+  const company = document.getElementById('cfCompany').value.trim();
+  const userMsg = document.getElementById('cfMessage').value.trim();
+
+  const msgBox = document.getElementById('cfStatusMsg');
+  const btn = document.getElementById('cfSubmitBtn');
+
+  const combinedMessage = [
+    qual ? `Qualification: ${qual}` : '',
+    dept ? `Dept: ${dept}` : '',
+    skills ? `Skills: ${skills}` : '',
+    company ? `Preferred Company: ${company}` : '',
+    userMsg ? `Note: ${userMsg}` : '',
+  ].filter(Boolean).join(' | ');
+
+  btn.disabled = true;
+  btn.textContent = 'Registering…';
+
+  try {
+    // Career Fair is event id 2 in standard seed data
+    const res = await fetch('/api/events/2/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fullName, email, phone, message: combinedMessage }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      msgBox.textContent = data.message || 'Registration failed.';
+      msgBox.className = 'text-sm font-medium mb-3 text-red-600';
+      return;
+    }
+    msgBox.textContent = '✅ You have registered successfully for the Career Fair!';
+    msgBox.className = 'text-sm font-medium mb-3 text-green-600';
+    this.reset();
+  } catch (err) {
+    console.error(err);
+    msgBox.textContent = 'Could not reach server. Please try again.';
+    msgBox.className = 'text-sm font-medium mb-3 text-red-600';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🚀 Register Now';
+  }
+});
 </script>
 </body>
 </html>

@@ -1074,18 +1074,8 @@
 
     </button>
 
-
-    <!-- =====================================================
-         JAVASCRIPT
-    ====================================================== -->
-
-    <script>
-
-
-        /* =================================================
-           MOBILE MENU
-        ================================================= */
-
+<script>
+//Mobile 
         const menuBtn =
             document.getElementById("menuBtn");
 
@@ -1330,140 +1320,90 @@
 
         });
 
-
-        /* =================================================
-           CHARACTER COUNTER
-        ================================================= */
-
         const feedback =
             document.getElementById(
                 "feedback"
             );
-
         const charCount =
             document.getElementById(
                 "charCount"
             );
-
-
         feedback.setAttribute(
             "maxlength",
             "500"
         );
-
-
         feedback.addEventListener(
             "input",
             function () {
-
                 const length =
                     feedback.value.length;
-
-
                 charCount.textContent =
                     length + " / 500";
-
-
                 if (length >= 450) {
-
                     charCount.classList
-                        .remove(
-                            "text-gray-400"
-                        );
-
+                    .remove(
+                        "text-gray-400"
+                    );
                     charCount.classList
-                        .add(
-                            "text-orange-500"
-                        );
-
-                } else {
-
+                    .add(
+                        "text-orange-500"
+                    );
+                }else{
                     charCount.classList
-                        .remove(
-                            "text-orange-500"
-                        );
-
+                    .remove(
+                        "text-orange-500"
+                    );
                     charCount.classList
-                        .add(
-                            "text-gray-400"
+                    .add(
+                        "text-gray-400"
                         );
-
-                }
-
+                    }
             }
         );
-
-
-        /* =================================================
-           FORM SUBMISSION
-        ================================================= */
 
         const feedbackForm =
             document.getElementById(
                 "feedbackForm"
             );
-
         const successModal =
             document.getElementById(
                 "successModal"
             );
 
-
         feedbackForm.addEventListener(
             "submit",
             function (event) {
-
                 event.preventDefault();
 
-
                 /* Require rating */
-
                 if (
                     ratingInput.value === ""
                 ) {
-
                     ratingText.textContent =
                         "Please select a rating before submitting.";
-
                     ratingText.classList
                         .remove(
                             "text-gray-500"
                         );
-
                     ratingText.classList
                         .add(
                             "text-red-600",
                             "font-semibold"
                         );
-
                     return;
-
                 }
-
-
                 /* Show success modal */
-
                 successModal.classList.remove(
                     "hidden"
                 );
-
                 successModal.classList.add(
                     "flex"
                 );
-
-
-                document.body.style.overflow =
-                    "hidden";
-
-
+                document.body.style.overflow ="hidden";
                 /* Reset form */
 
                 feedbackForm.reset();
-
-
-                ratingInput.value =
-                    "";
-
+                ratingInput.value ="";
 
                 stars.forEach(
                     function (star) {
@@ -1506,71 +1446,38 @@
         );
 
 
-        /* =================================================
-           CLOSE SUCCESS MODAL
-        ================================================= */
-
         function closeSuccessModal() {
-
             successModal.classList.add(
                 "hidden"
             );
-
             successModal.classList.remove(
                 "flex"
             );
-
-            document.body.style.overflow =
-                "";
-
+            document.body.style.overflow ="";
         }
-
-
-        /* =================================================
-           CLOSE MODAL BY CLICKING OUTSIDE
-        ================================================= */
-
         successModal.addEventListener(
             "click",
             function (event) {
-
                 if (
                     event.target ===
                     successModal
                 ) {
-
                     closeSuccessModal();
-
                 }
-
             }
         );
-
-
-        /* =================================================
-           ESCAPE KEY
-        ================================================= */
-
         document.addEventListener(
             "keydown",
             function (event) {
-
                 if (
                     event.key === "Escape"
                 ) {
-
                     closeSuccessModal();
-
                 }
-
             }
         );
 
-
-        /* =================================================
-           CONTACT BUTTON
-        ================================================= */
-
+//Contact
         function contactMessage() {
 
             alert(
@@ -1579,87 +1486,52 @@
 
         }
 
-
-        /* =================================================
-           SCROLL TO TOP
-        ================================================= */
-
         const scrollTopBtn =
             document.getElementById(
                 "scrollTopBtn"
             );
-
-
         window.addEventListener(
             "scroll",
             function () {
-
                 if (
                     window.scrollY > 300
                 ) {
-
                     scrollTopBtn.classList
                         .remove(
                             "hidden"
                         );
-
                 } else {
-
                     scrollTopBtn.classList
                         .add(
                             "hidden"
                         );
-
                 }
-
             }
         );
-
-
         function scrollToTop() {
-
             window.scrollTo({
-
                 top: 0,
-
                 behavior: "smooth"
-
             });
-
         }
-
-
-        /* =================================================
-           RESET MOBILE NAV ON DESKTOP
-        ================================================= */
-
         window.addEventListener(
             "resize",
             function () {
-
                 if (
                     window.innerWidth >= 768
                 ) {
-
                     mobileMenu.classList.add(
                         "hidden"
                     );
-
                     menuIcon.classList.remove(
                         "fa-xmark"
                     );
-
                     menuIcon.classList.add(
                         "fa-bars"
                     );
-
                 }
-
             }
         );
-
-    </script>
-
+</script>
 </body>
-
 </html>

@@ -7,7 +7,9 @@
 <meta name="description" content="Create your AlumniConnect account and join the alumni community.">
 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135755.png">
 <script src="https://cdn.tailwindcss.com"></script>
-<style>html { scroll-behavior: smooth; }</style>
+<style>
+    html { scroll-behavior: smooth; }
+</style>
 </head>
 <body class="bg-gray-100 text-gray-800">
 <!-- MAIN CONTENT -->
@@ -132,23 +134,6 @@
 </main>
 
 <script>
-// MOBILE MENU
-const menuBtn = document.getElementById("menuBtn");
-const mobileMenu = document.getElementById("mobileMenu");
-menuBtn.addEventListener("click", function () {
-  mobileMenu.classList.toggle("hidden");
-  const isOpen = !mobileMenu.classList.contains("hidden");
-  menuBtn.setAttribute("aria-expanded", isOpen);
-  menuBtn.innerHTML = isOpen ? "✕" : "☰";
-});
-mobileMenu.querySelectorAll("a").forEach(function (link) {
-  link.addEventListener("click", function () {
-    mobileMenu.classList.add("hidden");
-    menuBtn.setAttribute("aria-expanded", "false");
-    menuBtn.innerHTML = "☰";
-  });
-});
-
 const registerForm = document.getElementById("registerForm");
 const formMessage = document.getElementById("formMessage");
 const submitBtn = registerForm.querySelector("button[type=submit]");

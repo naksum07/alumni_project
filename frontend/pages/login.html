@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -42,7 +42,7 @@
     <label class="block text-gray-700 font-semibold mb-2">Password</label>
     <div class="relative">
         <input type="password"
-        id="put"
+        id="password"
         placeholder="Enter password" required
         class="w-full border rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-900">
     <button type="button"
@@ -85,14 +85,14 @@
 
 // SHOW / HIDE PASSWORD
 function togglePassword(){
-    const put = document.getElementById("put");
+    const password = document.getElementById("password");
     const toggleButton = document.getElementById("toggleButton");
-    if(put.type === "password"){
-        put.type = "text";
+    if(password.type === "password"){
+        password.type = "text";
         toggleButton.innerText = "Hide";
     }
     else{
-    put.type = "password";
+    password.type = "password";
     toggleButton.innerText = "Show";
     }
 }

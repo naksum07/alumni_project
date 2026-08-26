@@ -73,6 +73,14 @@ CREATE TABLE IF NOT EXISTS job_applications (
     applied_at    TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS feedback (
+    id          SERIAL PRIMARY KEY,
+    user_id     INT REFERENCES users(id) ON DELETE SET NULL,
+    rating      INT CHECK (rating >= 1 AND rating <= 5),
+    message     TEXT NOT NULL,
+    created_at  TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
 -- Seed initial events
 INSERT INTO events (name, event_date, event_time, venue, description)
 VALUES
