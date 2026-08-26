@@ -1,8 +1,3 @@
--- ============================================
--- Alumni Tracking and Networking Portal
--- PostgreSQL schema
--- ============================================
-
 CREATE TABLE IF NOT EXISTS users (
     id              SERIAL PRIMARY KEY,
     full_name       VARCHAR(150) NOT NULL,
@@ -89,7 +84,7 @@ ON CONFLICT DO NOTHING;
 -- Seed default Admin user (password: AdminPass123!)
 INSERT INTO users (full_name, email, phone, password_hash, role, department, graduation_year, current_role, company, is_approved, status)
 VALUES
-('System Administrator', 'admin@alumni.com', '+91 9876500000', '$2a$10$WqL9B2R0b6G3xQ7eR5m8UuU0S4i.4h0gq4v.b2E9mX3X3x3X3x3X3', 'admin', 'Computer Science', 2018, 'Portal Administrator', 'AlumniConnect', true, 'active')
+('System Administrator', 'admin@alumni.com', '+91 9876500000', '$2b$10$Ky7HClFaLJW3cGHHOA1C5ud4dG8PZVNqPTLpaZfjboSLl3dCa7LDy', 'admin', 'Computer Science', 2018, 'Portal Administrator', 'AlumniConnect', true, 'active')
 ON CONFLICT (email) DO NOTHING;
 
  
