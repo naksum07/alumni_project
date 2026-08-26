@@ -26,7 +26,7 @@ app.use('/api/events', eventRoutes);
 app.use('/api/jobs', jobRoutes);
 
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'pages', 'admin.html'));
+  res.sendFile(path.join(__dirname, '..', 'frontend', 'pages', 'admin-dashboard.html'));
 });
 
 app.get('/api/test', (req, res) => {
