@@ -4,7 +4,7 @@ const pool = require('../config/db');
 async function searchAlumni(req, res) {
   const { department, year, search } = req.query;
 
-  let query = `SELECT id, full_name, department, graduation_year, current_role, company
+  let query = `SELECT id, full_name, department, graduation_year, job_title, company
                FROM users WHERE role = 'alumni'`;
   const params = [];
 
@@ -36,7 +36,7 @@ async function getAlumniProfile(req, res) {
 
   try {
     const result = await pool.query(
-      `SELECT id, full_name, email, department, graduation_year, current_role, company
+      `SELECT id, full_name, email, department, graduation_year, job_title, company
        FROM users WHERE id = $1 AND role = 'alumni'`,
       [id]
     );

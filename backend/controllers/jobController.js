@@ -86,7 +86,7 @@ async function postJob(req, res) {
 async function canModifyJob(req, jobId) {
   const result = await pool.query('SELECT posted_by FROM jobs WHERE id = $1', [jobId]);
   if (result.rows.length === 0) return { found: false };
-  const isOwner = result.rows[0].posted_by === req.user.id;
+  const isOwner = Number(result.rows[0].posted_by) === Number(req.user.id);
   const isAdmin = req.user.role === 'admin';
   return { found: true, allowed: isOwner || isAdmin };
 }

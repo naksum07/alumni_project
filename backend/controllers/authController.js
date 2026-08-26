@@ -112,8 +112,14 @@ async function forgotPassword(req, res) {
       [user.id, token, expiresAt]
     );
 
-    // TODO: email this link instead of returning it directly
-    res.json({ message: 'If that email exists, a reset link has been sent.', devToken: token });
+    // ⚠️ devToken is only included in development so you can test the
+    // reset flow without a real email service. In production this field
+    // is NEVER sent — the token should arrive by email only.
+    const responsePayload = { message: 'If that email exists, a reset link has been sent.' };
+    if (process.env.NODE_ENV !== 'production') {
+      responsePayload.devToken = token;
+    }
+    res.json(responsePayload);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });

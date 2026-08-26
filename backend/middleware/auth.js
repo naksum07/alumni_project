@@ -31,8 +31,10 @@ function optionalAuth(req, res, next) {
   }
   next();
 }
+
 function verifyAdmin(req, res, next) {
-  if (req.user.role !== 'admin') {
+  // Guard: req.user must be set by verifyToken before this middleware runs
+  if (!req.user || req.user.role !== 'admin') {
     return res.status(403).json({ message: 'Admin access only' });
   }
   next();

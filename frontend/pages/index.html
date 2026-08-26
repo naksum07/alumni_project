@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -39,9 +39,9 @@
         <a href="jobs.html" class="hover:text-yellow-300 transition">Jobs</a>
       </div>
 
-      <div class="hidden md:flex gap-3">
-        <a href="login.html"    class="border border-white px-5 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Login</a>
-        <a href="register.html" class="bg-yellow-400 text-blue-900 font-semibold px-5 py-2 rounded-lg hover:bg-yellow-300 transition">Register</a>
+      <!-- Auth buttons — swapped by JS based on login state -->
+      <div class="hidden md:flex gap-3 items-center" id="navAuth">
+        <!-- Filled by JavaScript below -->
       </div>
 
       <button id="menuBtn" aria-label="Open Menu" aria-expanded="false" class="md:hidden text-3xl">☰</button>
@@ -49,13 +49,12 @@
 
     <div id="mobileMenu" class="hidden md:hidden bg-blue-900 px-6 pb-6">
       <a href="index.html" class="block py-3 border-b border-blue-800 text-yellow-400 font-semibold">Home</a>
-    <a href="about.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">About</a>
-    <a href="alumni-directory.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Alumni</a>
-    <a href="events.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Events</a>
-    <a href="jobs.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Jobs</a>
-      <div class="mt-4 space-y-3">
-        <a href="login.html"    class="block text-center border border-white py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Login</a>
-        <a href="register.html" class="block text-center bg-yellow-400 text-blue-900 py-2 rounded-lg font-semibold">Register</a>
+      <a href="about.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">About</a>
+      <a href="alumni-directory.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Alumni</a>
+      <a href="events.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Events</a>
+      <a href="jobs.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Jobs</a>
+      <div class="mt-4 space-y-3" id="mobileNavAuth">
+        <!-- Filled by JavaScript below -->
       </div>
     </div>
   </nav>
@@ -655,42 +654,97 @@ fetch('/api/test')
 </script>
 
 
-<!-- MOBILE MENU JAVASCRIPT -->
+<!-- AUTH-AWARE NAVBAR + MOBILE MENU -->
 <script>
+(function () {
+  const token = localStorage.getItem('token');
+  const user  = JSON.parse(localStorage.getItem('user') || 'null');
+  const navAuth       = document.getElementById('navAuth');
+  const mobileNavAuth = document.getElementById('mobileNavAuth');
 
-  const menuBtn = document.getElementById("menuBtn");
-  const mobileMenu = document.getElementById("mobileMenu");
+  if (token && user) {
+    // ---- LOGGED IN — show profile info ----
+    const firstName = (user.fullName || user.full_name || 'You').split(' ')[0];
 
-  menuBtn.addEventListener("click", () => {
+    // Desktop nav
+    navAuth.innerHTML = `
+      <span class="text-blue-200 font-medium">Hi, <strong class="text-yellow-300">${firstName}</strong></span>
+      <a href="my-profile.html"
+         class="border border-white px-4 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition text-sm">
+        👤 My Profile
+      </a>
+      <button id="logoutBtn"
+         class="bg-yellow-400 text-blue-900 font-semibold px-4 py-2 rounded-lg hover:bg-yellow-300 transition text-sm">
+        Logout
+      </button>`;
 
-    mobileMenu.classList.toggle("hidden");
+    // Mobile nav
+    mobileNavAuth.innerHTML = `
+      <p class="text-blue-200 text-sm py-1">Logged in as <strong class="text-yellow-300">${firstName}</strong></p>
+      <a href="my-profile.html"
+         class="block text-center border border-white py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">
+        👤 My Profile
+      </a>
+      <button id="mobileLogoutBtn"
+         class="w-full text-center bg-yellow-400 text-blue-900 py-2 rounded-lg font-semibold">
+        Logout
+      </button>`;
 
-    const isOpen = !mobileMenu.classList.contains("hidden");
+    // Wire logout buttons
+    function doLogout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.reload();
+    }
+    document.getElementById('logoutBtn').addEventListener('click', doLogout);
+    document.getElementById('mobileLogoutBtn').addEventListener('click', doLogout);
 
-    menuBtn.setAttribute("aria-expanded", isOpen);
+  } else {
+    // ---- NOT LOGGED IN — show Login / Register ----
+    navAuth.innerHTML = `
+      <a href="login.html"
+         class="border border-white px-5 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">
+        Login
+      </a>
+      <a href="register.html"
+         class="bg-yellow-400 text-blue-900 font-semibold px-5 py-2 rounded-lg hover:bg-yellow-300 transition">
+        Register
+      </a>`;
 
-    menuBtn.innerHTML = isOpen ? "✕" : "☰";
+    mobileNavAuth.innerHTML = `
+      <a href="login.html"
+         class="block text-center border border-white py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">
+        Login
+      </a>
+      <a href="register.html"
+         class="block text-center bg-yellow-400 text-blue-900 py-2 rounded-lg font-semibold">
+        Register
+      </a>`;
 
+    // Save this page so login can redirect back here
+    sessionStorage.setItem('returnTo', 'index.html');
+  }
+
+  // Mobile hamburger toggle
+  const menuBtn    = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  menuBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+    const isOpen = !mobileMenu.classList.contains('hidden');
+    menuBtn.setAttribute('aria-expanded', isOpen);
+    menuBtn.innerHTML = isOpen ? '✕' : '☰';
   });
 
-//navbar
   // Close mobile menu when a link is clicked
-  const mobileLinks = mobileMenu.querySelectorAll("a");
-
-  mobileLinks.forEach(link => {
-
-    link.addEventListener("click", () => {
-
-      mobileMenu.classList.add("hidden");
-
-      menuBtn.setAttribute("aria-expanded", "false");
-
-      menuBtn.innerHTML = "☰";
-
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      menuBtn.setAttribute('aria-expanded', 'false');
+      menuBtn.innerHTML = '☰';
     });
-
   });
-
+})();
 </script>
 
 <script>

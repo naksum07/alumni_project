@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -112,7 +112,7 @@ loginForm.addEventListener("submit", async function(event){
     event.preventDefault();
 
     const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("put").value;
+    const password = document.getElementById("password").value;
 
     if(email === "" || password === ""){
         showMessage("Please fill all fields", true);
@@ -141,10 +141,16 @@ loginForm.addEventListener("submit", async function(event){
         localStorage.setItem("user", JSON.stringify(data.user));
 
         showMessage("Login successful! Redirecting…", false);
-        // Redirect admin to admin dashboard, everyone else to dashboard
         const user = data.user;
         setTimeout(() => {
-            window.location.href = user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html';
+            if (user.role === 'admin') {
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                // Go back to wherever the user came from, or index.html
+                const returnTo = sessionStorage.getItem('returnTo') || 'index.html';
+                sessionStorage.removeItem('returnTo');
+                window.location.href = returnTo;
+            }
         }, 800);
     } catch (err) {
         console.error(err);

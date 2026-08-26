@@ -1903,12 +1903,12 @@
       const initial = (a.full_name || '?').charAt(0).toUpperCase();
       return `
         <div class="alumni-card bg-white rounded-xl shadow-md p-6 text-center border border-gray-100 hover:-translate-y-1 hover:shadow-lg transition"
-             data-search="${(a.full_name || '').toLowerCase()} ${(a.current_role || '').toLowerCase()} ${(a.department || '').toLowerCase()} ${(a.company || '').toLowerCase()}">
+             data-search="${(a.full_name || '').toLowerCase()} ${(a.job_title || '').toLowerCase()} ${(a.department || '').toLowerCase()} ${(a.company || '').toLowerCase()}">
           <div class="w-20 h-20 mx-auto rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-3xl font-bold">
             ${initial}
           </div>
           <h3 class="text-xl font-bold mt-5">${a.full_name}</h3>
-          <p class="text-blue-700 mt-1 font-medium">${a.current_role || 'Alumni'}</p>
+          <p class="text-blue-700 mt-1 font-medium">${a.job_title || 'Alumni'}</p>
           <p class="text-gray-500 text-sm mt-2">${a.department || 'Department'} ${a.graduation_year ? `• Batch ${a.graduation_year}` : ''}</p>
           <p class="text-gray-500 text-sm mt-1">${a.company || 'AlumniConnect'}</p>
           <a href="my-profile.html" class="block mt-5 bg-blue-700 text-white py-2.5 rounded-lg hover:bg-blue-800 transition">

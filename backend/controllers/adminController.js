@@ -7,7 +7,7 @@ async function listUsers(req, res) {
   const { status, approved } = req.query;
 
   let query = `SELECT id, full_name, email, phone, role, department, graduation_year,
-                      current_role, company, is_approved, status, created_at
+                      job_title, company, is_approved, status, created_at
                FROM users WHERE 1=1`;
   const params = [];
 

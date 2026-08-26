@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -238,7 +238,7 @@
       if (user.phone) fill('[data-user-phone]', user.phone);
       if (user.department) fill('[data-user-dept]', user.department);
       if (user.graduation_year || user.graduationYear) fill('[data-user-year]', user.graduation_year || user.graduationYear);
-      if (user.current_role) fill('[data-user-current-role]', user.current_role);
+      if (user.job_title || user.current_role) fill('[data-user-current-role]', user.job_title || user.current_role);
       if (user.company) fill('[data-user-company]', user.company);
 
       const avatar = document.getElementById('profileAvatarInitial');

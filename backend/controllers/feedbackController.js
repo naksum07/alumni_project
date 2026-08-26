@@ -1,5 +1,23 @@
 const pool = require('../config/db');
 
+// GET /api/feedback — returns all feedback, newest first
+async function getFeedback(req, res) {
+  try {
+    const result = await pool.query(
+      `SELECT f.id, f.rating, f.message, f.created_at,
+              u.full_name AS author_name
+       FROM feedback f
+       LEFT JOIN users u ON u.id = f.user_id
+       ORDER BY f.created_at DESC`
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
+}
+
+// POST /api/feedback — submit new feedback (auth optional)
 async function submitFeedback(req, res) {
   const { rating, message } = req.body;
   if (!rating || !message) {
@@ -17,4 +35,4 @@ async function submitFeedback(req, res) {
   }
 }
 
-module.exports = { submitFeedback };
+module.exports = { getFeedback, submitFeedback };
