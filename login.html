@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | AlumniConnect</title>
+<meta name="description" content="Login to AlumniConnect alumni portal and connect with your alumni community.">
+<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135755.png">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>html { scroll-behavior: smooth; }</style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+<!-- MAIN CONTENT -->
+<main class="min-h-screen flex items-center justify-center pt-24 pb-12 px-4">
+
+<!-- LOGIN CONTAINER -->
+<div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 mx-4">
+
+<!-- LOGO -->
+<div class="text-center mb-8">
+    <div class="text-5xl">🎓</div>
+    <h1 class="text-3xl font-bold text-blue-900 mt-3">AlumniConnect</h1>
+    <p class="text-gray-500 mt-2">Login to your alumni account</p>
+</div>
+
+<!-- FORM -->
+<p id="formMessage" class="text-center text-sm font-medium mb-4 hidden"></p>
+<form id="loginForm">
+
+<!-- EMAIL -->
+<div class="mb-5">
+    <label class="block text-gray-700 font-semibold mb-2">Email Address</label>
+    <input type="email"
+        id="email"
+        placeholder="Enter your email address" required
+        class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-900">
+</div>
+
+<!-- PASSWORD -->
+<div class="mb-5">
+    <label class="block text-gray-700 font-semibold mb-2">Password</label>
+    <div class="relative">
+        <input type="password"
+        id="put"
+        placeholder="Enter password" required
+        class="w-full border rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-900">
+    <button type="button"
+        id="toggleButton"
+        onclick="togglePassword()"
+        class="absolute right-3 top-3 text-gray-500">Show</button>
+    </div>
+</div>
+
+<!-- OPTIONS -->
+<div class="flex justify-between items-center mb-6">
+    <label class="flex items-center gap-2 text-gray-600">
+    <input type="checkbox">Remember me</label>
+    <a href="forgot-password.html" class="text-blue-900 hover:underline">Forgot Password</a>
+</div>
+
+<!-- LOGIN BUTTON -->
+<button type="submit"
+    class="w-full bg-blue-900 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition">
+    Login
+</button>
+</form>
+
+<!-- REGISTER -->
+<p class="text-center text-gray-600 mt-6">
+    Don't have an account?
+    <a href="register.html" class="text-blue-900 font-semibold hover:underline">Create Account</a>
+</p>
+
+<!-- BACK HOME -->
+<a href="index.html" class="block text-center mt-5 text-gray-500 hover:text-blue-900">Back to Home</a>
+
+</div>
+
+</main>
+
+<script>
+
+
+
+// SHOW / HIDE PASSWORD
+function togglePassword(){
+    const put = document.getElementById("put");
+    const toggleButton = document.getElementById("toggleButton");
+    if(put.type === "password"){
+        put.type = "text";
+        toggleButton.innerText = "Hide";
+    }
+    else{
+    put.type = "password";
+    toggleButton.innerText = "Show";
+    }
+}
+
+const loginForm = document.getElementById("loginForm");
+const formMessage = document.getElementById("formMessage");
+const loginBtn = loginForm.querySelector("button[type=submit]");
+
+function showMessage(text, isError){
+    formMessage.textContent = text;
+    formMessage.classList.remove("hidden", "text-red-600", "text-green-600");
+    formMessage.classList.add(isError ? "text-red-600" : "text-green-600");
+}
+
+// LOGIN — CALLS THE BACKEND API
+loginForm.addEventListener("submit", async function(event){
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("put").value;
+
+    if(email === "" || password === ""){
+        showMessage("Please fill all fields", true);
+        return;
+    }
+
+    loginBtn.disabled = true;
+    const originalBtnText = loginBtn.textContent;
+    loginBtn.textContent = "Logging in...";
+
+    try {
+        const response = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if(!response.ok){
+            showMessage(data.message || "Login failed. Please try again.", true);
+            return;
+        }
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        showMessage("Login successful! Redirecting…", false);
+        // Redirect admin to admin dashboard, everyone else to dashboard
+        const user = data.user;
+        setTimeout(() => {
+            window.location.href = user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html';
+        }, 800);
+    } catch (err) {
+        console.error(err);
+        showMessage("Could not reach the server. Please try again later.", true);
+    } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = originalBtnText;
+    }
+});
+</script>
+</body>
+</html>
+

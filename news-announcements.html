@@ -1,0 +1,1544 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>News & Announcements | Alumni Connect</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <style>
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        /* Modal animation */
+
+        .modal-show {
+            animation: modalShow 0.25s ease-out;
+        }
+
+        @keyframes modalShow {
+
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body class="bg-gray-50 text-gray-800">
+
+
+    <!-- =====================================================
+         FIXED HEADER
+    ====================================================== -->
+
+    <header
+        class="fixed top-0 left-0 w-full z-50
+               bg-white shadow-md"
+    >
+
+        <div class="max-w-7xl mx-auto px-6">
+
+            <div
+                class="h-20 flex items-center
+                       justify-between"
+            >
+
+                <!-- LOGO -->
+
+                <a
+                    href="dashboard.html"
+                    class="flex items-center gap-3"
+                >
+
+                    <div
+                        class="w-11 h-11
+                               bg-blue-700
+                               text-white
+                               rounded-xl
+                               flex items-center
+                               justify-center"
+                    >
+
+                        <i
+                            class="fa-solid
+                                   fa-graduation-cap
+                                   text-xl"
+                        ></i>
+
+                    </div>
+
+
+                    <div>
+
+                        <h1
+                            class="text-xl
+                                   font-bold
+                                   text-blue-700"
+                        >
+                            Alumni Connect
+                        </h1>
+
+                        <p
+                            class="text-xs
+                                   text-gray-500
+                                   hidden sm:block"
+                        >
+                            Connect • Grow • Inspire
+                        </p>
+
+                    </div>
+
+                </a>
+
+
+                <!-- DESKTOP NAV -->
+
+                <nav
+                    class="hidden md:flex
+                           items-center gap-8"
+                >
+
+                    <a
+                        href="dashboard.html"
+                        class="font-medium
+                               text-gray-700
+                               hover:text-blue-700
+                               transition"
+                    >
+                        Dashboard
+                    </a>
+
+
+                    <a
+                        href="my-profile.html"
+                        class="font-medium
+                               text-gray-700
+                               hover:text-blue-700
+                               transition"
+                    >
+                        Profile
+                    </a>
+
+
+                    <a
+                        href="alumni-directory.html"
+                        class="font-medium
+                               text-gray-700
+                               hover:text-blue-700
+                               transition"
+                    >
+                        Alumni
+                    </a>
+
+
+                    <a
+                        href="jobs.html"
+                        class="font-medium
+                               text-gray-700
+                               hover:text-blue-700
+                               transition"
+                    >
+                        Jobs
+                    </a>
+
+
+                    <a
+                        href="events.html"
+                        class="font-medium
+                               text-gray-700
+                               hover:text-blue-700
+                               transition"
+                    >
+                        Events
+                    </a>
+
+
+                    <a
+                        href="news-announcements.html"
+                        class="font-semibold
+                               text-blue-700"
+                    >
+                        News
+                    </a>
+
+
+                    <a
+                        href="index.html#contact"
+                        class="bg-blue-700
+                               text-white
+                               px-5 py-2.5
+                               rounded-lg
+                               hover:bg-blue-800
+                               transition"
+                    >
+                        Contact
+                    </a>
+
+                </nav>
+
+
+                <!-- MOBILE MENU BUTTON -->
+
+                <button
+                    id="menuBtn"
+                    type="button"
+                    class="md:hidden
+                           text-2xl
+                           text-gray-700"
+                    aria-label="Open navigation menu"
+                >
+
+                    <i
+                        id="menuIcon"
+                        class="fa-solid fa-bars"
+                    ></i>
+
+                </button>
+
+            </div>
+
+
+            <!-- MOBILE NAV -->
+
+            <div
+                id="mobileMenu"
+                class="hidden md:hidden
+                       border-t border-gray-100
+                       py-4"
+            >
+
+                <nav class="flex flex-col gap-1">
+
+
+                    <a
+                        href="dashboard.html"
+                        class="mobile-link
+                               px-4 py-3
+                               rounded-lg
+                               hover:bg-blue-50
+                               hover:text-blue-700"
+                    >
+
+                        <i
+                            class="fa-solid
+                                   fa-chart-line
+                                   mr-3"
+                        ></i>
+
+                        Dashboard
+
+                    </a>
+
+
+                    <a
+                        href="my-profile.html"
+                        class="mobile-link
+                               px-4 py-3
+                               rounded-lg
+                               hover:bg-blue-50
+                               hover:text-blue-700"
+                    >
+
+                        <i
+                            class="fa-solid
+                                   fa-user
+                                   mr-3"
+                        ></i>
+
+                        Profile
+
+                    </a>
+
+
+                    <a
+                        href="alumni-directory.html"
+                        class="mobile-link
+                               px-4 py-3
+                               rounded-lg
+                               hover:bg-blue-50
+                               hover:text-blue-700"
+                    >
+
+                        <i
+                            class="fa-solid
+                                   fa-users
+                                   mr-3"
+                        ></i>
+
+                        Alumni Directory
+
+                    </a>
+
+
+                    <a
+                        href="jobs.html"
+                        class="mobile-link
+                               px-4 py-3
+                               rounded-lg
+                               hover:bg-blue-50
+                               hover:text-blue-700"
+                    >
+
+                        <i
+                            class="fa-solid
+                                   fa-briefcase
+                                   mr-3"
+                        ></i>
+
+                        Jobs & Internships
+
+                    </a>
+
+
+                    <a
+                        href="events.html"
+                        class="mobile-link
+                               px-4 py-3
+                               rounded-lg
+                               hover:bg-blue-50
+                               hover:text-blue-700"
+                    >
+
+                        <i
+                            class="fa-solid
+                                   fa-calendar-days
+                                   mr-3"
+                        ></i>
+
+                        Events
+
+                    </a>
+
+
+                    <a
+                        href="news-announcements.html"
+                        class="mobile-link
+                               px-4 py-3
+                               rounded-lg
+                               bg-blue-50
+                               text-blue-700
+                               font-semibold"
+                    >
+
+                        <i
+                            class="fa-solid
+                                   fa-newspaper
+                                   mr-3"
+                        ></i>
+
+                        News & Announcements
+
+                    </a>
+
+
+                    <a
+                        href="index.html#contact"
+                        class="mobile-link
+                               mt-2
+                               text-center
+                               bg-blue-700
+                               text-white
+                               px-5 py-3
+                               rounded-lg
+                               hover:bg-blue-800"
+                    >
+                        Contact
+                    </a>
+
+                </nav>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         NEWS & ANNOUNCEMENTS
+    ====================================================== -->
+
+    <main
+        class="min-h-screen
+               pt-32
+               pb-16"
+    >
+
+        <div
+            class="max-w-6xl
+                   mx-auto
+                   px-6"
+        >
+
+
+            <!-- HEADING -->
+
+            <div
+                class="text-center
+                       mb-12"
+            >
+
+                <span
+                    class="inline-flex
+                           items-center
+                           gap-2
+                           bg-blue-100
+                           text-blue-700
+                           px-4 py-2
+                           rounded-full
+                           text-sm
+                           font-semibold"
+                >
+
+                    <i
+                        class="fa-solid fa-bell"
+                    ></i>
+
+                    Latest Updates
+
+                </span>
+
+
+                <h1
+                    class="text-4xl
+                           md:text-5xl
+                           font-bold
+                           text-blue-700
+                           mt-5"
+                >
+                    News & Announcements
+                </h1>
+
+
+                <p
+                    class="text-gray-600
+                           mt-3
+                           max-w-2xl
+                           mx-auto"
+                >
+                    Stay updated with the latest news,
+                    opportunities and announcements from
+                    Alumni Connect.
+                </p>
+
+            </div>
+
+
+            <!-- =================================================
+                 ANNOUNCEMENTS GRID
+            ================================================== -->
+
+            <div
+                class="grid
+                       md:grid-cols-2
+                       gap-8"
+            >
+
+
+                <!-- =================================================
+                     ANNOUNCEMENT 1
+                ================================================== -->
+
+                <article
+                    class="bg-white
+                           rounded-2xl
+                           shadow-md
+                           p-7
+                           border border-gray-100
+                           hover:-translate-y-1
+                           hover:shadow-xl
+                           transition"
+                >
+
+                    <div
+                        class="flex
+                               items-center
+                               gap-4
+                               mb-5"
+                    >
+
+                        <div
+                            class="w-12 h-12
+                                   rounded-lg
+                                   bg-blue-100
+                                   text-blue-700
+                                   flex items-center
+                                   justify-center
+                                   flex-shrink-0"
+                        >
+
+                            <i
+                                class="fa-solid
+                                       fa-bullhorn
+                                       text-xl"
+                            ></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2
+                                class="text-xl
+                                       font-bold"
+                            >
+                                Annual Alumni Meet 2026
+                            </h2>
+
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       mt-1"
+                            >
+                                <i
+                                    class="fa-regular
+                                           fa-calendar
+                                           mr-1"
+                                ></i>
+
+                                20 August 2026
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <p
+                        class="text-gray-600
+                               leading-7"
+                    >
+                        The annual alumni meet is coming soon.
+                        Alumni and students are invited to
+                        participate in this special networking
+                        event.
+                    </p>
+
+
+                    <button
+                        onclick="openNews(
+                            'Annual Alumni Meet 2026',
+                            'The annual alumni meet is coming soon. Alumni and students are invited to participate in this special networking event. Join fellow alumni, reconnect with old friends, meet current students and build valuable professional relationships. The event will include networking sessions, discussions and alumni interactions.',
+                            '20 August 2026'
+                        )"
+                        class="text-blue-700
+                               font-semibold
+                               mt-5
+                               hover:underline"
+                    >
+                        Read More
+                        <i
+                            class="fa-solid
+                                   fa-arrow-right
+                                   ml-1"
+                        ></i>
+                    </button>
+
+                </article>
+
+
+                <!-- =================================================
+                     ANNOUNCEMENT 2
+                ================================================== -->
+
+                <article
+                    class="bg-white
+                           rounded-2xl
+                           shadow-md
+                           p-7
+                           border border-gray-100
+                           hover:-translate-y-1
+                           hover:shadow-xl
+                           transition"
+                >
+
+                    <div
+                        class="flex
+                               items-center
+                               gap-4
+                               mb-5"
+                    >
+
+                        <div
+                            class="w-12 h-12
+                                   rounded-lg
+                                   bg-green-100
+                                   text-green-700
+                                   flex items-center
+                                   justify-center
+                                   flex-shrink-0"
+                        >
+
+                            <i
+                                class="fa-solid
+                                       fa-briefcase
+                                       text-xl"
+                            ></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2
+                                class="text-xl
+                                       font-bold"
+                            >
+                                New Internship Opportunities
+                            </h2>
+
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       mt-1"
+                            >
+                                <i
+                                    class="fa-regular
+                                           fa-calendar
+                                           mr-1"
+                                ></i>
+
+                                18 August 2026
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <p
+                        class="text-gray-600
+                               leading-7"
+                    >
+                        Several new internship opportunities
+                        have been added to our Jobs &
+                        Internships section.
+                    </p>
+
+
+                    <button
+                        onclick="openNews(
+                            'New Internship Opportunities',
+                            'Several new internship opportunities have been added to our Jobs & Internships section. Students and alumni can explore opportunities across different industries and find positions that match their skills, interests and career goals.',
+                            '18 August 2026'
+                        )"
+                        class="text-blue-700
+                               font-semibold
+                               mt-5
+                               hover:underline"
+                    >
+                        Read More
+                        <i
+                            class="fa-solid
+                                   fa-arrow-right
+                                   ml-1"
+                        ></i>
+                    </button>
+
+                </article>
+
+
+                <!-- =================================================
+                     ANNOUNCEMENT 3
+                ================================================== -->
+
+                <article
+                    class="bg-white
+                           rounded-2xl
+                           shadow-md
+                           p-7
+                           border border-gray-100
+                           hover:-translate-y-1
+                           hover:shadow-xl
+                           transition"
+                >
+
+                    <div
+                        class="flex
+                               items-center
+                               gap-4
+                               mb-5"
+                    >
+
+                        <div
+                            class="w-12 h-12
+                                   rounded-lg
+                                   bg-purple-100
+                                   text-purple-700
+                                   flex items-center
+                                   justify-center
+                                   flex-shrink-0"
+                        >
+
+                            <i
+                                class="fa-solid
+                                       fa-graduation-cap
+                                       text-xl"
+                            ></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2
+                                class="text-xl
+                                       font-bold"
+                            >
+                                Alumni Achievement Awards
+                            </h2>
+
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       mt-1"
+                            >
+                                <i
+                                    class="fa-regular
+                                           fa-calendar
+                                           mr-1"
+                                ></i>
+
+                                15 August 2026
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <p
+                        class="text-gray-600
+                               leading-7"
+                    >
+                        Alumni Connect is proud to announce
+                        the upcoming Alumni Achievement Awards
+                        celebrating outstanding alumni
+                        contributions.
+                    </p>
+
+
+                    <button
+                        onclick="openNews(
+                            'Alumni Achievement Awards',
+                            'Alumni Connect is proud to announce the upcoming Alumni Achievement Awards. This special event will celebrate outstanding alumni who have made significant contributions to their professions, communities and the Alumni Connect network.',
+                            '15 August 2026'
+                        )"
+                        class="text-blue-700
+                               font-semibold
+                               mt-5
+                               hover:underline"
+                    >
+                        Read More
+                        <i
+                            class="fa-solid
+                                   fa-arrow-right
+                                   ml-1"
+                        ></i>
+                    </button>
+
+                </article>
+
+
+                <!-- =================================================
+                     ANNOUNCEMENT 4
+                ================================================== -->
+
+                <article
+                    class="bg-white
+                           rounded-2xl
+                           shadow-md
+                           p-7
+                           border border-gray-100
+                           hover:-translate-y-1
+                           hover:shadow-xl
+                           transition"
+                >
+
+                    <div
+                        class="flex
+                               items-center
+                               gap-4
+                               mb-5"
+                    >
+
+                        <div
+                            class="w-12 h-12
+                                   rounded-lg
+                                   bg-orange-100
+                                   text-orange-600
+                                   flex items-center
+                                   justify-center
+                                   flex-shrink-0"
+                        >
+
+                            <i
+                                class="fa-solid
+                                       fa-laptop-code
+                                       text-xl"
+                            ></i>
+
+                        </div>
+
+
+                        <div>
+
+                            <h2
+                                class="text-xl
+                                       font-bold"
+                            >
+                                Web Development Workshop
+                            </h2>
+
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       mt-1"
+                            >
+                                <i
+                                    class="fa-regular
+                                           fa-calendar
+                                           mr-1"
+                                ></i>
+
+                                12 August 2026
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <p
+                        class="text-gray-600
+                               leading-7"
+                    >
+                        A practical web development workshop
+                        will be conducted for students and alumni
+                        interested in modern web technologies.
+                    </p>
+
+
+                    <button
+                        onclick="openNews(
+                            'Web Development Workshop',
+                            'A practical web development workshop will be conducted for students and alumni interested in modern web technologies. Participants will learn about modern web development concepts and have the opportunity to work on practical projects.',
+                            '12 August 2026'
+                        )"
+                        class="text-blue-700
+                               font-semibold
+                               mt-5
+                               hover:underline"
+                    >
+                        Read More
+                        <i
+                            class="fa-solid
+                                   fa-arrow-right
+                                   ml-1"
+                        ></i>
+                    </button>
+
+                </article>
+
+            </div>
+
+
+            <!-- =================================================
+                 PREVIOUS PAGE
+            ================================================== -->
+
+            <div
+                class="flex
+                       justify-center
+                       mt-14"
+            >
+
+                <a
+                    href="dashboard.html"
+                    class="inline-flex
+                           items-center
+                           gap-3
+                           bg-blue-700
+                           text-white
+                           px-6 py-3
+                           rounded-lg
+                           font-semibold
+                           shadow-md
+                           hover:bg-blue-800
+                           hover:-translate-x-1
+                           transition-all
+                           duration-300"
+                >
+
+                    <i
+                        class="fa-solid
+                               fa-arrow-left"
+                    ></i>
+
+                    Previous Page
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- =====================================================
+         NEWS MODAL
+    ====================================================== -->
+
+    <div
+        id="newsModal"
+        class="hidden
+               fixed inset-0
+               z-[100]
+               bg-black/60
+               px-5
+               items-center
+               justify-center"
+    >
+
+        <div
+            id="modalContent"
+            class="modal-show
+                   bg-white
+                   rounded-2xl
+                   max-w-2xl
+                   w-full
+                   max-h-[90vh]
+                   overflow-y-auto
+                   shadow-2xl"
+        >
+
+            <!-- Modal Header -->
+
+            <div
+                class="bg-blue-700
+                       text-white
+                       px-6 py-5
+                       flex
+                       items-center
+                       justify-between"
+            >
+
+                <div>
+
+                    <p
+                        id="modalDate"
+                        class="text-blue-100
+                               text-sm
+                               mb-1"
+                    ></p>
+
+
+                    <h2
+                        id="modalTitle"
+                        class="text-2xl
+                               font-bold"
+                    ></h2>
+
+                </div>
+
+
+                <button
+                    onclick="closeNews()"
+                    class="w-10 h-10
+                           rounded-full
+                           bg-white/10
+                           hover:bg-white/20
+                           flex items-center
+                           justify-center
+                           transition"
+                    aria-label="Close"
+                >
+
+                    <i
+                        class="fa-solid fa-xmark
+                               text-xl"
+                    ></i>
+
+                </button>
+
+            </div>
+
+
+            <!-- Modal Body -->
+
+            <div
+                class="p-7"
+            >
+
+                <div
+                    class="w-14 h-14
+                           rounded-xl
+                           bg-blue-100
+                           text-blue-700
+                           flex items-center
+                           justify-center
+                           text-2xl
+                           mb-5"
+                >
+
+                    <i
+                        class="fa-solid
+                               fa-newspaper"
+                    ></i>
+
+                </div>
+
+
+                <p
+                    id="modalDescription"
+                    class="text-gray-600
+                           leading-8"
+                ></p>
+
+
+                <div
+                    class="mt-7
+                           bg-blue-50
+                           border border-blue-100
+                           rounded-xl
+                           p-5"
+                >
+
+                    <div
+                        class="flex
+                               gap-3"
+                    >
+
+                        <i
+                            class="fa-solid
+                                   fa-circle-info
+                                   text-blue-700
+                                   mt-1"
+                        ></i>
+
+
+                        <p
+                            class="text-sm
+                                   text-gray-600"
+                        >
+                            For more information, please
+                            contact the Alumni Connect office
+                            or check the relevant section of
+                            the website.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    onclick="closeNews()"
+                    class="w-full
+                           mt-6
+                           bg-blue-700
+                           text-white
+                           py-3
+                           rounded-lg
+                           font-semibold
+                           hover:bg-blue-800
+                           transition"
+                >
+                    Close
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CONTACT SECTION
+    ====================================================== -->
+
+    <section
+        id="contact"
+        class="py-16
+               bg-blue-700
+               text-white"
+    >
+
+        <div
+            class="max-w-4xl
+                   mx-auto
+                   px-6
+                   text-center"
+        >
+
+            <div
+                class="w-16 h-16
+                       mx-auto
+                       rounded-2xl
+                       bg-white/10
+                       flex items-center
+                       justify-center"
+            >
+
+                <i
+                    class="fa-solid
+                           fa-envelope
+                           text-2xl"
+                ></i>
+
+            </div>
+
+
+            <h2
+                class="text-3xl
+                       md:text-4xl
+                       font-bold
+                       mt-5"
+            >
+                Stay Connected
+            </h2>
+
+
+            <p
+                class="text-blue-100
+                       mt-4"
+            >
+                Stay updated with the latest alumni
+                news, opportunities and events.
+            </p>
+
+
+            <button
+                onclick="contactMessage()"
+                class="mt-6
+                       bg-white
+                       text-blue-700
+                       px-7 py-3
+                       rounded-lg
+                       font-semibold
+                       hover:bg-gray-100
+                       transition"
+            >
+                Contact Alumni Office
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="bg-blue-950 text-white py-16">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+
+    <div>
+      <h2 class="text-3xl font-bold">🎓 AlumniConnect</h2>
+      <p class="mt-4 text-gray-400">
+        Connecting students and alumni to create career
+        opportunities, mentorship and lifelong relationships.
+      </p>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Quick Links</h3>
+      <ul class="space-y-3 text-gray-300">
+        <li><a href="index.html"            class="hover:text-yellow-400">Home</a></li>
+        <li><a href="about.html"            class="hover:text-yellow-400">About</a></li>
+        <li><a href="alumni-directory.html" class="hover:text-yellow-400">Alumni</a></li>
+        <li><a href="events.html"           class="hover:text-yellow-400">Events</a></li>
+        <li><a href="jobs.html"             class="hover:text-yellow-400">Jobs</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Resources</h3>
+      <ul class="space-y-3 text-gray-300">
+        <li>Career Opportunities</li>
+        <li>Mentorship</li>
+        <li>Jobs &amp; Internships</li>
+        <li>FAQ</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Contact Us</h3>
+      <p>📧 alumni@university.com</p>
+      <p class="mt-3">📍 University Campus</p>
+      <p class="mt-3">📞 +91 98765 43210</p>
+    </div>
+  </div>
+
+  <div class="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400">
+    <p>&copy; 2026 AlumniConnect. All Rights Reserved.</p>
+    <p class="mt-2 text-sm">Privacy Policy | Terms &amp; Conditions</p>
+  </div>
+</footer>
+
+
+    <!-- =====================================================
+         SCROLL TO TOP
+    ====================================================== -->
+
+    <button
+        id="scrollTopBtn"
+        onclick="scrollToTop()"
+        aria-label="Scroll to top"
+        class="hidden
+               fixed
+               bottom-6
+               right-6
+               z-40
+               w-12
+               h-12
+               bg-blue-700
+               text-white
+               rounded-full
+               shadow-lg
+               hover:bg-blue-800
+               hover:-translate-y-1
+               transition"
+    >
+
+        <i
+            class="fa-solid fa-arrow-up"
+        ></i>
+
+    </button>
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script>
+
+
+        /* =================================================
+           MOBILE MENU
+        ================================================= */
+
+        const menuBtn =
+            document.getElementById("menuBtn");
+
+        const mobileMenu =
+            document.getElementById("mobileMenu");
+
+        const menuIcon =
+            document.getElementById("menuIcon");
+
+
+        menuBtn.addEventListener(
+            "click",
+            function () {
+
+                mobileMenu.classList.toggle(
+                    "hidden"
+                );
+
+
+                if (
+                    mobileMenu.classList.contains(
+                        "hidden"
+                    )
+                ) {
+
+                    menuIcon.classList.remove(
+                        "fa-xmark"
+                    );
+
+                    menuIcon.classList.add(
+                        "fa-bars"
+                    );
+
+                } else {
+
+                    menuIcon.classList.remove(
+                        "fa-bars"
+                    );
+
+                    menuIcon.classList.add(
+                        "fa-xmark"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           CLOSE MOBILE MENU
+        ================================================= */
+
+        document
+            .querySelectorAll(".mobile-link")
+            .forEach(function (link) {
+
+                link.addEventListener(
+                    "click",
+                    function () {
+
+                        mobileMenu.classList.add(
+                            "hidden"
+                        );
+
+                        menuIcon.classList.remove(
+                            "fa-xmark"
+                        );
+
+                        menuIcon.classList.add(
+                            "fa-bars"
+                        );
+
+                    }
+                );
+
+            });
+
+
+        /* =================================================
+           NEWS MODAL
+        ================================================= */
+
+        const newsModal =
+            document.getElementById(
+                "newsModal"
+            );
+
+        const modalTitle =
+            document.getElementById(
+                "modalTitle"
+            );
+
+        const modalDate =
+            document.getElementById(
+                "modalDate"
+            );
+
+        const modalDescription =
+            document.getElementById(
+                "modalDescription"
+            );
+
+
+        function openNews(
+            title,
+            description,
+            date
+        ) {
+
+            modalTitle.textContent =
+                title;
+
+            modalDate.textContent =
+                date;
+
+            modalDescription.textContent =
+                description;
+
+
+            newsModal.classList.remove(
+                "hidden"
+            );
+
+
+            newsModal.classList.add(
+                "flex"
+            );
+
+
+            document.body.style.overflow =
+                "hidden";
+
+        }
+
+
+        function closeNews() {
+
+            newsModal.classList.add(
+                "hidden"
+            );
+
+
+            newsModal.classList.remove(
+                "flex"
+            );
+
+
+            document.body.style.overflow =
+                "";
+
+        }
+
+
+        /* Close modal when clicking outside */
+
+        newsModal.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target === newsModal
+                ) {
+
+                    closeNews();
+
+                }
+
+            }
+        );
+
+
+        /* Close modal with ESC */
+
+        document.addEventListener(
+            "keydown",
+            function (event) {
+
+                if (
+                    event.key === "Escape"
+                ) {
+
+                    closeNews();
+
+                }
+
+            }
+        );
+
+
+        /* =================================================
+           CONTACT
+        ================================================= */
+
+        function contactMessage() {
+
+            alert(
+                "Thank you for contacting the Alumni Office!"
+            );
+
+        }
+
+
+        /* =================================================
+           SCROLL TO TOP
+        ================================================= */
+
+        const scrollTopBtn =
+            document.getElementById(
+                "scrollTopBtn"
+            );
+
+
+        window.addEventListener(
+            "scroll",
+            function () {
+
+                if (
+                    window.scrollY > 300
+                ) {
+
+                    scrollTopBtn.classList.remove(
+                        "hidden"
+                    );
+
+                } else {
+
+                    scrollTopBtn.classList.add(
+                        "hidden"
+                    );
+
+                }
+
+            }
+        );
+
+
+        function scrollToTop() {
+
+            window.scrollTo({
+
+                top: 0,
+
+                behavior: "smooth"
+
+            });
+
+        }
+
+
+        /* =================================================
+           RESPONSIVE MENU RESET
+        ================================================= */
+
+        window.addEventListener(
+            "resize",
+            function () {
+
+                if (
+                    window.innerWidth >= 768
+                ) {
+
+                    mobileMenu.classList.add(
+                        "hidden"
+                    );
+
+                    menuIcon.classList.remove(
+                        "fa-xmark"
+                    );
+
+                    menuIcon.classList.add(
+                        "fa-bars"
+                    );
+
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+
+</html>
