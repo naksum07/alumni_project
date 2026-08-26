@@ -1,124 +1,183 @@
+// element references 
+const eventsContainer = document.getElementById('eventsContainer');
+const regModal        = document.getElementById('regModal');
+const regForm         = document.getElementById('regForm');
+const regEventName    = document.getElementById('regEventName');
+const regMessage      = document.getElementById('regMessage');
+const regEventId      = document.getElementById('regEventId');
 
-// EVENTS PAGE JAVASCRIPT
+const PALETTES = [
+  { bg: 'bg-blue-700',   icon: 'fa-users' },
+  { bg: 'bg-purple-700', icon: 'fa-laptop-code' },
+  { bg: 'bg-green-700',  icon: 'fa-briefcase' },
+  { bg: 'bg-orange-600', icon: 'fa-robot' },
+  { bg: 'bg-pink-600',   icon: 'fa-comments' },
+  { bg: 'bg-red-600',    icon: 'fa-graduation-cap' },
+];
+// Format "2026-08-15" → "15 August 2026"
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+}
 
+// Show / hide the registration modal
+function openRegistrationModal(eventId, eventName) {
+  regEventId.value    = eventId;
+  regEventName.textContent = eventName;
+  regMessage.textContent   = '';
+  regMessage.className     = 'text-sm font-medium mt-3 hidden';
+  regForm.reset();
+  regModal.classList.remove('hidden');
+  regModal.classList.add('flex');
+}
 
-// Live Search
-const searchInput = document.getElementById("searchInput");
-const eventCards = document.querySelectorAll(".event-card");
+function closeRegistrationModal() {
+  regModal.classList.add('hidden');
+  regModal.classList.remove('flex');
+}
 
-searchInput.addEventListener("keyup", function () {
+// Show inline feedback inside the modal
+function showRegMessage(text, isError) {
+  regMessage.textContent = text;
+  regMessage.classList.remove('hidden', 'text-red-600', 'text-green-600');
+  regMessage.classList.add(isError ? 'text-red-600' : 'text-green-600');
+}
 
-    const value = searchInput.value.toLowerCase();
+function renderEvents(events) {
+  eventsContainer.innerHTML = '';
+  if (events.length === 0) {
+    eventsContainer.innerHTML = `
+      <div class="col-span-3 text-center py-16 text-gray-500">
+        <i class="fa-solid fa-calendar-xmark text-5xl mb-4 block"></i>
+        No upcoming events at the moment. Check back soon!
+      </div>`;
+    return;
+  }
+  events.forEach((event, index) => {
+    const palette = PALETTES[index % PALETTES.length];
+    const card = document.createElement('div');
+    card.className = 'bg-white rounded-2xl shadow-md overflow-hidden hover:-translate-y-2 hover:shadow-xl transition-all duration-300';
+    card.innerHTML = `
+      <div class="${palette.bg} text-white p-6">
+        <i class="fa-solid ${palette.icon} text-4xl"></i>
+        <p class="mt-4 font-semibold">${formatDate(event.event_date)}</p>
+        ${event.event_time ? `<p class="text-sm opacity-80 mt-1">${event.event_time}</p>` : ''}
+      </div>
+      <div class="p-6">
+        <h2 class="text-2xl font-bold">${event.name}</h2>
+        <p class="text-gray-600 mt-3">${event.description || ''}</p>
+        ${event.venue ? `<p class="text-gray-500 mt-4"><i class="fa-solid fa-location-dot mr-2"></i>${event.venue}</p>` : ''}
+        <button
+          onclick="openRegistrationModal(${event.id}, '${event.name.replace(/'/g, "\\'")}')"
+          class="w-full bg-blue-700 text-white py-3 rounded-lg mt-6 hover:bg-blue-800 transition font-semibold">
+          Register Now
+        </button>
+      </div>`;
+    eventsContainer.appendChild(card);
+  });
+}
 
-    eventCards.forEach(card => {
+//Fetch Events from API
+async function loadEvents() {
+  eventsContainer.innerHTML = `
+    <div class="col-span-3 text-center py-16 text-gray-400">
+      <i class="fa-solid fa-spinner fa-spin text-4xl mb-4 block"></i>
+      Loading events…
+    </div>`;
+  try {
+    const res = await fetch('/api/events');
+    if (!res.ok) throw new Error(`Server returned ${res.status}`);
+    const events = await res.json();
+    renderEvents(events);
+  } catch (err) {
+    console.error('Failed to load events:', err);
+    eventsContainer.innerHTML = `
+      <div class="col-span-3 text-center py-16 text-red-500">
+        <i class="fa-solid fa-circle-exclamation text-4xl mb-4 block"></i>
+        Could not load events. Please refresh the page or try again later.
+      </div>`;
+  }
+}
 
-        const text = card.textContent.toLowerCase();
-
-        if (text.includes(value)) {
-            card.style.display = "block";
-        } else {
-            card.style.display = "none";
-        }
-
+regForm.addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const eventId  = regEventId.value;
+  const fullName = document.getElementById('regName').value.trim();
+  const email    = document.getElementById('regEmail').value.trim();
+  const phone    = document.getElementById('regPhone').value.trim();
+  const message  = document.getElementById('regMsgText').value.trim();
+  const submitBtn = regForm.querySelector('button[type="submit"]');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Registering…';
+  try {
+    const res = await fetch(`/api/events/${eventId}/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fullName, email, phone, message }),
     });
-
-});
-
-// Filter Buttons
-const filters = document.querySelectorAll(".filter");
-
-filters.forEach(button => {
-
-    button.addEventListener("click", function () {
-
-        filters.forEach(btn => btn.classList.remove("active"));
-
-        this.classList.add("active");
-
-        const category = this.innerText.toLowerCase();
-
-        eventCards.forEach(card => {
-
-            if (category === "all") {
-
-                card.style.display = "block";
-
-            } else {
-
-                const badge = card.querySelector(".badge").innerText.toLowerCase();
-
-                if (badge === category) {
-
-                    card.style.display = "block";
-
-                } else {
-
-                    card.style.display = "none";
-
-                }
-
-            }
-
-        });
-
-    });
-
-});
-
-
-// Event Registration Modal
-
-
-const modal = document.getElementById("registerModal");
-const registerButtons = document.querySelectorAll(".register-btn");
-const closeBtn = document.querySelector(".close");
-const form = document.getElementById("registerForm");
-
-// Open Modal
-registerButtons.forEach(button => {
-
-    button.addEventListener("click", () => {
-
-        modal.style.display = "flex";
-
-    });
-
-});
-
-// Close Modal
-closeBtn.addEventListener("click", () => {
-
-    modal.style.display = "none";
-
-});
-
-// Close when clicking outside
-window.addEventListener("click", (e) => {
-
-    if (e.target === modal) {
-
-        modal.style.display = "none";
-
+    const data = await res.json();
+    if (!res.ok) {
+      showRegMessage(data.message || 'Registration failed. Please try again.', true);
+      return;
     }
+    showRegMessage('✅ You have been registered successfully!', false);
+    regForm.reset();
 
+    setTimeout(closeRegistrationModal, 2000);
+  } catch (err) {
+    console.error('Registration error:', err);
+    showRegMessage('Could not reach the server. Please try again later.', true);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Register';
+  }
 });
 
-// Submit Form
-form.addEventListener("submit", function(e){
-
-    e.preventDefault();
-
-    alert("🎉 Registration Successful!\n\nThank you for registering for this event.");
-
-    form.reset();
-
-    modal.style.display = "none";
-
+regModal.addEventListener('click', function (e) {
+  if (e.target === regModal) closeRegistrationModal();
 });
 
-// Featured Event Button
-const featuredButton = document.querySelector(".featured button");
+//Mobile Menu Toggle
+const menuBtn    = document.getElementById('menuBtn');
+const mobileMenu = document.getElementById('mobileMenu');
 
-featuredButton.addEventListener("click", function () {
-    document.getElementById("registerModal").style.display = "flex";
-});
+if (menuBtn && mobileMenu) {
+  menuBtn.addEventListener('click', function () {
+    mobileMenu.classList.toggle('hidden');
+    const isOpen = !mobileMenu.classList.contains('hidden');
+    menuBtn.setAttribute('aria-expanded', isOpen);
+    menuBtn.innerHTML = isOpen ? '✕' : '☰';
+  });
+
+  mobileMenu.querySelectorAll('a').forEach(function (link) {
+    link.addEventListener('click', function () {
+      mobileMenu.classList.add('hidden');
+      menuBtn.setAttribute('aria-expanded', 'false');
+      menuBtn.innerHTML = '☰';
+    });
+  });
+
+  window.addEventListener('resize', function () {
+    if (window.innerWidth >= 768) {
+      mobileMenu.classList.add('hidden');
+      menuBtn.setAttribute('aria-expanded', 'false');
+      menuBtn.innerHTML = '☰';
+    }
+  });
+}
+
+const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+if (scrollTopBtn) {
+  window.addEventListener('scroll', function () {
+    scrollTopBtn.classList.toggle('hidden', window.scrollY <= 300);
+  });
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+//boot
+loadEvents();

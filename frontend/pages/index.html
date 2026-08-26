@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -15,83 +15,64 @@
 <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
 <style>
-html{
-scroll-behavior:smooth;
-}
+    html{
+        scroll-behavior:smooth;
+    }
 </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-   
-
-<!-- HEADER -->
 <header>
+  <nav class="fixed top-0 left-0 w-full z-50 bg-blue-900 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-<!-- NAVBAR -->
-<nav class="sticky top-0 z-50 bg-blue-900 text-white shadow-lg">
-<div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="index.html" class="flex items-center gap-3">
+        <span class="text-4xl">🎓</span>
+        <span class="text-2xl font-bold">AlumniConnect</span>
+      </a>
 
-<!-- LOGO -->
-<a href="index.html" class="flex items-center gap-3">
-    <span class="text-4xl">🎓</span>
-    <h1 class="text-2xl font-bold">AlumniConnect</h1>
-</a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="index.html" class="text-yellow-400 font-semibold">Home</a>
+        <a href="about.html" class="hover:text-yellow-300 transition">About</a>
+        <a href="alumni-directory.html" class="hover:text-yellow-300 transition">Alumni</a>
+        <a href="events.html" class="hover:text-yellow-300 transition">Events</a>
+        <a href="jobs.html" class="hover:text-yellow-300 transition">Jobs</a>
+      </div>
 
-<!-- DESKTOP MENU -->
-<div class="hidden md:flex items-center gap-8">
-    <a href="#home" class="hover:text-yellow-300 transition">Home</a>
-    <a href="#about" class="hover:text-yellow-300 transition">About</a>
-    <a href="#alumni" class="hover:text-yellow-300 transition">Alumni</a>
-    <a href="events.html" class="hover:text-yellow-300 transition">Events</a>
-    <a href="#contact"class="hover:text-yellow-300 transition">Contact</a>
-</div>
+      <div class="hidden md:flex gap-3">
+        <a href="login.html"    class="border border-white px-5 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Login</a>
+        <a href="register.html" class="bg-yellow-400 text-blue-900 font-semibold px-5 py-2 rounded-lg hover:bg-yellow-300 transition">Register</a>
+      </div>
 
-<!-- BUTTONS -->
-<div class="hidden md:flex gap-3">
-    <a href="login.html" class="border border-white px-5 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Login</a>
-    <a href="register.html"class="bg-yellow-400 text-blue-900 font-semibold px-5 py-2 rounded-lg hover:bg-yellow-300 transition">Register</a>
-</div>
+      <button id="menuBtn" aria-label="Open Menu" aria-expanded="false" class="md:hidden text-3xl">☰</button>
+    </div>
 
-<!-- MOBILE BUTTON -->
-<button id="menuBtn" onclick="toggleMenu()" aria-label="Open Menu" class="md:hidden text-3xl">☰</button>
-</div>
-<!-- MOBILE MENU -->
-<div id="mobileMenu" class="hidden md:hidden px-6 pb-6">
-    <a href="#home" class="block py-3 hover:text-yellow-300">Home</a>
-    <a href="#about" class="block py-3 hover:text-yellow-300">About</a>
-    <a href="#alumni" class="block py-3 hover:text-yellow-300">Alumni</a>
-    <a href="#events" class="block py-3 hover:text-yellow-300">Events</a>
-    <a href="#contact" class="block py-3 hover:text-yellow-300">Contact</a>
-<div class="mt-4 space-y-3">
-    <a href="login.html" class="block text-center border border-white py-2 rounded-lg">Login</a>
-    <a href="register.html" class="block text-center bg-yellow-400 text-blue-900 py-2 rounded-lg font-semibold">Register</a>
-</div>
-</div>
-</nav>
+    <div id="mobileMenu" class="hidden md:hidden bg-blue-900 px-6 pb-6">
+      <a href="index.html" class="block py-3 border-b border-blue-800 text-yellow-400 font-semibold">Home</a>
+    <a href="about.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">About</a>
+    <a href="alumni-directory.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Alumni</a>
+    <a href="events.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Events</a>
+    <a href="jobs.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Jobs</a>
+      <div class="mt-4 space-y-3">
+        <a href="login.html"    class="block text-center border border-white py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Login</a>
+        <a href="register.html" class="block text-center bg-yellow-400 text-blue-900 py-2 rounded-lg font-semibold">Register</a>
+      </div>
+    </div>
+  </nav>
 </header>
 
-
-<!-- NAVBAR SPACER -->
-<!-- Prevents the fixed navbar from covering your page content -->
-<div class="h-16 md:h-20"></div>
-
-
 <!-- MAIN CONTENT -->
-<main id="home">
-
+<main id="home" class="pt-20">
 <!-- HERO SECTION -->
 <section data-aos="fade-up" class="min-h-screen flex items-center bg-gray-100">
     <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
-
-<!-- LEFT -->
     <div>
         <h2 class="text-5xl font-bold text-blue-900 leading-tight">Connect With Your Alumni Network</h2>
-        <p class="mt-6 text-lg text-gray-600">
-        A platform where students and alumni connect,
-        share experiences, discover opportunities,
-        and build professional relationships.
-        </p>
-
+            <p class="mt-6 text-lg text-gray-600">
+            A platform where students and alumni connect,
+            share experiences, discover opportunities,
+            and build professional relationships.
+            </p>
     <div class="mt-8 flex flex-wrap gap-4">
     <a href="register.html" class="bg-blue-900 text-white px-8 py-3 rounded-lg shadow-lg hover:bg-blue-800 hover:scale-105 transition">🚀 Get Started</a>
     <a href="#alumni"class="border border-blue-900 text-blue-900 px-8 py-3 rounded-lg hover:bg-blue-100 hover:scale-105 transition">👥 Explore Alumni</a>
@@ -100,10 +81,7 @@ scroll-behavior:smooth;
 
 <!-- IMAGE -->
 <div class="flex justify-center">
-    <img
-        loading="lazy"src="https://images.unsplash.com/photo-1523240795612-9a054b0db644"
-        alt="Students networking together"
-        class="rounded-2xl shadow-xl w-full max-w-lg">
+    <img loading="lazy"src="https://images.unsplash.com/photo-1523240795612-9a054b0db644" alt="Students networking together" class="rounded-2xl shadow-xl w-full max-w-lg">
 </div>
 </div>
 </section>
@@ -111,9 +89,9 @@ scroll-behavior:smooth;
 <!-- SEARCH ALUMNI -->
 <section id="alumni" data-aos="fade-up" class="py-20 bg-white">
     <div class="max-w-6xl mx-auto px-6">
-    <h2 class="text-4xl font-bold text-center text-blue-900">Find Alumni</h2>
-    <p class="text-center text-gray-500 mt-3">Search alumni by name, department, company or batch.</p>
-    <div class="grid md:grid-cols-4 gap-4 mt-10">
+        <h2 class="text-4xl font-bold text-center text-blue-900">Find Alumni</h2>
+        <p class="text-center text-gray-500 mt-3">Search alumni by name, department, company or batch.</p>
+        <div class="grid md:grid-cols-4 gap-4 mt-10">
         <input type="text"
             placeholder="Search Name"
             class="border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-900">
@@ -130,18 +108,18 @@ scroll-behavior:smooth;
             <option>2024</option>
             <option>2025</option>
         </select>
-    <button class="bg-blue-900 text-white rounded-lg px-6 py-3 hover:bg-blue-800 transition">🔍 Search Alumni</button>
-</div>
-</div>
+        <button class="bg-blue-900 text-white rounded-lg px-6 py-3 hover:bg-blue-800 transition">🔍 Search Alumni</button>
+        </div>
+    </div>
 </section>
 
 <!-- FEATURES SECTION -->
 <section data-aos="fade-up" class="py-20 bg-gray-100">
     <div class="max-w-7xl mx-auto px-6">
-    <div class="text-center mb-12">
-    <h2 class="text-4xl font-bold text-blue-900">Our Features</h2>
-    <p class="mt-4 text-gray-600">Everything you need to connect, collaborate, and grow.</p>
-    </div>
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-blue-900">Our Features</h2>
+            <p class="mt-4 text-gray-600">Everything you need to connect, collaborate, and grow.</p>
+        </div>
     <div class="grid md:grid-cols-3 gap-8">
 
 <!-- CARD 1 -->
@@ -555,64 +533,50 @@ class="border border-white px-8 py-3 rounded-xl hover:bg-white hover:text-blue-9
 </section>
 
 <!-- FOOTER -->
-<footer
-id="contact"
-class="bg-blue-950 text-white py-16">
-<div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+<footer class="bg-blue-950 text-white py-16">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
 
-<!-- LOGO -->
-<div>
-    <h2 class="text-3xl font-bold">🎓 AlumniConnect</h2>
-    <p class="mt-4 text-gray-400">
-    Connecting students and alumni to create
-    career opportunities, mentorship and lifelong
-    relationships.
-    </p>
-</div>
+    <div>
+      <h2 class="text-3xl font-bold">🎓 AlumniConnect</h2>
+      <p class="mt-4 text-gray-400">
+        Connecting students and alumni to create career
+        opportunities, mentorship and lifelong relationships.
+      </p>
+    </div>
 
-<!-- LINKS -->
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Quick Links</h3>
+      <ul class="space-y-3 text-gray-300">
+        <li><a href="index.html"            class="hover:text-yellow-400">Home</a></li>
+        <li><a href="about.html"            class="hover:text-yellow-400">About</a></li>
+        <li><a href="alumni-directory.html" class="hover:text-yellow-400">Alumni</a></li>
+        <li><a href="events.html"           class="hover:text-yellow-400">Events</a></li>
+        <li><a href="jobs.html"             class="hover:text-yellow-400">Jobs</a></li>
+      </ul>
+    </div>
 
-<div>
-    <h3 class="text-xl font-semibold mb-5">Quick Links</h3>
-    <ul class="space-y-3 text-gray-300">
-        <li>
-            <a href="#home" class="hover:text-yellow-400">Home</a>
-        </li>
-        <li>
-            <a href="#about" class="hover:text-yellow-400">About</a>
-        </li>
-        <li>
-            <a href="#alumni" class="hover:text-yellow-400">Alumni</a>
-        </li>
-        <li>
-            <a href="#events" class="hover:text-yellow-400">Events</a>
-        </li>
-    </ul>
-</div>
-
-<!-- RESOURCES -->
-<div>
-    <h3 class="text-xl font-semibold mb-5">Resources</h3>
-    <ul class="space-y-3 text-gray-300">
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Resources</h3>
+      <ul class="space-y-3 text-gray-300">
         <li>Career Opportunities</li>
         <li>Mentorship</li>
-        <li>Jobs</li>
+        <li>Jobs &amp; Internships</li>
         <li>FAQ</li>
-    </ul>
-</div>
+      </ul>
+    </div>
 
-<!-- CONTACT -->
-<div>
-    <h3 class="text-xl font-semibold mb-5">Contact Us</h3>
-        <p>📧 alumni@university.com</p>
-        <p class="mt-3">📍 University Campus</p>
-        <p class="mt-3">📞 +91 98765 43210</p>
-</div>
-</div>
-<div class="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400">
-    <p>© 2026 AlumniConnect. All Rights Reserved.</p>
-    <p class="mt-2 text-sm">Privacy Policy | Terms & Conditions</p>
-</div>
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Contact Us</h3>
+      <p>📧 alumni@university.com</p>
+      <p class="mt-3">📍 University Campus</p>
+      <p class="mt-3">📞 +91 98765 43210</p>
+    </div>
+  </div>
+
+  <div class="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400">
+    <p>&copy; 2026 AlumniConnect. All Rights Reserved.</p>
+    <p class="mt-2 text-sm">Privacy Policy | Terms &amp; Conditions</p>
+  </div>
 </footer>
 
 
@@ -758,3 +722,4 @@ function goTop(){
 </script>
 </body>
 </html>         
+

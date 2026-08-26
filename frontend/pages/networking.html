@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -15,33 +15,42 @@
 <!-- ================= HEADER ================= -->
 
 <header>
+  <nav class="fixed top-0 left-0 w-full z-50 bg-blue-900 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-<nav>
+      <a href="index.html" class="flex items-center gap-3">
+        <span class="text-4xl">🎓</span>
+        <span class="text-2xl font-bold">AlumniConnect</span>
+      </a>
 
-<div class="logo">
+      <div class="hidden md:flex items-center gap-7">
+        <a href="dashboard.html" class="text-yellow-400 font-semibold">Dashboard</a>
+        <a href="alumni-directory.html" class="text-blue-100 hover:text-yellow-300 font-medium transition">Alumni</a>
+        <a href="events.html" class="text-blue-100 hover:text-yellow-300 font-medium transition">Events</a>
+        <a href="jobs.html" class="text-blue-100 hover:text-yellow-300 font-medium transition">Jobs</a>
+        <a href="news-announcements.html" class="text-blue-100 hover:text-yellow-300 font-medium transition">News</a>
+        <a href="my-profile.html" class="text-blue-100 hover:text-yellow-300 font-medium transition">My Profile</a>
+      </div>
 
-<i class="fa-solid fa-user-group"></i>
+      <div class="hidden md:flex gap-3">
+        <button data-logout class="border border-white px-5 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition font-medium">Logout</button>
+      </div>
 
-Alumni Connect
+      <button id="menuBtn" aria-label="Open Menu" aria-expanded="false" class="md:hidden text-3xl">☰</button>
+    </div>
 
-</div>
-
-<ul>
-
-<li><a href="index.html">Home</a></li>
-
-<li><a href="jobs.html">Jobs</a></li>
-
-<li><a href="events.html">Events</a></li>
-
-<li><a href="networking.html" class="active">Networking</a></li>
-
-<li><a href="contact.html">Contact</a></li>
-
-</ul>
-
-</nav>
-
+    <div id="mobileMenu" class="hidden md:hidden bg-blue-900 px-6 pb-6">
+      <a href="dashboard.html" class="block py-3 border-b border-blue-800 text-yellow-400 font-semibold">Dashboard</a>
+    <a href="alumni-directory.html" class="block py-3 border-b border-blue-800 text-blue-100 hover:text-yellow-300">Alumni</a>
+    <a href="events.html" class="block py-3 border-b border-blue-800 text-blue-100 hover:text-yellow-300">Events</a>
+    <a href="jobs.html" class="block py-3 border-b border-blue-800 text-blue-100 hover:text-yellow-300">Jobs</a>
+    <a href="news-announcements.html" class="block py-3 border-b border-blue-800 text-blue-100 hover:text-yellow-300">News</a>
+    <a href="my-profile.html" class="block py-3 border-b border-blue-800 text-blue-100 hover:text-yellow-300">My Profile</a>
+      <div class="mt-4">
+        <button data-logout class="block w-full text-center border border-white py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Logout</button>
+      </div>
+    </div>
+  </nav>
 </header>
 
 <!-- ================= HERO ================= -->
@@ -508,68 +517,105 @@ Send Request
 
 <!-- ================= FOOTER ================= -->
 
-<footer>
+<footer class="bg-blue-950 text-white py-16">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
 
-<div class="footer-container">
+    <div>
+      <h2 class="text-3xl font-bold">🎓 AlumniConnect</h2>
+      <p class="mt-4 text-gray-400">
+        Connecting students and alumni to create career
+        opportunities, mentorship and lifelong relationships.
+      </p>
+    </div>
 
-<div class="footer-box">
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Quick Links</h3>
+      <ul class="space-y-3 text-gray-300">
+        <li><a href="index.html"            class="hover:text-yellow-400">Home</a></li>
+        <li><a href="about.html"            class="hover:text-yellow-400">About</a></li>
+        <li><a href="alumni-directory.html" class="hover:text-yellow-400">Alumni</a></li>
+        <li><a href="events.html"           class="hover:text-yellow-400">Events</a></li>
+        <li><a href="jobs.html"             class="hover:text-yellow-400">Jobs</a></li>
+      </ul>
+    </div>
 
-<h2>Alumni Connect</h2>
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Resources</h3>
+      <ul class="space-y-3 text-gray-300">
+        <li>Career Opportunities</li>
+        <li>Mentorship</li>
+        <li>Jobs &amp; Internships</li>
+        <li>FAQ</li>
+      </ul>
+    </div>
 
-<p>
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Contact Us</h3>
+      <p>📧 alumni@university.com</p>
+      <p class="mt-3">📍 University Campus</p>
+      <p class="mt-3">📞 +91 98765 43210</p>
+    </div>
+  </div>
 
-Connecting students and alumni through networking,
-career guidance and opportunities.
-
-</p>
-
-</div>
-
-<div class="footer-box">
-
-<h3>Quick Links</h3>
-
-<ul>
-
-<li><a href="index.html">Home</a></li>
-
-<li><a href="jobs.html">Jobs</a></li>
-
-<li><a href="events.html">Events</a></li>
-
-<li><a href="networking.html">Networking</a></li>
-
-<li><a href="contact.html">Contact</a></li>
-
-</ul>
-
-</div>
-
-<div class="footer-box">
-
-<h3>Contact</h3>
-
-<p><i class="fa-solid fa-envelope"></i> alumni@gmail.com</p>
-
-<p><i class="fa-solid fa-phone"></i> +91 9876543210</p>
-
-<p><i class="fa-solid fa-location-dot"></i> Gangtok, Sikkim</p>
-
-</div>
-
-</div>
-
-<hr>
-
-<p class="copyright">
-
-© 2026 Alumni Connect | All Rights Reserved
-
-</p>
-
+  <div class="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400">
+    <p>&copy; 2026 AlumniConnect. All Rights Reserved.</p>
+    <p class="mt-2 text-sm">Privacy Policy | Terms &amp; Conditions</p>
+  </div>
 </footer>
 
 
+
+<script>
+/* =========================================================
+   NETWORKING — Backend API wiring (auth guard + user name)
+   ========================================================= */
+(function () {
+  const token = localStorage.getItem('token');
+  const user  = JSON.parse(localStorage.getItem('user') || 'null');
+  if (!token || !user) { window.location.href = 'login.html'; return; }
+
+  document.querySelectorAll('[data-user-name]').forEach(el => {
+    el.textContent = user.fullName || user.email;
+  });
+
+  document.querySelectorAll('[data-logout]').forEach(btn => {
+    btn.addEventListener('click', function () {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = 'login.html';
+    });
+  });
+})();
+</script>
+
+<script>
+(function () {
+  const btn  = document.getElementById('menuBtn');
+  const menu = document.getElementById('mobileMenu');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', function () {
+    menu.classList.toggle('hidden');
+    const open = !menu.classList.contains('hidden');
+    btn.setAttribute('aria-expanded', open);
+    btn.innerHTML = open ? '&#10005;' : '&#9776;';
+  });
+  menu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      menu.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '&#9776;';
+    });
+  });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth >= 768) {
+      menu.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '&#9776;';
+    }
+  });
+})();
+</script>
 </body>
 
 </html>
+

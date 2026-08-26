@@ -477,29 +477,43 @@
     ========================== -->
 
     <header>
+  <nav class="fixed top-0 left-0 w-full z-50 bg-blue-900 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-       
-<h2 class="text-2xl font-bold">
-🎓 AlumniConnect
-</h2>
-<nav class="hidden md:block space-x-6">
-    
-<a href="index.html">Home</a>
-<a href="about.html">About</a>
-<a href="my-profile.html">My Profile</a>
-<a href="login.html">Login</a>
-</nav>
+      <a href="index.html" class="flex items-center gap-3">
+        <span class="text-4xl">🎓</span>
+        <span class="text-2xl font-bold">AlumniConnect</span>
+      </a>
 
+      <div class="hidden md:flex items-center gap-7">
+        <a href="dashboard.html" class="text-blue-100 hover:text-yellow-300 font-medium transition">Dashboard</a>
+        <a href="alumni-directory.html" class="text-blue-100 hover:text-yellow-300 font-medium transition">Alumni</a>
+        <a href="events.html" class="text-blue-100 hover:text-yellow-300 font-medium transition">Events</a>
+        <a href="jobs.html" class="text-blue-100 hover:text-yellow-300 font-medium transition">Jobs</a>
+        <a href="news-announcements.html" class="text-blue-100 hover:text-yellow-300 font-medium transition">News</a>
+        <a href="my-profile.html" class="text-yellow-400 font-semibold">My Profile</a>
+      </div>
 
-        <div class="header-profile">
-            <img
-                src="https://via.placeholder.com/100"
-                alt="Profile Picture"
-            >
-            <span>John Doe</span>
-        </div>
+      <div class="hidden md:flex gap-3">
+        <button data-logout class="border border-white px-5 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition font-medium">Logout</button>
+      </div>
 
-    </header>
+      <button id="menuBtn" aria-label="Open Menu" aria-expanded="false" class="md:hidden text-3xl">☰</button>
+    </div>
+
+    <div id="mobileMenu" class="hidden md:hidden bg-blue-900 px-6 pb-6">
+      <a href="dashboard.html" class="block py-3 border-b border-blue-800 text-blue-100 hover:text-yellow-300">Dashboard</a>
+    <a href="alumni-directory.html" class="block py-3 border-b border-blue-800 text-blue-100 hover:text-yellow-300">Alumni</a>
+    <a href="events.html" class="block py-3 border-b border-blue-800 text-blue-100 hover:text-yellow-300">Events</a>
+    <a href="jobs.html" class="block py-3 border-b border-blue-800 text-blue-100 hover:text-yellow-300">Jobs</a>
+    <a href="news-announcements.html" class="block py-3 border-b border-blue-800 text-blue-100 hover:text-yellow-300">News</a>
+    <a href="my-profile.html" class="block py-3 border-b border-blue-800 text-yellow-400 font-semibold">My Profile</a>
+      <div class="mt-4">
+        <button data-logout class="block w-full text-center border border-white py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Logout</button>
+      </div>
+    </div>
+  </nav>
+</header>
 
 
     <!-- =========================
@@ -739,33 +753,51 @@
          FOOTER
     ========================== -->
 
-    <footer>
+    <footer class="bg-blue-950 text-white py-16">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
 
-        <div class="footer-content">
+    <div>
+      <h2 class="text-3xl font-bold">🎓 AlumniConnect</h2>
+      <p class="mt-4 text-gray-400">
+        Connecting students and alumni to create career
+        opportunities, mentorship and lifelong relationships.
+      </p>
+    </div>
 
-            <div class="footer-brand">
-                <h2>MyWebsite</h2>
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Quick Links</h3>
+      <ul class="space-y-3 text-gray-300">
+        <li><a href="index.html"            class="hover:text-yellow-400">Home</a></li>
+        <li><a href="about.html"            class="hover:text-yellow-400">About</a></li>
+        <li><a href="alumni-directory.html" class="hover:text-yellow-400">Alumni</a></li>
+        <li><a href="events.html"           class="hover:text-yellow-400">Events</a></li>
+        <li><a href="jobs.html"             class="hover:text-yellow-400">Jobs</a></li>
+      </ul>
+    </div>
 
-                <p>
-                    A secure and professional platform designed
-                    to manage your account and personal information.
-                </p>
-            </div>
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Resources</h3>
+      <ul class="space-y-3 text-gray-300">
+        <li>Career Opportunities</li>
+        <li>Mentorship</li>
+        <li>Jobs &amp; Internships</li>
+        <li>FAQ</li>
+      </ul>
+    </div>
 
-            <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms & Conditions</a>
-                <a href="#">Help Center</a>
-                <a href="#">Contact Us</a>
-            </div>
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Contact Us</h3>
+      <p>📧 alumni@university.com</p>
+      <p class="mt-3">📍 University Campus</p>
+      <p class="mt-3">📞 +91 98765 43210</p>
+    </div>
+  </div>
 
-        </div>
-
-        <div class="copyright">
-            © 2026 MyWebsite. All rights reserved.
-        </div>
-
-    </footer>
+  <div class="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400">
+    <p>&copy; 2026 AlumniConnect. All Rights Reserved.</p>
+    <p class="mt-2 text-sm">Privacy Policy | Terms &amp; Conditions</p>
+  </div>
+</footer>
 
 
     <!-- =========================
@@ -794,6 +826,75 @@
 
     </script>
 
+
+<script>
+/* =========================================================
+   MY PROFILE — Backend API wiring
+   Reads the logged-in user from localStorage and fills in
+   all the profile fields on the page.
+   ========================================================= */
+(function () {
+  const token = localStorage.getItem('token');
+  const user  = JSON.parse(localStorage.getItem('user') || 'null');
+
+  if (!token || !user) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  // Fill any element that carries a data-user-* attribute
+  function fill(selector, value) {
+    document.querySelectorAll(selector).forEach(el => {
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        el.value = value || '';
+      } else {
+        el.textContent = value || '';
+      }
+    });
+  }
+
+  fill('[data-user-name]',  user.fullName);
+  fill('[data-user-email]', user.email);
+  fill('[data-user-role]',  user.role);
+
+  // Logout
+  document.querySelectorAll('[data-logout]').forEach(btn => {
+    btn.addEventListener('click', function () {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = 'login.html';
+    });
+  });
+})();
+</script>
+
+<script>
+(function () {
+  const btn  = document.getElementById('menuBtn');
+  const menu = document.getElementById('mobileMenu');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', function () {
+    menu.classList.toggle('hidden');
+    const open = !menu.classList.contains('hidden');
+    btn.setAttribute('aria-expanded', open);
+    btn.innerHTML = open ? '&#10005;' : '&#9776;';
+  });
+  menu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      menu.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '&#9776;';
+    });
+  });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth >= 768) {
+      menu.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '&#9776;';
+    }
+  });
+})();
+</script>
 </body>
 </html>
 

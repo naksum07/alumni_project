@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -22,58 +22,44 @@ html{
 
 
 <body class="bg-gray-50 text-gray-800">
+<!-- CANONICAL NAVBAR (paths use ../ because this page is in profiles/ subfolder) -->
+<header>
+  <nav class="fixed top-0 left-0 w-full z-50 bg-blue-900 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
+      <a href="../index.html" class="flex items-center gap-3">
+        <span class="text-4xl">🎓</span>
+        <span class="text-2xl font-bold">AlumniConnect</span>
+      </a>
 
+      <div class="hidden md:flex items-center gap-8">
+        <a href="../index.html" class="hover:text-yellow-300 transition">Home</a>
+        <a href="../about.html" class="hover:text-yellow-300 transition">About</a>
+        <a href="../alumni-directory.html" class="hover:text-yellow-300 transition">Alumni</a>
+        <a href="../events.html" class="hover:text-yellow-300 transition">Events</a>
+        <a href="../jobs.html" class="hover:text-yellow-300 transition">Jobs</a>
+      </div>
 
-<!-- HEADER -->
+      <div class="hidden md:flex gap-3">
+        <a href="../login.html"    class="border border-white px-5 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Login</a>
+        <a href="../register.html" class="bg-yellow-400 text-blue-900 font-semibold px-5 py-2 rounded-lg hover:bg-yellow-300 transition">Register</a>
+      </div>
 
-<header class="fixed top-0 left-0 w-full bg-blue-800 text-white shadow-lg z-50">
+      <button id="menuBtn" aria-label="Open Menu" aria-expanded="false" class="md:hidden text-3xl">☰</button>
+    </div>
 
-<div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-
-
-<h1 class="text-2xl font-bold">
-Arjun Das
-</h1>
-
-
-
-<nav class="hidden md:flex items-center gap-6">
-
-
-<a href="#about" class="hover:text-blue-200">
-About
-</a>
-
-
-<a href="#skills" class="hover:text-blue-200">
-Skills
-</a>
-
-
-<a href="#journey" class="hover:text-blue-200">
-Journey
-</a>
-
-
-<a href="#chat" class="hover:text-blue-200">
-Chat
-</a>
-
-
-<button onclick="goBack()"
-class="bg-white text-blue-800 px-4 py-2 rounded-full hover:bg-blue-100">
-
-← Previous Page
-
-</button>
-
-
-</nav>
-
-
-</div>
-
+    <div id="mobileMenu" class="hidden md:hidden bg-blue-900 px-6 pb-6">
+      <a href="../index.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Home</a>
+    <a href="../about.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">About</a>
+    <a href="../alumni-directory.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Alumni</a>
+    <a href="../events.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Events</a>
+    <a href="../jobs.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Jobs</a>
+      <div class="mt-4 space-y-3">
+        <a href="../login.html"    class="block text-center border border-white py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Login</a>
+        <a href="../register.html" class="block text-center bg-yellow-400 text-blue-900 py-2 rounded-lg font-semibold">Register</a>
+      </div>
+    </div>
+  </nav>
 </header>
 
 
@@ -565,24 +551,50 @@ Future Goal
 <!-- FOOTER -->
 
 
-<footer class="mt-16 bg-blue-800 text-white text-center py-8">
+<footer class="bg-blue-950 text-white py-16">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
 
+    <div>
+      <h2 class="text-3xl font-bold">🎓 AlumniConnect</h2>
+      <p class="mt-4 text-gray-400">
+        Connecting students and alumni to create career
+        opportunities, mentorship and lifelong relationships.
+      </p>
+    </div>
 
-<h2 class="text-xl font-bold">
-Arjun Das
-</h2>
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Quick Links</h3>
+      <ul class="space-y-3 text-gray-300">
+        <li><a href="../index.html"            class="hover:text-yellow-400">Home</a></li>
+        <li><a href="../about.html"            class="hover:text-yellow-400">About</a></li>
+        <li><a href="../alumni-directory.html" class="hover:text-yellow-400">Alumni</a></li>
+        <li><a href="../events.html"           class="hover:text-yellow-400">Events</a></li>
+        <li><a href="../jobs.html"             class="hover:text-yellow-400">Jobs</a></li>
+      </ul>
+    </div>
 
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Resources</h3>
+      <ul class="space-y-3 text-gray-300">
+        <li>Career Opportunities</li>
+        <li>Mentorship</li>
+        <li>Jobs &amp; Internships</li>
+        <li>FAQ</li>
+      </ul>
+    </div>
 
-<p>
-Solution Architect | Technology Professional
-</p>
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Contact Us</h3>
+      <p>📧 alumni@university.com</p>
+      <p class="mt-3">📍 University Campus</p>
+      <p class="mt-3">📞 +91 98765 43210</p>
+    </div>
+  </div>
 
-
-<p class="mt-3">
-© 2026 Arjun Das. All Rights Reserved.
-</p>
-
-
+  <div class="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400">
+    <p>&copy; 2026 AlumniConnect. All Rights Reserved.</p>
+    <p class="mt-2 text-sm">Privacy Policy | Terms &amp; Conditions</p>
+  </div>
 </footer>
 
 
@@ -774,6 +786,62 @@ background:#1e3a8a;
 
 
 
+
+<!-- CANONICAL FOOTER -->
+<footer class="bg-blue-950 text-white py-16 mt-16">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+    <div>
+      <h2 class="text-3xl font-bold">&#127891; AlumniConnect</h2>
+      <p class="mt-4 text-gray-400">Connecting students and alumni to create career opportunities, mentorship and lifelong relationships.</p>
+    </div>
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Quick Links</h3>
+      <ul class="space-y-3 text-gray-300">
+        <li><a href="../index.html" class="hover:text-yellow-400">Home</a></li>
+        <li><a href="../about.html" class="hover:text-yellow-400">About</a></li>
+        <li><a href="../events.html" class="hover:text-yellow-400">Events</a></li>
+        <li><a href="../jobs.html" class="hover:text-yellow-400">Jobs</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Resources</h3>
+      <ul class="space-y-3 text-gray-300">
+        <li>Career Opportunities</li><li>Mentorship</li><li>Jobs</li><li>FAQ</li>
+      </ul>
+    </div>
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Contact Us</h3>
+      <p>&#128231; alumni@university.com</p>
+      <p class="mt-3">&#128205; University Campus</p>
+      <p class="mt-3">&#128222; +91 98765 43210</p>
+    </div>
+  </div>
+  <div class="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400">
+    <p>&copy; 2026 AlumniConnect. All Rights Reserved.</p>
+    <p class="mt-2 text-sm">Privacy Policy | Terms &amp; Conditions</p>
+  </div>
+</footer>
+
+<script>
+  const menuBtn = document.getElementById("menuBtn");
+  const mobileMenu = document.getElementById("mobileMenu");
+  if (menuBtn) {
+    menuBtn.addEventListener("click", function () {
+      mobileMenu.classList.toggle("hidden");
+      const isOpen = !mobileMenu.classList.contains("hidden");
+      menuBtn.setAttribute("aria-expanded", isOpen);
+      menuBtn.innerHTML = isOpen ? "&#10005;" : "&#9776;";
+    });
+    mobileMenu.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        mobileMenu.classList.add("hidden");
+        menuBtn.setAttribute("aria-expanded", "false");
+        menuBtn.innerHTML = "&#9776;";
+      });
+    });
+  }
+</script>
 </body>
 
 </html>
+

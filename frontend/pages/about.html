@@ -1,6 +1,5 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
-
 <head>
 
   <meta charset="UTF-8">
@@ -47,339 +46,48 @@
   <!-- HEADER / NAVBAR -->
   <!-- ===================================================== -->
 
-  <header
-    class="fixed top-0 left-0 w-full z-50
-           bg-blue-950/95 backdrop-blur-md
-           shadow-xl"
-  >
+  <!-- ===================================================== -->
+  <!-- CANONICAL NAVBAR -->
+  <!-- ===================================================== -->
+  <header>
+  <nav class="fixed top-0 left-0 w-full z-50 bg-blue-900 text-white shadow-lg">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
 
-    <div
-      class="max-w-7xl mx-auto
-             px-4 sm:px-6 lg:px-8"
-    >
+      <a href="index.html" class="flex items-center gap-3">
+        <span class="text-4xl">🎓</span>
+        <span class="text-2xl font-bold">AlumniConnect</span>
+      </a>
 
-      <div
-        class="min-h-[72px]
-               flex items-center
-               justify-between"
-      >
-
-
-        <!-- ===================== -->
-        <!-- LOGO -->
-        <!-- ===================== -->
-
-        <a
-          href="index.html"
-          class="flex items-center gap-2 sm:gap-3
-                 shrink-0"
-        >
-
-          <span class="text-3xl sm:text-4xl">
-            🎓
-          </span>
-
-          <span
-            class="text-xl sm:text-2xl
-                   font-bold text-white
-                   whitespace-nowrap"
-          >
-            AlumniConnect
-          </span>
-
-        </a>
-
-
-
-        <!-- ===================== -->
-        <!-- DESKTOP NAVIGATION -->
-        <!-- ===================== -->
-
-        <nav
-          class="hidden lg:flex
-                 items-center
-                 gap-3 xl:gap-5
-                 text-white"
-        >
-
-          <!-- HOME -->
-
-          <a
-            href="index.html"
-            class="px-3 py-2
-                   font-medium
-                   rounded-lg
-                   hover:text-yellow-400
-                   transition duration-300"
-          >
-            Home
-          </a>
-
-
-          <!-- ABOUT -->
-
-          <a
-            href="about.html"
-            class="px-3 py-2
-                   font-medium
-                   text-yellow-400
-                   rounded-lg
-                   transition duration-300"
-          >
-            About
-          </a>
-
-
-          <!-- EVENTS -->
-
-          <a
-            href="index.html#events"
-            class="px-3 py-2
-                   font-medium
-                   rounded-lg
-                   hover:text-yellow-400
-                   transition duration-300"
-          >
-            Events
-          </a>
-
-
-          <!-- CONTACT -->
-
-          <a
-            href="index.html#contact"
-            class="px-3 py-2
-                   font-medium
-                   rounded-lg
-                   hover:text-yellow-400
-                   transition duration-300"
-          >
-            Contact
-          </a>
-
-
-          <!-- PREVIOUS PAGE -->
-
-          <button
-            type="button"
-            onclick="goBack()"
-            class="bg-blue-700
-                   px-4 py-2
-                   rounded-full
-                   font-medium
-                   hover:bg-blue-600
-                   hover:shadow-lg
-                   transition duration-300"
-          >
-            ← Previous
-          </button>
-
-
-          <!-- LOGIN -->
-
-          <a
-            href="login.html"
-            class="border border-white
-                   px-4 py-2
-                   rounded-full
-                   hover:bg-white
-                   hover:text-blue-900
-                   transition duration-300"
-          >
-            Login
-          </a>
-
-
-          <!-- REGISTER -->
-
-          <a
-            href="register.html"
-            class="bg-yellow-400
-                   text-blue-950
-                   px-4 py-2
-                   rounded-full
-                   font-bold
-                   hover:bg-yellow-300
-                   hover:shadow-lg
-                   transition duration-300"
-          >
-            Register
-          </a>
-
-        </nav>
-
-
-
-        <!-- ===================== -->
-        <!-- MOBILE MENU BUTTON -->
-        <!-- ===================== -->
-
-        <button
-          id="mobileMenuBtn"
-          type="button"
-          aria-label="Open navigation menu"
-          aria-expanded="false"
-          class="lg:hidden
-                 w-11 h-11
-                 flex items-center justify-center
-                 rounded-xl
-                 bg-blue-800
-                 text-white
-                 text-2xl
-                 hover:bg-blue-700
-                 transition duration-300"
-        >
-          ☰
-        </button>
-
+      <div class="hidden md:flex items-center gap-8">
+        <a href="index.html" class="hover:text-yellow-300 transition">Home</a>
+        <a href="about.html" class="text-yellow-400 font-semibold">About</a>
+        <a href="alumni-directory.html" class="hover:text-yellow-300 transition">Alumni</a>
+        <a href="events.html" class="hover:text-yellow-300 transition">Events</a>
+        <a href="jobs.html" class="hover:text-yellow-300 transition">Jobs</a>
       </div>
 
-
-
-      <!-- ===================== -->
-      <!-- MOBILE NAVIGATION -->
-      <!-- ===================== -->
-
-      <div
-        id="mobileNav"
-        class="hidden lg:hidden
-               pb-5"
-      >
-
-        <div
-          class="bg-blue-900
-                 rounded-2xl
-                 p-4
-                 shadow-2xl
-                 border border-blue-800
-                 space-y-1"
-        >
-
-
-          <!-- HOME -->
-
-          <a
-            href="index.html"
-            class="block
-                   px-4 py-3
-                   rounded-xl
-                   text-white
-                   hover:bg-blue-800
-                   hover:text-yellow-400
-                   transition duration-300"
-          >
-            Home
-          </a>
-
-
-          <!-- ABOUT -->
-
-          <a
-            href="about.html"
-            class="block
-                   px-4 py-3
-                   rounded-xl
-                   text-yellow-400
-                   bg-blue-800
-                   transition duration-300"
-          >
-            About
-          </a>
-
-
-          <!-- EVENTS -->
-
-          <a
-            href="index.html#events"
-            class="block
-                   px-4 py-3
-                   rounded-xl
-                   text-white
-                   hover:bg-blue-800
-                   hover:text-yellow-400
-                   transition duration-300"
-          >
-            Events
-          </a>
-
-
-          <!-- CONTACT -->
-
-          <a
-            href="index.html#contact"
-            class="block
-                   px-4 py-3
-                   rounded-xl
-                   text-white
-                   hover:bg-blue-800
-                   hover:text-yellow-400
-                   transition duration-300"
-          >
-            Contact
-          </a>
-
-
-          <!-- PREVIOUS PAGE -->
-
-          <button
-            type="button"
-            onclick="goBack()"
-            class="w-full
-                   text-left
-                   px-4 py-3
-                   rounded-xl
-                   bg-blue-700
-                   text-white
-                   hover:bg-blue-600
-                   transition duration-300"
-          >
-            ← Previous Page
-          </button>
-
-
-          <!-- LOGIN -->
-
-          <a
-            href="login.html"
-            class="block
-                   text-center
-                   border border-white
-                   text-white
-                   px-4 py-3
-                   rounded-xl
-                   mt-3
-                   hover:bg-white
-                   hover:text-blue-900
-                   transition duration-300"
-          >
-            Login
-          </a>
-
-
-          <!-- REGISTER -->
-
-          <a
-            href="register.html"
-            class="block
-                   text-center
-                   bg-yellow-400
-                   text-blue-950
-                   px-4 py-3
-                   rounded-xl
-                   font-bold
-                   hover:bg-yellow-300
-                   transition duration-300"
-          >
-            Register
-          </a>
-
-        </div>
-
+      <div class="hidden md:flex gap-3">
+        <a href="login.html"    class="border border-white px-5 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Login</a>
+        <a href="register.html" class="bg-yellow-400 text-blue-900 font-semibold px-5 py-2 rounded-lg hover:bg-yellow-300 transition">Register</a>
       </div>
 
+      <button id="menuBtn" aria-label="Open Menu" aria-expanded="false" class="md:hidden text-3xl">☰</button>
     </div>
 
-  </header>
+    <div id="mobileMenu" class="hidden md:hidden bg-blue-900 px-6 pb-6">
+      <a href="index.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Home</a>
+    <a href="about.html" class="block py-3 border-b border-blue-800 text-yellow-400 font-semibold">About</a>
+    <a href="alumni-directory.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Alumni</a>
+    <a href="events.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Events</a>
+    <a href="jobs.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Jobs</a>
+      <div class="mt-4 space-y-3">
+        <a href="login.html"    class="block text-center border border-white py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Login</a>
+        <a href="register.html" class="block text-center bg-yellow-400 text-blue-900 py-2 rounded-lg font-semibold">Register</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
 
 
 
@@ -1571,139 +1279,53 @@
   <!-- FOOTER -->
   <!-- ===================================================== -->
 
-  <footer
-    class="bg-blue-900
-           text-white
-           py-12"
-  >
+  <!-- CANONICAL FOOTER -->
+  <footer class="bg-blue-950 text-white py-16">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
 
-    <div
-      class="max-w-7xl
-             mx-auto
-             px-4 sm:px-6 lg:px-8
-             grid
-             md:grid-cols-3
-             gap-10"
-    >
-
-
-      <!-- BRAND -->
-
-      <div>
-
-        <h2 class="text-3xl font-bold">
-          🎓 AlumniConnect
-        </h2>
-
-        <p
-          class="mt-4
-                 text-blue-100
-                 leading-7"
-        >
-          Connecting students and alumni to create
-          better opportunities and stronger futures.
-        </p>
-
-      </div>
-
-
-
-      <!-- QUICK LINKS -->
-
-      <div>
-
-        <h3 class="text-xl font-bold">
-          Quick Links
-        </h3>
-
-        <ul class="mt-4 space-y-3">
-
-          <li>
-            <a
-              href="index.html"
-              class="hover:text-yellow-400
-                     transition"
-            >
-              Home
-            </a>
-          </li>
-
-          <li>
-            <a
-              href="about.html"
-              class="hover:text-yellow-400
-                     transition"
-            >
-              About
-            </a>
-          </li>
-
-          <li>
-            <a
-              href="login.html"
-              class="hover:text-yellow-400
-                     transition"
-            >
-              Login
-            </a>
-          </li>
-
-          <li>
-            <a
-              href="register.html"
-              class="hover:text-yellow-400
-                     transition"
-            >
-              Register
-            </a>
-          </li>
-
-        </ul>
-
-      </div>
-
-
-
-      <!-- CONTACT -->
-
-      <div>
-
-        <h3 class="text-xl font-bold">
-          Contact Us
-        </h3>
-
-        <p class="mt-4">
-          📧 alumni@college.com
-        </p>
-
-        <p class="mt-3">
-          📞 +91 98765 43210
-        </p>
-
-        <p class="mt-3">
-          📍 Kolkata, India
-        </p>
-
-      </div>
-
+    <div>
+      <h2 class="text-3xl font-bold">🎓 AlumniConnect</h2>
+      <p class="mt-4 text-gray-400">
+        Connecting students and alumni to create career
+        opportunities, mentorship and lifelong relationships.
+      </p>
     </div>
 
-
-
-    <!-- COPYRIGHT -->
-
-    <div
-      class="border-t
-             border-blue-700
-             mt-10
-             pt-6
-             text-center
-             text-blue-200"
-    >
-      © 2026 AlumniConnect. All Rights Reserved.
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Quick Links</h3>
+      <ul class="space-y-3 text-gray-300">
+        <li><a href="index.html"            class="hover:text-yellow-400">Home</a></li>
+        <li><a href="about.html"            class="hover:text-yellow-400">About</a></li>
+        <li><a href="alumni-directory.html" class="hover:text-yellow-400">Alumni</a></li>
+        <li><a href="events.html"           class="hover:text-yellow-400">Events</a></li>
+        <li><a href="jobs.html"             class="hover:text-yellow-400">Jobs</a></li>
+      </ul>
     </div>
 
-  </footer>
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Resources</h3>
+      <ul class="space-y-3 text-gray-300">
+        <li>Career Opportunities</li>
+        <li>Mentorship</li>
+        <li>Jobs &amp; Internships</li>
+        <li>FAQ</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Contact Us</h3>
+      <p>📧 alumni@university.com</p>
+      <p class="mt-3">📍 University Campus</p>
+      <p class="mt-3">📞 +91 98765 43210</p>
+    </div>
+  </div>
+
+  <div class="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400">
+    <p>&copy; 2026 AlumniConnect. All Rights Reserved.</p>
+    <p class="mt-2 text-sm">Privacy Policy | Terms &amp; Conditions</p>
+  </div>
+</footer>
+
 
 
 
@@ -1767,70 +1389,23 @@
        MOBILE MENU
     ========================= */
 
-    const mobileMenuBtn =
-      document.getElementById("mobileMenuBtn");
+    const menuBtn = document.getElementById("menuBtn");
+    const mobileMenu = document.getElementById("mobileMenu");
 
-    const mobileNav =
-      document.getElementById("mobileNav");
-
-
-    mobileMenuBtn.addEventListener("click", function () {
-
-      mobileNav.classList.toggle("hidden");
-
-      const menuOpen =
-        !mobileNav.classList.contains("hidden");
-
-
-      mobileMenuBtn.setAttribute(
-        "aria-expanded",
-        menuOpen
-      );
-
-
-      mobileMenuBtn.setAttribute(
-        "aria-label",
-        menuOpen
-          ? "Close navigation menu"
-          : "Open navigation menu"
-      );
-
-
-      mobileMenuBtn.innerHTML =
-        menuOpen ? "✕" : "☰";
-
+    menuBtn.addEventListener("click", function () {
+      mobileMenu.classList.toggle("hidden");
+      const isOpen = !mobileMenu.classList.contains("hidden");
+      menuBtn.setAttribute("aria-expanded", isOpen);
+      menuBtn.innerHTML = isOpen ? "✕" : "☰";
     });
 
-
-
-    /* =========================
-       CLOSE MOBILE MENU
-       AFTER CLICKING LINK
-    ========================= */
-
-    mobileNav
-      .querySelectorAll("a")
-      .forEach(function (link) {
-
-        link.addEventListener("click", function () {
-
-          mobileNav.classList.add("hidden");
-
-          mobileMenuBtn.setAttribute(
-            "aria-expanded",
-            "false"
-          );
-
-          mobileMenuBtn.setAttribute(
-            "aria-label",
-            "Open navigation menu"
-          );
-
-          mobileMenuBtn.innerHTML = "☰";
-
-        });
-
+    mobileMenu.querySelectorAll("a").forEach(function (link) {
+      link.addEventListener("click", function () {
+        mobileMenu.classList.add("hidden");
+        menuBtn.setAttribute("aria-expanded", "false");
+        menuBtn.innerHTML = "☰";
       });
+    });
 
 
 
@@ -1896,3 +1471,4 @@
 </body>
 
 </html>
+

@@ -7,11 +7,15 @@
 <meta name="description" content="Login to AlumniConnect alumni portal and connect with your alumni community.">
 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135755.png">
 <script src="https://cdn.tailwindcss.com"></script>
+<style>html { scroll-behavior: smooth; }</style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+<body class="bg-gray-100 text-gray-800">
+
+<!-- MAIN CONTENT -->
+<main class="min-h-screen flex items-center justify-center pt-24 pb-12 px-4">
 
 <!-- LOGIN CONTAINER -->
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 mx-4">
+<div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 mx-4">
 
 <!-- LOGO -->
 <div class="text-center mb-8">
@@ -29,7 +33,7 @@
     <label class="block text-gray-700 font-semibold mb-2">Email Address</label>
     <input type="email"
         id="email"
-        placeholder="Enter your email address"required
+        placeholder="Enter your email address" required
         class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-900">
 </div>
 
@@ -39,10 +43,10 @@
     <div class="relative">
         <input type="password"
         id="put"
-        placeholder="Enter password"required
+        placeholder="Enter password" required
         class="w-full border rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-900">
-    <button type="button" 
-        id="toggleButton" 
+    <button type="button"
+        id="toggleButton"
         onclick="togglePassword()"
         class="absolute right-3 top-3 text-gray-500">Show</button>
     </div>
@@ -52,7 +56,7 @@
 <div class="flex justify-between items-center mb-6">
     <label class="flex items-center gap-2 text-gray-600">
     <input type="checkbox">Remember me</label>
-    <a href="forgot-password.html"class="text-blue-900 hover:underline">Forgot Password</a>
+    <a href="forgot-password.html" class="text-blue-900 hover:underline">Forgot Password</a>
 </div>
 
 <!-- LOGIN BUTTON -->
@@ -61,21 +65,6 @@
     Login
 </button>
 </form>
-
-<!-- DIVIDER 
-<div class="flex items-center my-6">
-    <div class="flex-1 h-px bg-gray-300"></div>
-    <span class="px-3 text-gray-500">OR</span>
-    <div class="flex-1 h-px bg-gray-300"></div>
-</div>
-
-SOCIAL LOGIN 
-<button class="w-full border py-3 rounded-lg mb-3 hover:bg-gray-100 transition">
-    🔵 Continue with Google
-</button>
-<button class="w-full border py-3 rounded-lg hover:bg-gray-100 transition">
-💼 Continue with LinkedIn
-</button> -->
 
 <!-- REGISTER -->
 <p class="text-center text-gray-600 mt-6">
@@ -88,19 +77,23 @@ SOCIAL LOGIN
 
 </div>
 
+</main>
+
 <script>
+
+
 
 // SHOW / HIDE PASSWORD
 function togglePassword(){
     const put = document.getElementById("put");
     const toggleButton = document.getElementById("toggleButton");
     if(put.type === "password"){
-        put.type = "text";       
-        toggleButton.innerText = "Hide";   
+        put.type = "text";
+        toggleButton.innerText = "Hide";
     }
     else{
-    put.type = "password";   
-    toggleButton.innerText = "Show";   
+    put.type = "password";
+    toggleButton.innerText = "Show";
     }
 }
 
@@ -144,14 +137,14 @@ loginForm.addEventListener("submit", async function(event){
             return;
         }
 
-        // Persist the JWT + user info so other pages (jobs, dashboard, admin) can use them
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
 
-        showMessage("Login successful! Redirecting...", false);
-
+        showMessage("Login successful! Redirecting…", false);
+        // Redirect admin to admin dashboard, everyone else to dashboard
+        const user = data.user;
         setTimeout(() => {
-            window.location.href = "index.html";
+            window.location.href = user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html';
         }, 800);
     } catch (err) {
         console.error(err);
@@ -164,3 +157,4 @@ loginForm.addEventListener("submit", async function(event){
 </script>
 </body>
 </html>
+

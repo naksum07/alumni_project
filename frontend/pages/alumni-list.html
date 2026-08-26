@@ -554,24 +554,50 @@ class="bg-blue-900 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
 <!-- FOOTER -->
 
 
-<footer class="bg-gray-900 text-white text-center py-5 mt-12">
+<footer class="bg-blue-950 text-white py-16">
+  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
 
+    <div>
+      <h2 class="text-3xl font-bold">🎓 AlumniConnect</h2>
+      <p class="mt-4 text-gray-400">
+        Connecting students and alumni to create career
+        opportunities, mentorship and lifelong relationships.
+      </p>
+    </div>
 
-<p class="font-semibold text-lg">
-🎓 AlumniConnect
-</p>
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Quick Links</h3>
+      <ul class="space-y-3 text-gray-300">
+        <li><a href="index.html"            class="hover:text-yellow-400">Home</a></li>
+        <li><a href="about.html"            class="hover:text-yellow-400">About</a></li>
+        <li><a href="alumni-directory.html" class="hover:text-yellow-400">Alumni</a></li>
+        <li><a href="events.html"           class="hover:text-yellow-400">Events</a></li>
+        <li><a href="jobs.html"             class="hover:text-yellow-400">Jobs</a></li>
+      </ul>
+    </div>
 
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Resources</h3>
+      <ul class="space-y-3 text-gray-300">
+        <li>Career Opportunities</li>
+        <li>Mentorship</li>
+        <li>Jobs &amp; Internships</li>
+        <li>FAQ</li>
+      </ul>
+    </div>
 
-<p class="text-sm mt-2">
-Email: support@alumniconnect.com | Phone: +91 98765 43210
-</p>
+    <div>
+      <h3 class="text-xl font-semibold mb-5">Contact Us</h3>
+      <p>📧 alumni@university.com</p>
+      <p class="mt-3">📍 University Campus</p>
+      <p class="mt-3">📞 +91 98765 43210</p>
+    </div>
+  </div>
 
-
-<p class="text-xs mt-2">
-© 2026 AlumniConnect | All Rights Reserved
-</p>
-
-
+  <div class="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400">
+    <p>&copy; 2026 AlumniConnect. All Rights Reserved.</p>
+    <p class="mt-2 text-sm">Privacy Policy | Terms &amp; Conditions</p>
+  </div>
 </footer>
 
 
@@ -681,6 +707,65 @@ behavior:"smooth"
 
 
 
+
+<script>
+/* =========================================================
+   ALUMNI LIST — Backend API wiring
+   ========================================================= */
+(function () {
+  const token = localStorage.getItem('token');
+  if (!token) { window.location.href = 'login.html'; return; }
+
+  fetch('/api/alumni', { headers: { 'Authorization': 'Bearer ' + token } })
+    .then(r => r.ok ? r.json() : [])
+    .then(alumni => {
+      const container = document.getElementById('alumniListContainer');
+      if (!container) return;
+      if (alumni.length === 0) {
+        container.innerHTML = '<p class="text-gray-500">No alumni found.</p>';
+        return;
+      }
+      container.innerHTML = alumni.map(a => `
+        <div class="flex items-center justify-between border-b py-3">
+          <div>
+            <p class="font-semibold">${a.full_name}</p>
+            <p class="text-sm text-gray-500">${a.department || ''} · ${a.graduation_year || ''}</p>
+          </div>
+          <span class="text-sm text-blue-600">${a.current_role || ''}</span>
+        </div>
+      `).join('');
+    })
+    .catch(() => {});
+})();
+</script>
+
+<script>
+(function () {
+  const btn  = document.getElementById('menuBtn');
+  const menu = document.getElementById('mobileMenu');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', function () {
+    menu.classList.toggle('hidden');
+    const open = !menu.classList.contains('hidden');
+    btn.setAttribute('aria-expanded', open);
+    btn.innerHTML = open ? '&#10005;' : '&#9776;';
+  });
+  menu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      menu.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '&#9776;';
+    });
+  });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth >= 768) {
+      menu.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '&#9776;';
+    }
+  });
+})();
+</script>
 </body>
 
 </html>
