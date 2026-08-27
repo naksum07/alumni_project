@@ -1,6 +1,5 @@
 const pool = require('../config/db');
 
-// GET /api/alumni?department=CSE&year=2022&search=priya
 async function searchAlumni(req, res) {
   const { department, year, search } = req.query;
 
@@ -30,7 +29,6 @@ async function searchAlumni(req, res) {
   }
 }
 
-// GET /api/alumni/:id
 async function getAlumniProfile(req, res) {
   const { id } = req.params;
 
@@ -45,7 +43,14 @@ async function getAlumniProfile(req, res) {
       return res.status(404).json({ message: 'Alumni not found' });
     }
 
-    res.json(result.rows[0]);
+    const alumni = result.rows[0];
+    const isLoggedIn = Boolean(req.user);
+
+    if (!isLoggedIn) {
+      delete alumni.email;
+    }
+
+    res.json({ ...alumni, contactLocked: !isLoggedIn });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error while fetching profile' });

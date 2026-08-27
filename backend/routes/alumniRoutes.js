@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const { searchAlumni, getAlumniProfile } = require('../controllers/alumniController');
-const { verifyToken } = require('../middleware/auth');
+const { optionalAuth } = require('../middleware/auth');
 
-router.get('/', verifyToken, searchAlumni);
-router.get('/:id', verifyToken, getAlumniProfile);
+router.get('/', optionalAuth, searchAlumni);
+router.get('/:id', optionalAuth, getAlumniProfile);
 
 module.exports = router;
