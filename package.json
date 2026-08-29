@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/naksum07/alumni_project#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "nodemailer": "^9.0.6"
   }
 }
