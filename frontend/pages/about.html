@@ -1,54 +1,27 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>About Us | AlumniConnect</title>
-
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us | AlumniConnect</title>
+<script src="/scripts/about.js" defer></script>
   <!-- TAILWIND CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-
   <!-- AOS ANIMATION -->
-  <link
-    href="https://unpkg.com/aos@2.3.1/dist/aos.css"
-    rel="stylesheet"
-  >
-
-
+  <linkhref="https://unpkg.com/aos@2.3.1/dist/aos.css"rel="stylesheet">
   <style>
-
     html {
       scroll-behavior: smooth;
     }
-
     /* Prevent content from hiding behind fixed navbar */
     section {
       scroll-margin-top: 90px;
     }
-
   </style>
-
 </head>
-
-
 <body class="bg-gray-100 text-gray-800">
 
-
-  <!-- ===================================================== -->
   <!-- HEADER / NAVBAR -->
-  <!-- ===================================================== -->
-
-  <!-- ===================================================== -->
-  <!-- CANONICAL NAVBAR -->
-  <!-- ===================================================== -->
   <header>
   <nav class="fixed top-0 left-0 w-full z-50 bg-blue-900 text-white shadow-lg">
     <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -88,19 +61,9 @@
   </nav>
 </header>
 
-
-
-
-  <!-- ===================================================== -->
   <!-- MAIN CONTENT -->
-  <!-- ===================================================== -->
-
   <main>
-
-
-    <!-- ================================================= -->
     <!-- HERO SECTION -->
-    <!-- ================================================= -->
 
     <section
       class="bg-gradient-to-r
@@ -320,11 +283,7 @@
 
     </section>
 
-
-
-    <!-- ================================================= -->
     <!-- OUR STORY -->
-    <!-- ================================================= -->
 
     <section
       id="story"
@@ -510,11 +469,7 @@
 
     </section>
 
-
-
-    <!-- ================================================= -->
     <!-- ALUMNI COMMUNITY -->
-    <!-- ================================================= -->
 
     <section class="py-20 sm:py-24 bg-gray-100">
 
@@ -746,11 +701,7 @@
 
     </section>
 
-
-
-    <!-- ================================================= -->
     <!-- MISSION & VISION -->
-    <!-- ================================================= -->
 
     <section class="py-20 sm:py-24 bg-white">
 
@@ -1065,11 +1016,7 @@
 
     </section>
 
-
-
-    <!-- ================================================= -->
     <!-- WHY CHOOSE US -->
-    <!-- ================================================= -->
 
     <section class="py-20 sm:py-24 bg-gray-100">
 
@@ -1273,13 +1220,7 @@
 
   </main>
 
-
-
-  <!-- ===================================================== -->
   <!-- FOOTER -->
-  <!-- ===================================================== -->
-
-  <!-- CANONICAL FOOTER -->
   <footer class="bg-blue-950 text-white py-16">
   <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
 
@@ -1307,7 +1248,7 @@
       <ul class="space-y-3 text-gray-300">
         <li>Career Opportunities</li>
         <li>Mentorship</li>
-       <li><a href="feedback.html"             class="hover:text-yellow-400">Feedback</a></li>
+       <li><a href="feedback.html" class="hover:text-yellow-400">Feedback</a></li>
         <li>FAQ</li>
       </ul>
     </div>
@@ -1326,12 +1267,7 @@
   </div>
 </footer>
 
-
-
-
-  <!-- ===================================================== -->
   <!-- SCROLL TO TOP BUTTON -->
-  <!-- ===================================================== -->
 
   <button
     id="topBtn"
@@ -1353,122 +1289,7 @@
            hover:bg-blue-950
            hover:-translate-y-1
            transition duration-300
-           z-40"
-  >
-    ↑
-  </button>
-
-
-
-  <!-- ===================================================== -->
-  <!-- AOS -->
-  <!-- ===================================================== -->
-
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
-
-  <!-- ===================================================== -->
-  <!-- JAVASCRIPT -->
-  <!-- ===================================================== -->
-
-  <script>
-
-    /* =========================
-       AOS INITIALIZATION
-    ========================= */
-
-    AOS.init({
-      duration: 1000,
-      once: true,
-      offset: 100
-    });
-
-
-
-    /* =========================
-       MOBILE MENU
-    ========================= */
-
-    const menuBtn = document.getElementById("menuBtn");
-    const mobileMenu = document.getElementById("mobileMenu");
-
-    menuBtn.addEventListener("click", function () {
-      mobileMenu.classList.toggle("hidden");
-      const isOpen = !mobileMenu.classList.contains("hidden");
-      menuBtn.setAttribute("aria-expanded", isOpen);
-      menuBtn.innerHTML = isOpen ? "✕" : "☰";
-    });
-
-    mobileMenu.querySelectorAll("a").forEach(function (link) {
-      link.addEventListener("click", function () {
-        mobileMenu.classList.add("hidden");
-        menuBtn.setAttribute("aria-expanded", "false");
-        menuBtn.innerHTML = "☰";
-      });
-    });
-
-
-
-    /* =========================
-       PREVIOUS PAGE
-    ========================= */
-
-    function goBack() {
-
-      if (window.history.length > 1) {
-
-        window.history.back();
-
-      } else {
-
-        window.location.href = "index.html";
-
-      }
-
-    }
-
-
-
-    /* =========================
-       SCROLL TO TOP BUTTON
-    ========================= */
-
-    const topBtn =
-      document.getElementById("topBtn");
-
-
-    window.addEventListener("scroll", function () {
-
-      if (window.scrollY > 400) {
-
-        topBtn.classList.remove("hidden");
-
-      } else {
-
-        topBtn.classList.add("hidden");
-
-      }
-
-    });
-
-
-
-    /* =========================
-       GO TO TOP
-    ========================= */
-
-    function goTop() {
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-
-    }
-
-  </script>
-
+           z-40">↑
+</button>
 </body>
-
 </html>
-

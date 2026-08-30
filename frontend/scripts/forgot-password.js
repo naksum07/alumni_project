@@ -1,0 +1,64 @@
+const requestView = document.getElementById('requestView');
+const sentView     = document.getElementById('sentView');
+const requestMsg   = document.getElementById('requestMessage');
+
+function showMsg(el, text, isError) {
+  el.textContent = text;
+  el.classList.remove('hidden', 'text-red-600', 'text-green-600');
+  el.classList.add(isError ? 'text-red-600' : 'text-green-600');
+}
+
+async function requestResetLink(email) {
+  const res  = await fetch('/api/auth/forgot-password', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ email }),
+  });
+  const data = await res.json();
+  return { ok: res.ok, data };
+}
+
+document.getElementById('forgotForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const email = document.getElementById('forgotEmail').value.trim();
+  const btn   = document.getElementById('forgotBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    const { ok, data } = await requestResetLink(email);
+
+    if (!ok) {
+      showMsg(requestMsg, data.message || 'Something went wrong.', true);
+      return;
+    }
+
+    // Always show the same generic "check your email" view, regardless of
+    // whether the address exists — avoids leaking which emails are registered.
+    requestView.classList.add('hidden');
+    sentView.classList.remove('hidden');
+
+    // Dev-only: server may include a devResetUrl while there's no real
+    // email backend wired up. This block should never fire in production.
+    if (data.devResetUrl) {
+      document.getElementById('devLinkBox').classList.remove('hidden');
+      const anchor = document.getElementById('devLinkAnchor');
+      anchor.href = data.devResetUrl;
+      anchor.textContent = data.devResetUrl;
+    }
+
+  } catch (err) {
+    console.error(err);
+    showMsg(requestMsg, 'Could not reach the server. Please try again.', true);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Send Reset Link';
+  }
+});
+
+document.getElementById('resendBtn').addEventListener('click', function () {
+  sentView.classList.add('hidden');
+  requestView.classList.remove('hidden');
+  requestMsg.classList.add('hidden');
+});

@@ -15,8 +15,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
   <style>
-    html { scroll-behavior: smooth; }
-    body { overflow-x: hidden; }
+    html { 
+      scroll-behavior: smooth; 
+    }
+    body { 
+      overflow-x: hidden; 
+    }
   </style>
 
 </head>
@@ -62,9 +66,7 @@
 </header>
 
 </header>
-<!-- =====================================================
-     HERO SECTION
-===================================================== -->
+<!--HERO SECTION-->
 
 <section>
 
@@ -291,9 +293,7 @@
 
 
 
-<!-- =====================================================
-     OPPORTUNITIES
-===================================================== -->
+<!-- OPPORTUNITIES-->
 
 <main
   id="opportunities"
@@ -823,34 +823,5 @@
          font-bold transition-all duration-300 hover:-translate-y-1">
   ↑
 </button>
-
-
-<script>
-(function () {
-  const btn  = document.getElementById('menuBtn');
-  const menu = document.getElementById('mobileMenu');
-  if (!btn || !menu) return;
-  btn.addEventListener('click', function () {
-    menu.classList.toggle('hidden');
-    const open = !menu.classList.contains('hidden');
-    btn.setAttribute('aria-expanded', open);
-    btn.innerHTML = open ? '&#10005;' : '&#9776;';
-  });
-  menu.querySelectorAll('a').forEach(function (a) {
-    a.addEventListener('click', function () {
-      menu.classList.add('hidden');
-      btn.setAttribute('aria-expanded', 'false');
-      btn.innerHTML = '&#9776;';
-    });
-  });
-  window.addEventListener('resize', function () {
-    if (window.innerWidth >= 768) {
-      menu.classList.add('hidden');
-      btn.setAttribute('aria-expanded', 'false');
-      btn.innerHTML = '&#9776;';
-    }
-  });
-})();
-</script>
 </body>
 </html>

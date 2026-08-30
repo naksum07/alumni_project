@@ -1,3 +1,29 @@
+(function () {
+  const btn  = document.getElementById('menuBtn');
+  const menu = document.getElementById('mobileMenu');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', function () {
+    menu.classList.toggle('hidden');
+    const open = !menu.classList.contains('hidden');
+    btn.setAttribute('aria-expanded', open);
+    btn.innerHTML = open ? '&#10005;' : '&#9776;';
+  });
+  menu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      menu.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '&#9776;';
+    });
+  });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth >= 768) {
+      menu.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '&#9776;';
+    }
+  });
+})();
+
 let allJobs    = [];   // raw list from API
 let selectedJob = null; // job currently open in the details modal
 

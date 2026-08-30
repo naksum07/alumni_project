@@ -1,3 +1,242 @@
+/* ================================================
+           MOBILE MENU
+        ================================================= */
+
+        const menuBtn =
+            document.getElementById("menuBtn");
+
+        const mobileMenu =
+            document.getElementById("mobileMenu");
+
+        const menuIcon =
+            document.getElementById("menuIcon");
+
+
+        menuBtn.addEventListener(
+            "click",
+            function () {
+
+                mobileMenu.classList.toggle("hidden");
+
+
+                if (
+                    mobileMenu.classList.contains("hidden")
+                ) {
+
+                    menuIcon.classList.remove(
+                        "fa-xmark"
+                    );
+
+                    menuIcon.classList.add(
+                        "fa-bars"
+                    );
+
+                } else {
+
+                    menuIcon.classList.remove(
+                        "fa-bars"
+                    );
+
+                    menuIcon.classList.add(
+                        "fa-xmark"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* ================================================
+           CLOSE MOBILE MENU AFTER CLICK
+        ================================================= */
+
+        document
+            .querySelectorAll(".mobile-link")
+            .forEach(function (link) {
+
+                link.addEventListener(
+                    "click",
+                    function () {
+
+                        mobileMenu.classList.add(
+                            "hidden"
+                        );
+
+                        menuIcon.classList.remove(
+                            "fa-xmark"
+                        );
+
+                        menuIcon.classList.add(
+                            "fa-bars"
+                        );
+
+                    }
+                );
+
+            });
+
+
+        /* ================================================
+           CONTACT
+        ================================================= */
+
+        function contactMessage() {
+
+            alert(
+                "Thank you for contacting the Alumni Office!"
+            );
+
+        }
+
+
+        /* ================================================
+           SCROLL TO TOP BUTTON
+        ================================================= */
+
+        const scrollTopBtn =
+            document.getElementById(
+                "scrollTopBtn"
+            );
+
+
+        window.addEventListener(
+            "scroll",
+            function () {
+
+                if (window.scrollY > 300) {
+
+                    scrollTopBtn.classList.remove(
+                        "hidden"
+                    );
+
+                } else {
+
+                    scrollTopBtn.classList.add(
+                        "hidden"
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* ================================================
+           SCROLL TO TOP
+        ================================================= */
+
+        function scrollToTop() {
+
+            window.scrollTo({
+
+                top: 0,
+
+                behavior: "smooth"
+
+            });
+
+        }
+
+
+        /* ================================================
+           CLOSE MOBILE MENU ON RESIZE
+        ================================================= */
+
+        window.addEventListener(
+            "resize",
+            function () {
+
+                if (window.innerWidth >= 768) {
+
+                    mobileMenu.classList.add(
+                        "hidden"
+                    );
+
+                    menuIcon.classList.remove(
+                        "fa-xmark"
+                    );
+
+                    menuIcon.classList.add(
+                        "fa-bars"
+                    );
+
+                }
+
+            }
+        );
+
+/* =========================================================
+   DASHBOARD — Backend API wiring
+   Reads the logged-in user from localStorage (set by login.html)
+   and populates the welcome message and stats.
+   Redirects to login if no token is found.
+   ========================================================= */
+(function () {
+  const token = localStorage.getItem('token');
+  const user  = JSON.parse(localStorage.getItem('user') || 'null');
+
+  // Guard — send unauthenticated visitors to the login page
+  if (!token || !user) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  // Populate greeting elements if they exist on the page
+  document.querySelectorAll('[data-user-name]').forEach(el => {
+    el.textContent = user.fullName || user.email;
+  });
+  document.querySelectorAll('[data-user-role]').forEach(el => {
+    el.textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
+  });
+
+  // Logout buttons
+  document.querySelectorAll('[data-logout]').forEach(btn => {
+    btn.addEventListener('click', function () {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = 'login.html';
+    });
+  });
+
+  // Load alumni count for the stat card (requires token)
+  fetch('/api/alumni', {
+    headers: { 'Authorization': 'Bearer ' + token }
+  })
+  .then(r => r.ok ? r.json() : [])
+  .then(alumni => {
+    const el = document.getElementById('alumniCount');
+    if (el) el.textContent = alumni.length;
+  })
+  .catch(() => {});
+})();
+
+
+(function () {
+  const btn  = document.getElementById('menuBtn');
+  const menu = document.getElementById('mobileMenu');
+  if (!btn || !menu) return;
+  btn.addEventListener('click', function () {
+    menu.classList.toggle('hidden');
+    const open = !menu.classList.contains('hidden');
+    btn.setAttribute('aria-expanded', open);
+    btn.innerHTML = open ? '&#10005;' : '&#9776;';
+  });
+  menu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      menu.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '&#9776;';
+    });
+  });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth >= 768) {
+      menu.classList.add('hidden');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = '&#9776;';
+    }
+  });
+
 // element references 
 const eventsContainer = document.getElementById('eventsContainer');
 const regModal        = document.getElementById('regModal');
@@ -138,35 +377,6 @@ regModal.addEventListener('click', function (e) {
   if (e.target === regModal) closeRegistrationModal();
 });
 
-//Mobile Menu Toggle
-const menuBtn    = document.getElementById('menuBtn');
-const mobileMenu = document.getElementById('mobileMenu');
-
-if (menuBtn && mobileMenu) {
-  menuBtn.addEventListener('click', function () {
-    mobileMenu.classList.toggle('hidden');
-    const isOpen = !mobileMenu.classList.contains('hidden');
-    menuBtn.setAttribute('aria-expanded', isOpen);
-    menuBtn.innerHTML = isOpen ? '✕' : '☰';
-  });
-
-  mobileMenu.querySelectorAll('a').forEach(function (link) {
-    link.addEventListener('click', function () {
-      mobileMenu.classList.add('hidden');
-      menuBtn.setAttribute('aria-expanded', 'false');
-      menuBtn.innerHTML = '☰';
-    });
-  });
-
-  window.addEventListener('resize', function () {
-    if (window.innerWidth >= 768) {
-      mobileMenu.classList.add('hidden');
-      menuBtn.setAttribute('aria-expanded', 'false');
-      menuBtn.innerHTML = '☰';
-    }
-  });
-}
-
 const scrollTopBtn = document.getElementById('scrollTopBtn');
 
 if (scrollTopBtn) {
@@ -181,3 +391,4 @@ function scrollToTop() {
 
 //boot
 loadEvents();
+})();

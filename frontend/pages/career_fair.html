@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Career Fair Registration</title>
 <script src="https://cdn.tailwindcss.com"></script>
-
+<script src="/scripts/career-fair.js" defer></script>
 <style>
 
 html{
@@ -288,13 +285,13 @@ nav a{
 <p><strong>🕤 Time:</strong> 9:30 AM – 4:30 PM</p>
 </header>
 
-<!-- ================= PREVIOUS PAGE BUTTON ================= -->
+<!-- PREVIOUS PAGE BUTTON -->
 
 <div class="back-btn">
 <button onclick="history.back()">⬅ Previous Page</button>
 </div>
 
-<!-- ================= MAIN CONTENT ================= -->
+<!-- MAIN CONTENT -->
 
 <div class="container">
 
@@ -370,7 +367,7 @@ Meet leading companies, interact with HR professionals, attend placement drives,
 
 </div>
 
-<!-- Canonical Footer -->
+<!--Footer -->
 <footer class="bg-blue-950 text-white py-16">
   <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
 
@@ -398,7 +395,7 @@ Meet leading companies, interact with HR professionals, attend placement drives,
       <ul class="space-y-3 text-gray-300">
         <li>Career Opportunities</li>
         <li>Mentorship</li>
-        <li><a href="feedback.html"             class="hover:text-yellow-400">Feedback</a></li>
+        <li><a href="feedback.html" class="hover:text-yellow-400">Feedback</a></li>
         <li>FAQ</li>
       </ul>
     </div>
@@ -419,86 +416,7 @@ Meet leading companies, interact with HR professionals, attend placement drives,
 
 <!-- Back to Top -->
 <a href="#" class="top-btn" title="Back to Top">↑</a>
-
-<script>
-// Mobile navigation toggle
-(function () {
-  const btn  = document.getElementById('menuBtn');
-  const menu = document.getElementById('mobileMenu');
-  if (!btn || !menu) return;
-  btn.addEventListener('click', function () {
-    menu.classList.toggle('hidden');
-    const open = !menu.classList.contains('hidden');
-    btn.setAttribute('aria-expanded', open);
-    btn.innerHTML = open ? '&#10005;' : '&#9776;';
-  });
-  menu.querySelectorAll('a').forEach(function (a) {
-    a.addEventListener('click', function () {
-      menu.classList.add('hidden');
-      btn.setAttribute('aria-expanded', 'false');
-      btn.innerHTML = '&#9776;';
-    });
-  });
-  window.addEventListener('resize', function () {
-    if (window.innerWidth >= 768) {
-      menu.classList.add('hidden');
-      btn.setAttribute('aria-expanded', 'false');
-      btn.innerHTML = '&#9776;';
-    }
-  });
-})();
-
-// Career Fair Registration Form Submission
-document.getElementById('careerFairForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
-  const fullName = document.getElementById('cfName').value.trim();
-  const email = document.getElementById('cfEmail').value.trim();
-  const phone = document.getElementById('cfPhone').value.trim();
-  const qual = document.getElementById('cfQualification').value;
-  const dept = document.getElementById('cfDept').value;
-  const skills = document.getElementById('cfSkills').value.trim();
-  const company = document.getElementById('cfCompany').value.trim();
-  const userMsg = document.getElementById('cfMessage').value.trim();
-
-  const msgBox = document.getElementById('cfStatusMsg');
-  const btn = document.getElementById('cfSubmitBtn');
-
-  const combinedMessage = [
-    qual ? `Qualification: ${qual}` : '',
-    dept ? `Dept: ${dept}` : '',
-    skills ? `Skills: ${skills}` : '',
-    company ? `Preferred Company: ${company}` : '',
-    userMsg ? `Note: ${userMsg}` : '',
-  ].filter(Boolean).join(' | ');
-
-  btn.disabled = true;
-  btn.textContent = 'Registering…';
-
-  try {
-    // Career Fair is event id 2 in standard seed data
-    const res = await fetch('/api/events/2/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ fullName, email, phone, message: combinedMessage }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      msgBox.textContent = data.message || 'Registration failed.';
-      msgBox.className = 'text-sm font-medium mb-3 text-red-600';
-      return;
-    }
-    msgBox.textContent = '✅ You have registered successfully for the Career Fair!';
-    msgBox.className = 'text-sm font-medium mb-3 text-green-600';
-    this.reset();
-  } catch (err) {
-    console.error(err);
-    msgBox.textContent = 'Could not reach server. Please try again.';
-    msgBox.className = 'text-sm font-medium mb-3 text-red-600';
-  } finally {
-    btn.disabled = false;
-    btn.textContent = '🚀 Register Now';
-  }
-});
-</script>
+</div>
+</div>
 </body>
 </html>
