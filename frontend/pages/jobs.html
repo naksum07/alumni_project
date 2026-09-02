@@ -56,8 +56,9 @@
           <a href="jobs.html" class="text-[#c4161c] transition">Jobs</a>
         </div>
 
-        <div class="hidden md:flex gap-3 items-center" id="navAuth">
-          <!-- Filled by JS -->
+         <div class="hidden md:flex gap-3 items-center" id="navAuth">
+          <a href="/admin/login.html" class="text-slate-500 font-medium hover:text-[#012970] transition text-sm px-2 border-r border-gray-200 pr-4">Admin Login</a>
+          <a href="login.html" class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-5 py-2 rounded-lg transition text-sm shadow-sm">Login / Register</a>
         </div>
 
         <button id="menuBtn" aria-label="Open Menu" aria-expanded="false" class="md:hidden text-2xl text-slate-800 focus:outline-none">☰</button>
@@ -77,7 +78,10 @@
         <a href="news-announcements.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">News</a>
         <a href="jobs.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Jobs</a>
         <div class="mt-4 space-y-3" id="mobileNavAuth">
-          <!-- Filled by JS -->
+          <a href="/admin/login.html" class="block text-center text-slate-500 py-2 rounded-lg font-medium hover:bg-gray-100 transition text-sm border-b border-gray-200 pb-3 mb-3">Admin Login</a>
+          <div class="space-y-2">
+            <a href="login.html" class="block text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">Login / Register</a>
+          </div>
         </div>
       </div>
     </nav>
@@ -490,32 +494,6 @@
      APPLY MODAL
 ===================================================== -->
 
-<div
-  id="applyModal"
-  class="hidden fixed inset-0
-         z-[70]
-         bg-slate-900/70
-         backdrop-blur-sm
-         items-center justify-center
-         p-5">
-
-
-  <div
-    class="bg-white
-           rounded-2xl
-           max-w-lg
-           w-full">
-
-
-    <div
-      class="p-8 relative">
-
-
-      <button
-        onclick="closeApply()"
-        class="absolute
-               right-5 top-4
-               text-3xl
 <div id="applyModal" class="hidden fixed inset-0 z-[70] bg-slate-900/70 backdrop-blur-sm items-center justify-center p-5">
   <div class="bg-white rounded-2xl max-w-lg w-full">
     <div class="p-8 relative">

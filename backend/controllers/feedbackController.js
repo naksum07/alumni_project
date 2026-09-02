@@ -20,13 +20,17 @@ async function getFeedback(req, res) {
 // POST /api/feedback — submit new feedback (auth optional)
 async function submitFeedback(req, res) {
   const { rating, message } = req.body;
+  const numericRating = Number(rating);
   if (!rating || !message) {
     return res.status(400).json({ message: 'Rating and message are required' });
+  }
+  if (isNaN(numericRating) || numericRating < 1 || numericRating > 5) {
+    return res.status(400).json({ message: 'Rating must be an integer between 1 and 5' });
   }
   try {
     await pool.query(
       'INSERT INTO feedback (user_id, rating, message) VALUES ($1, $2, $3)',
-      [req.user?.id || null, rating, message]
+      [req.user?.id || null, numericRating, message]
     );
     res.status(201).json({ message: 'Thank you for your feedback!' });
   } catch (err) {

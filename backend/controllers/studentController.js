@@ -17,7 +17,7 @@ async function searchStudents(req, res) {
   }
   if (search) {
     params.push(`%${search}%`);
-    query += ` AND full_name ILIKE $${params.length}`;
+    query += ` AND (full_name ILIKE $${params.length} OR department ILIKE $${params.length})`;
   }
 
   query += ` ORDER BY full_name ASC`;

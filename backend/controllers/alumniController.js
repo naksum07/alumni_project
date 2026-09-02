@@ -17,7 +17,7 @@ async function searchAlumni(req, res) {
   }
   if (search) {
     params.push(`%${search}%`);
-    query += ` AND full_name ILIKE $${params.length}`;
+    query += ` AND (full_name ILIKE $${params.length} OR job_title ILIKE $${params.length} OR company ILIKE $${params.length} OR department ILIKE $${params.length})`;
   }
 
   try {
@@ -50,7 +50,7 @@ async function getAlumniProfile(req, res) {
       delete alumni.email;
     }
 
-    res.json({ ...alumni, contactLocked: !isLoggedIn });
+    res.json({ user: alumni, ...alumni, contactLocked: !isLoggedIn });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error while fetching profile' });

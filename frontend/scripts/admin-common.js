@@ -1,17 +1,104 @@
 // admin-common.js
+
+function getAdminToken() {
+    return localStorage.getItem('adminToken') || localStorage.getItem('token');
+}
+
+function clearAdminTokens() {
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+}
+
+function injectAdminStyles() {
+    if (document.getElementById('admin-custom-styles')) return;
+    const style = document.createElement('style');
+    style.id = 'admin-custom-styles';
+    style.textContent = `
+        .admin-content {
+            max-width: 80rem;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 2rem 1rem;
+        }
+        @media (min-width: 640px) {
+            .admin-content {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+        }
+        @media (min-width: 1024px) {
+            .admin-content {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+        }
+        .admin-table {
+            width: 100%;
+            text-align: left;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+        .admin-table th {
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.75rem;
+        }
+        .admin-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+        }
+        .admin-table tbody tr:hover {
+            background-color: #f8fafc;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 60;
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        .modal-overlay.hidden {
+            display: none !important;
+        }
+        .modal-content {
+            background-color: #ffffff;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 32rem;
+            position: relative;
+            margin: auto;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    injectAdminStyles();
+
     // Check if on login page
     const isLoginPage = window.location.pathname.endsWith('login.html');
     
-    // Auth Check
-    const token = localStorage.getItem('adminToken');
+    // Auth Check: Protected pages require token
+    const token = getAdminToken();
     if (!isLoginPage && !token) {
+        clearAdminTokens();
         window.location.href = '/admin/login.html';
-        return;
-    }
-
-    if (isLoginPage && token) {
-        window.location.href = '/admin/dashboard.html';
         return;
     }
 
@@ -22,7 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function renderSidebar() {
+    if (document.getElementById('adminNavbar')) return;
+
     const navbar = document.createElement('header');
+    navbar.id = 'adminNavbar';
     navbar.className = 'fixed left-0 right-0 top-0 z-50 bg-blue-900 text-white shadow-lg';
 
     const currentPath = window.location.pathname;
@@ -72,7 +162,7 @@ function renderSidebar() {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            localStorage.removeItem('adminToken');
+            clearAdminTokens();
             window.location.href = '/admin/login.html';
         });
     }

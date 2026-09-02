@@ -60,12 +60,13 @@ async function getJobById(req, res) {
   }
 }
 
-// POST /api/jobs (requires login — alumni only)
+// POST /api/jobs (requires login — alumni or admin)
 async function postJob(req, res) {
   const { title, company, location, jobType, salary, skills, description } = req.body;
 
-  if (!req.user || String(req.user.role || '').toLowerCase() !== 'alumni') {
-    return res.status(403).json({ message: 'Only alumni can post opportunities.' });
+  const role = String(req.user?.role || '').toLowerCase();
+  if (!req.user || (role !== 'alumni' && role !== 'admin')) {
+    return res.status(403).json({ message: 'Only alumni and administrators can post opportunities.' });
   }
 
   if (!title || !company) {
@@ -86,12 +87,13 @@ async function postJob(req, res) {
   }
 }
 
-// Shared helper: only the job's poster may modify/close/delete it
+// Shared helper: only the job's poster or an admin may modify/close/delete it
 async function canModifyJob(req, jobId) {
   const result = await pool.query('SELECT posted_by FROM jobs WHERE id = $1', [jobId]);
   if (result.rows.length === 0) return { found: false };
+  const isAdmin = String(req.user?.role || '').toLowerCase() === 'admin';
   const isOwner = Number(result.rows[0].posted_by) === Number(req.user.id);
-  return { found: true, allowed: isOwner };
+  return { found: true, allowed: isOwner || isAdmin };
 }
 
 // PUT /api/jobs/:id

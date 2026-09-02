@@ -12,6 +12,7 @@ const eventRoutes = require('./routes/eventRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const jobRoutes = require('./routes/jobRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
+const newsRoutes = require('./routes/newsRoutes');
 
 const app = express();
 app.use(cors({ origin: process.env.ALLOWED_ORIGIN || '*' }));
@@ -32,6 +33,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/feedback', feedbackRoutes);
+app.use('/api/news', newsRoutes);
 
 app.get('/api/test', (req, res) => {
   res.send('Backend is connected!');
@@ -43,4 +45,3 @@ if (require.main === module) {
 }
 
 module.exports = app;
-

@@ -42,10 +42,13 @@ document.getElementById('forgotForm').addEventListener('submit', async function 
     // Dev-only: server may include a devResetUrl while there's no real
     // email backend wired up. This block should never fire in production.
     if (data.devResetUrl) {
-      document.getElementById('devLinkBox').classList.remove('hidden');
+      const devBox = document.getElementById('devLinkBox');
       const anchor = document.getElementById('devLinkAnchor');
-      anchor.href = data.devResetUrl;
-      anchor.textContent = data.devResetUrl;
+      if (devBox) devBox.classList.remove('hidden');
+      if (anchor) {
+        anchor.href = data.devResetUrl;
+        anchor.textContent = data.devResetUrl;
+      }
     }
 
   } catch (err) {

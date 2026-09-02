@@ -1,28 +1,4 @@
 (function () {
-  const btn  = document.getElementById('menuBtn');
-  const menu = document.getElementById('mobileMenu');
-  if (!btn || !menu) return;
-  btn.addEventListener('click', function () {
-    menu.classList.toggle('hidden');
-    const open = !menu.classList.contains('hidden');
-    btn.setAttribute('aria-expanded', open);
-    btn.innerHTML = open ? '&#10005;' : '&#9776;';
-  });
-  menu.querySelectorAll('a').forEach(function (a) {
-    a.addEventListener('click', function () {
-      menu.classList.add('hidden');
-      btn.setAttribute('aria-expanded', 'false');
-      btn.innerHTML = '&#9776;';
-    });
-  });
-  window.addEventListener('resize', function () {
-    if (window.innerWidth >= 768) {
-      menu.classList.add('hidden');
-      btn.setAttribute('aria-expanded', 'false');
-      btn.innerHTML = '&#9776;';
-    }
-  });
-
 // element references 
 const eventsContainer = document.getElementById('eventsContainer');
 const regModal        = document.getElementById('regModal');
@@ -144,11 +120,15 @@ function renderEvents(events) {
         <p class="text-gray-600 mt-3 text-sm leading-relaxed">${event.description || ''}</p>
         ${event.venue ? `<p class="text-gray-500 mt-4 text-sm flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#c4161c]"></i>${event.venue}</p>` : ''}
         <button
-          onclick="openRegistrationModal(${event.id}, '${event.name.replace(/'/g, "\\'")}')"
-          class="w-full bg-[#c4161c] hover:bg-[#a01217] text-white py-3 rounded-xl mt-6 transition font-semibold shadow-md">
+          class="reg-btn w-full bg-[#c4161c] hover:bg-[#a01217] text-white py-3 rounded-xl mt-6 transition font-semibold shadow-md">
           Register Now
         </button>
       </div>`;
+
+    const regBtn = card.querySelector('.reg-btn');
+    if (regBtn) {
+      regBtn.addEventListener('click', () => openRegistrationModal(event.id, event.name));
+    }
     eventsContainer.appendChild(card);
   });
 }

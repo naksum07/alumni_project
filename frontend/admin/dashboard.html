@@ -105,7 +105,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            const token = localStorage.getItem('adminToken');
+            const token = typeof getAdminToken === 'function' ? getAdminToken() : (localStorage.getItem('adminToken') || localStorage.getItem('token'));
             if (!token) return window.location.href = 'login.html';
 
             try {
@@ -114,21 +114,24 @@
                 });
 
                 if (!res.ok) {
-                    if (res.status === 401 || res.status === 403) return window.location.href = 'login.html';
+                    if (res.status === 401 || res.status === 403) {
+                        if (typeof clearAdminTokens === 'function') clearAdminTokens();
+                        return window.location.href = 'login.html';
+                    }
                     throw new Error('Failed to load dashboard');
                 }
 
                 const data = await res.json();
-                const userStats = data.userStats;
-                const eventStats = data.eventStats;
+                const userStats = data.userStats || {};
+                const eventStats = data.eventStats || {};
 
                 const cards = Array.from(document.querySelectorAll('#statsGrid > div'));
                 const values = [
-                    userStats.total,
-                    userStats.alumni,
-                    userStats.students,
-                    eventStats.totalEvents,
-                    eventStats.totalParticipants
+                    userStats.total || 0,
+                    userStats.alumni || 0,
+                    userStats.students || 0,
+                    eventStats.totalEvents || 0,
+                    eventStats.totalParticipants || 0
                 ];
 
                 cards.forEach((card, index) => {
@@ -138,38 +141,44 @@
                     if (text) text.classList.add(index % 2 === 0 ? 'text-blue-700' : 'text-emerald-700');
                 });
 
-                const events = data.events || [];
+                const events = Array.isArray(data.events) ? data.events : [];
                 const eBody = document.querySelector('#eventsTable tbody');
-                eBody.innerHTML = '';
-                events.slice(0, 5).forEach(e => {
-                    const badgeColor = e.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700';
-                    eBody.innerHTML += `
-                        <tr class="text-slate-700">
-                            <td class="py-3 pr-4 font-medium text-slate-800">${e.title}</td>
-                            <td class="py-3 pr-4">${e.host}</td>
-                            <td class="py-3 pr-4">${e.date}</td>
-                            <td class="py-3 pr-4"><span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${badgeColor}">${e.status}</span></td>
-                            <td class="py-3">${e.participantCount}</td>
-                        </tr>
-                    `;
-                });
+                if (eBody) {
+                    eBody.innerHTML = events.length ? '' : '<tr><td colspan="5" class="py-4 text-center text-slate-400">No recent events found.</td></tr>';
+                    events.slice(0, 5).forEach(e => {
+                        const badgeColor = e.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-blue-100 text-blue-700';
+                        eBody.innerHTML += `
+                            <tr class="text-slate-700">
+                                <td class="py-3 pr-4 font-medium text-slate-800">${e.title}</td>
+                                <td class="py-3 pr-4">${e.host}</td>
+                                <td class="py-3 pr-4">${e.date}</td>
+                                <td class="py-3 pr-4"><span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${badgeColor}">${e.status}</span></td>
+                                <td class="py-3">${e.participantCount}</td>
+                            </tr>
+                        `;
+                    });
+                }
 
                 const usersRes = await fetch('/api/admin/users', {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
-                const usersData = await usersRes.json();
-                const mBody = document.querySelector('#membersTable tbody');
-                mBody.innerHTML = '';
-                usersData.slice(0, 5).forEach(u => {
-                    const badge = u.role === 'alumni' ? 'bg-violet-100 text-violet-700' : 'bg-orange-100 text-orange-700';
-                    mBody.innerHTML += `
-                        <tr class="text-slate-700">
-                            <td class="py-3 pr-4 font-medium text-slate-800">${u.full_name}</td>
-                            <td class="py-3 pr-4"><span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold uppercase ${badge}">${u.role}</span></td>
-                            <td class="py-3">${new Date(u.created_at).toLocaleDateString()}</td>
-                        </tr>
-                    `;
-                });
+                if (usersRes.ok) {
+                    const usersData = await usersRes.json();
+                    const mBody = document.querySelector('#membersTable tbody');
+                    if (mBody && Array.isArray(usersData)) {
+                        mBody.innerHTML = usersData.length ? '' : '<tr><td colspan="3" class="py-4 text-center text-slate-400">No members found.</td></tr>';
+                        usersData.slice(0, 5).forEach(u => {
+                            const badge = u.role === 'alumni' ? 'bg-violet-100 text-violet-700' : 'bg-orange-100 text-orange-700';
+                            mBody.innerHTML += `
+                                <tr class="text-slate-700">
+                                    <td class="py-3 pr-4 font-medium text-slate-800">${u.full_name}</td>
+                                    <td class="py-3 pr-4"><span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold uppercase ${badge}">${u.role}</span></td>
+                                    <td class="py-3">${u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A'}</td>
+                                </tr>
+                            `;
+                        });
+                    }
+                }
             } catch (err) {
                 console.error(err);
             }

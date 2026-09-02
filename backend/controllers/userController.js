@@ -1,13 +1,17 @@
 const bcrypt = require('bcryptjs');
 const pool = require('../config/db');
 
-function sanitizePublicUser(user) {
+function sanitizePublicUser(user, isLoggedIn) {
   if (!user) return null;
 
   const publicUser = { ...user };
 
   if (publicUser.show_phone_publicly !== true) {
     delete publicUser.phone;
+  }
+
+  if (!isLoggedIn) {
+    delete publicUser.email;
   }
 
   delete publicUser.password_hash;
@@ -31,14 +35,15 @@ async function getUserProfile(req, res) {
     }
 
     const user = result.rows[0];
+    const isLoggedIn = Boolean(req.user);
     const isOwner = req.user && Number(req.user.id) === Number(id);
 
     if (isOwner) {
-      return res.json({ user: { ...user, showPhonePublicly: user.show_phone_publicly === true } });
+      return res.json({ user: { ...user, showPhonePublicly: user.show_phone_publicly === true }, contactLocked: false });
     }
 
-    const publicUser = sanitizePublicUser(user);
-    return res.json({ user: { ...publicUser, showPhonePublicly: user.show_phone_publicly === true } });
+    const publicUser = sanitizePublicUser(user, isLoggedIn);
+    return res.json({ user: { ...publicUser, showPhonePublicly: user.show_phone_publicly === true }, contactLocked: !isLoggedIn });
   } catch (err) {
     console.error('Error fetching user profile:', err);
     return res.status(500).json({ message: 'Server error while fetching user profile' });

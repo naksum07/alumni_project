@@ -159,6 +159,7 @@
 
   function clearSearchBox() {
     if (searchInput) searchInput.value = "";
+    loadLiveStudents('');
     const studentCards = getStudentCards();
 
     studentCards.forEach(function (card) {
@@ -226,7 +227,9 @@
 
   async function loadLiveStudents(search = '') {
     const apiOrigin = window.location.protocol === 'file:' ? 'http://localhost:5001' : window.location.origin;
-    const url = apiOrigin + '/api/students' + (search ? `?search=${encodeURIComponent(search)}` : '');
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchVal = search !== '' ? search : (urlParams.get('search') || '');
+    const url = apiOrigin + '/api/students' + (searchVal ? `?search=${encodeURIComponent(searchVal)}` : '');
     const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
 
     try {
@@ -243,6 +246,9 @@
       renderStudentState([]);
     }
   }
+
+  const initialStudentSearch = new URLSearchParams(window.location.search).get('search') || '';
+  if (initialStudentSearch && searchInput) searchInput.value = initialStudentSearch;
 
   loadLiveStudents();
 })();

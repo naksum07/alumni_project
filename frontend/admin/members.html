@@ -40,16 +40,25 @@
 <script>
 let currentFilter = 'All';
 
+function getToken() {
+    return typeof getAdminToken === 'function' ? getAdminToken() : (localStorage.getItem('adminToken') || localStorage.getItem('token'));
+}
+
 async function loadMembers() {
-    const res = await fetch('/api/admin/users', { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('adminToken') } });
-    if (!res.ok) return window.location.href = 'login.html';
-    let allUsers = await res.json();
+    const res = await fetch('/api/admin/users', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+    if (!res.ok) {
+        if (typeof clearAdminTokens === 'function') clearAdminTokens();
+        return window.location.href = 'login.html';
+    }
+    const data = await res.json();
+    let allUsers = Array.isArray(data) ? data : [];
     let users = allUsers;
     if (currentFilter !== 'All') {
-        users = users.filter(u => u.role.toLowerCase() === currentFilter.toLowerCase());
+        users = users.filter(u => u.role && u.role.toLowerCase() === currentFilter.toLowerCase());
     }
     
     const tbody = document.querySelector('#membersFullTable tbody');
+    if (!tbody) return;
     tbody.innerHTML = '';
     
     if (users.length === 0) {
@@ -58,13 +67,19 @@ async function loadMembers() {
     }
 
     users.forEach(u => {
-        const badge = u.role === 'alumni' ? 'bg-purple-100 text-purple-800' : 'bg-orange-100 text-orange-800';
+        const roleLower = String(u.role || '').toLowerCase();
+        const badge = roleLower === 'alumni' 
+            ? 'bg-purple-100 text-purple-800' 
+            : roleLower === 'admin' 
+              ? 'bg-blue-100 text-blue-800' 
+              : 'bg-orange-100 text-orange-800';
+        const dateStr = u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A';
         tbody.innerHTML += `
             <tr>
-                <td class="font-medium">${u.full_name}</td>
-                <td>${u.email}</td>
-                <td><span class="px-2 py-1 rounded text-xs font-semibold ${badge}">${u.role}</span></td>
-                <td>${new Date(u.created_at).toLocaleDateString()}</td>
+                <td class="font-medium">${u.full_name || 'N/A'}</td>
+                <td>${u.email || 'N/A'}</td>
+                <td><span class="px-2 py-1 rounded text-xs font-semibold ${badge}">${u.role || 'user'}</span></td>
+                <td>${dateStr}</td>
             </tr>
         `;
     });
@@ -73,13 +88,14 @@ async function loadMembers() {
 window.setFilter = (type) => {
     currentFilter = type;
     
-    // Update button styles
     ['All', 'Student', 'Alumni'].forEach(t => {
         const btn = document.getElementById('btn' + t);
-        if(t === type) {
-            btn.className = 'px-4 py-1.5 text-sm font-semibold rounded bg-[#012970] text-white';
-        } else {
-            btn.className = 'px-4 py-1.5 text-sm font-semibold rounded text-gray-600 hover:bg-gray-100';
+        if (btn) {
+            if (t === type) {
+                btn.className = 'px-4 py-1.5 text-sm font-semibold rounded bg-[#012970] text-white';
+            } else {
+                btn.className = 'px-4 py-1.5 text-sm font-semibold rounded text-gray-600 hover:bg-gray-100';
+            }
         }
     });
     

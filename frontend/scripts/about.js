@@ -1,12 +1,10 @@
-/* AOS (Animate On Scroll) Initialization */
-
-AOS.init({
-  duration: 1000,
-  once: true,
-  offset: 100,
-});
-
-
+if (typeof AOS !== 'undefined') {
+  AOS.init({
+    duration: 1000,
+    once: true,
+    offset: 100,
+  });
+}
 
   /* Navigate to Previous Page */
 
@@ -22,13 +20,15 @@ function goBack() {
 
 const topBtn = document.getElementById("topBtn");
 
-window.addEventListener("scroll", function () {
-  if (window.scrollY > 400) {
-    topBtn.classList.remove("hidden");
-  } else {
-    topBtn.classList.add("hidden");
-  }
-});
+if (topBtn) {
+  window.addEventListener("scroll", function () {
+    if (window.scrollY > 400) {
+      topBtn.classList.remove("hidden");
+    } else {
+      topBtn.classList.add("hidden");
+    }
+  });
+}
 
 /* Scroll to Top */
 

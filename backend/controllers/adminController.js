@@ -178,7 +178,9 @@ async function createEvent(req, res) {
 // PUT /api/admin/events/:id
 async function updateEvent(req, res) {
   const { id } = req.params;
-  const { name, eventDate, eventTime, venue, description } = req.body;
+  const name = req.body.name || req.body.title;
+  const eventDate = req.body.eventDate || req.body.date;
+  const { eventTime, venue, description, host, status } = req.body;
 
   try {
     const result = await pool.query(
@@ -187,9 +189,11 @@ async function updateEvent(req, res) {
          event_date = COALESCE($2, event_date),
          event_time = COALESCE($3, event_time),
          venue = COALESCE($4, venue),
-         description = COALESCE($5, description)
-       WHERE id = $6 RETURNING *`,
-      [name, eventDate, eventTime, venue, description, id]
+         description = COALESCE($5, description),
+         host = COALESCE($6, host),
+         status = COALESCE($7, status)
+       WHERE id = $8 RETURNING *`,
+      [name || null, eventDate || null, eventTime || null, venue || null, description || null, host || null, status || null, id]
     );
 
     if (result.rows.length === 0) {

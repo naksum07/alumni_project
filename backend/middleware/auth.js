@@ -7,7 +7,7 @@ function verifyToken(req, res, next) {
   }
   const token = authHeader.split(' ')[1];
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret-key-fallback');
     req.user = decoded; // { id, email, role }
     next();
   } catch (err) {
@@ -21,7 +21,7 @@ function optionalAuth(req, res, next) {
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.split(' ')[1];
     try {
-      req.user = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = jwt.verify(token, process.env.JWT_SECRET || 'secret-key-fallback');
     } catch (err) {
       // Invalid/expired token on a public route — just proceed as a guest
       req.user = null;

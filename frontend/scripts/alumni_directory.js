@@ -36,114 +36,132 @@ const searchInput =
             );
  
  
-        searchInput.addEventListener(
-            "input",
-            function () {
- 
-                const alumniCards = getAlumniCards();
- 
-                /* Nothing registered yet — keep the empty state up and
-                   don't run a search against zero cards. */
-                if (alumniCards.length === 0) {
- 
-                    emptyState.classList.remove("hidden");
-                    noResults.classList.add("hidden");
-                    resultCount.textContent = "Showing 0 alumni";
-                    return;
- 
-                }
- 
-                const searchTerm =
-                    searchInput.value
-                        .toLowerCase()
-                        .trim();
  
  
-                let visibleCount = 0;
- 
- 
-                alumniCards.forEach(
-                    function (card) {
- 
-                        const searchableText =
-                            card.dataset.search
-                                .toLowerCase();
- 
- 
-                        if (
-                            searchableText.includes(
-                                searchTerm
-                            )
-                        ) {
- 
-                            card.classList.remove(
-                                "hidden"
-                            );
- 
-                            visibleCount++;
- 
-                        } else {
- 
-                            card.classList.add(
-                                "hidden"
-                            );
- 
-                        }
- 
+        if (searchInput) {
+            searchInput.addEventListener(
+                "input",
+                function () {
+
+                    const alumniCards = getAlumniCards();
+
+                    /* Nothing registered yet — keep the empty state up and
+                       don't run a search against zero cards. */
+                    if (alumniCards.length === 0) {
+
+                        if (emptyState) emptyState.classList.remove("hidden");
+                        if (noResults) noResults.classList.add("hidden");
+                        if (resultCount) resultCount.textContent = "Showing 0 alumni";
+                        return;
+
                     }
-                );
- 
- 
-                /* RESULT COUNT */
- 
-                resultCount.textContent =
-                    `Showing ${visibleCount} alumni`;
- 
- 
-                /* NO RESULTS (i.e. search matched nothing, though
-                   alumni do exist in the directory) */
- 
-                if (visibleCount === 0) {
- 
-                    noResults.classList.remove(
-                        "hidden"
+
+                    const searchTerm =
+                        searchInput.value
+                            .toLowerCase()
+                            .trim();
+
+
+                    let visibleCount = 0;
+
+
+                    alumniCards.forEach(
+                        function (card) {
+
+                            const searchableText =
+                                card.dataset.search
+                                    .toLowerCase();
+
+
+                            if (
+                                searchableText.includes(
+                                    searchTerm
+                                )
+                            ) {
+
+                                card.classList.remove(
+                                    "hidden"
+                                );
+
+                                visibleCount++;
+
+                            } else {
+
+                                card.classList.add(
+                                    "hidden"
+                                );
+
+                            }
+
+                        }
                     );
- 
-                } else {
- 
-                    noResults.classList.add(
-                        "hidden"
-                    );
- 
+
+
+                    /* RESULT COUNT */
+
+                    if (resultCount) {
+                        resultCount.textContent =
+                            `Showing ${visibleCount} alumni`;
+                    }
+
+
+                    /* NO RESULTS (i.e. search matched nothing, though
+                       alumni do exist in the directory) */
+
+                    if (visibleCount === 0) {
+
+                        if (noResults) {
+                            noResults.classList.remove(
+                                "hidden"
+                            );
+                        }
+
+                    } else {
+
+                        if (noResults) {
+                            noResults.classList.add(
+                                "hidden"
+                            );
+                        }
+
+                    }
+
+
+                    /* CLEAR BUTTON */
+
+                    if (searchTerm.length > 0) {
+
+                        if (clearSearch) {
+                            clearSearch.classList.remove(
+                                "hidden"
+                            );
+                        }
+
+                        if (clearSearchText) {
+                            clearSearchText.classList.remove(
+                                "hidden"
+                            );
+                        }
+
+                    } else {
+
+                        if (clearSearch) {
+                            clearSearch.classList.add(
+                                "hidden"
+                            );
+                        }
+
+                        if (clearSearchText) {
+                            clearSearchText.classList.add(
+                                "hidden"
+                            );
+                        }
+
+                    }
+
                 }
- 
- 
-                /* CLEAR BUTTON */
- 
-                if (searchTerm.length > 0) {
- 
-                    clearSearch.classList.remove(
-                        "hidden"
-                    );
- 
-                    clearSearchText.classList.remove(
-                        "hidden"
-                    );
- 
-                } else {
- 
-                    clearSearch.classList.add(
-                        "hidden"
-                    );
- 
-                    clearSearchText.classList.add(
-                        "hidden"
-                    );
- 
-                }
- 
-            }
-        );
+            );
+        }
  
  
          // CLEAR SEARCH FUNCTION
@@ -151,6 +169,9 @@ const searchInput =
         function clearSearchBox() {
  
             searchInput.value = "";
+            if (typeof window.loadLiveAlumni === 'function') {
+                window.loadLiveAlumni('');
+            }
  
             const alumniCards = getAlumniCards();
  
@@ -398,31 +419,43 @@ const searchInput =
     }
   }
  
-  async function loadLiveAlumni(search = '') {
+  async function loadLiveAlumni(overrideSearch) {
     const apiOrigin = window.location.protocol === 'file:' ? 'http://localhost:5001' : window.location.origin;
-    const url = apiOrigin + '/api/alumni' + (search ? `?search=${encodeURIComponent(search)}` : '');
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchVal = overrideSearch !== undefined ? overrideSearch : (urlParams.get('search') || (searchInput ? searchInput.value : ''));
+    const deptVal   = urlParams.get('department') || '';
+    const yearVal   = urlParams.get('year') || urlParams.get('batch') || '';
+
+    const params = new URLSearchParams();
+    if (searchVal) params.set('search', searchVal);
+    if (deptVal)   params.set('department', deptVal);
+    if (yearVal)   params.set('year', yearVal);
+
+    const queryStr = params.toString();
+    const url = apiOrigin + '/api/alumni' + (queryStr ? `?${queryStr}` : '');
     const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
 
     try {
       const res = await fetch(url, { headers });
- 
+
       if (!res.ok) {
         console.warn('Alumni fetch failed with status', res.status);
         renderAlumniState([]);
         return;
       }
- 
+
       const alumni = await res.json();
       renderAlumniState(alumni);
- 
+
     } catch (e) {
       console.warn('Could not load alumni:', e);
       renderAlumniState([]);
     }
   }
- 
-  const urlSearch = new URLSearchParams(window.location.search).get('search') || '';
-  if (urlSearch && searchInput) searchInput.value = urlSearch;
-  loadLiveAlumni(urlSearch);
+
+  const initialSearch = new URLSearchParams(window.location.search).get('search') || '';
+  if (initialSearch && searchInput) searchInput.value = initialSearch;
+  loadLiveAlumni();
+
+  window.loadLiveAlumni = loadLiveAlumni;
 })();
- 
