@@ -1,145 +1,619 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Register | AlumniConnect</title>
 <meta name="description" content="Create your AlumniConnect account and join the alumni community.">
 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135755.png">
-<script src="/scripts/register.js" defer></script>
 <script src="https://cdn.tailwindcss.com"></script>
-<style>
-    html { 
-        scroll-behavior: smooth; 
-    }
-</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
-<body class="bg-gray-100 text-gray-800">
-<!-- MAIN CONTENT -->
-<main class="min-h-screen flex items-center justify-center pt-24 pb-12 px-4">
+<body class="bg-slate-50 text-gray-800">
+<main class="min-h-screen flex items-center justify-center py-12 px-4">
+<div class="w-full max-w-2xl bg-white rounded-3xl shadow-xl border border-slate-100 p-8 sm:p-10 mx-4">
 
-<div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-8 mx-4">
     <div class="text-center mb-8">
-    <div class="text-5xl">🎓</div>
-        <h1 class="text-3xl font-bold text-blue-900 mt-3">AlumniConnect</h1>
-        <p class="text-gray-500 mt-2">Create your alumni account</p>
+        <a href="index.html" class="inline-flex items-center gap-2 mb-3">
+            <span class="p-1 flex items-center">
+                <img src="/assets/logo.png" alt="ICFAI University Sikkim" class="h-12 w-auto">
+            </span>
+        </a>
+        <h1 class="text-3xl font-bold text-[#012970]">Join Alumni<span class="text-[#c4161c]">Connect</span></h1>
+        <p class="text-slate-500 mt-1 text-sm">Create your ICFAI University Sikkim alumni / student account</p>
     </div>
 
-<!-- REGISTER FORM -->
-<form id="registerForm" class="grid md:grid-cols-2 gap-5">
+    <form id="registerForm" class="grid md:grid-cols-2 gap-5" novalidate>
 
-<p id="formMessage" class="md:col-span-2 text-center text-sm font-medium hidden"></p>
+        <p id="formMessage" class="md:col-span-2 text-center text-sm font-medium hidden"></p>
 
-<!-- FULL NAME -->
-<div>
-    <label class="block font-semibold text-gray-700 mb-2">Full Name</label>
-    <input type="text"
-        id="fullName"
-        placeholder="Enter your name" required
-        class="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-900 outline-none">
+        <div class="md:col-span-2">
+            <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wide">Full Name *</label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                    <input type="text" id="firstName" name="firstName" placeholder="First Name *" required
+                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none">
+                    <p id="firstNameError" class="text-red-600 text-xs mt-1 hidden"></p>
+                </div>
+                <div>
+                    <input type="text" id="middleName" name="middleName" placeholder="Middle Name"
+                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none">
+                    <p id="middleNameError" class="text-red-600 text-xs mt-1 hidden"></p>
+                </div>
+                <div>
+                    <input type="text" id="lastName" name="lastName" placeholder="Last Name *" required
+                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none">
+                    <p id="lastNameError" class="text-red-600 text-xs mt-1 hidden"></p>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wide">Email Address *</label>
+            <input type="email" id="email" placeholder="e.g. name@example.com" required
+                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none">
+            <p id="emailError" class="text-red-600 text-xs mt-1 hidden"></p>
+        </div>
+
+        <div>
+            <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wide">Phone Number *</label>
+            <div class="flex gap-2">
+                <select id="countryCode" class="border border-gray-300 rounded-xl px-2.5 py-3 text-xs sm:text-sm bg-white focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none shrink-0">
+                    <option value="+91" data-format="98765 43210" selected>🇮🇳 +91 (IN)</option>
+                    <option value="+1" data-format="(555) 123-4567">🇺🇸 +1 (US)</option>
+                    <option value="+44" data-format="7911 123456">🇬🇧 +44 (UK)</option>
+                    <option value="+61" data-format="412 345 678">🇦🇺 +61 (AU)</option>
+                    <option value="+977" data-format="984-1234567">🇳🇵 +977 (NP)</option>
+                    <option value="+975" data-format="17 12 34 56">🇧🇹 +975 (BT)</option>
+                    <option value="+880" data-format="1712-345678">🇧🇩 +880 (BD)</option>
+                    <option value="+971" data-format="50 123 4567">🇦🇪 +971 (AE)</option>
+                    <option value="+65" data-format="8123 4567">🇸🇬 +65 (SG)</option>
+                    <option value="+1" data-format="(555) 123-4567">🇨🇦 +1 (CA)</option>
+                </select>
+                <input type="tel" id="phone" placeholder="98765 43210" required
+                    class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none">
+            </div>
+            <p id="phoneError" class="text-red-600 text-xs mt-1 hidden"></p>
+        </div>
+
+        <div>
+            <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wide">Account Type *</label>
+            <select id="role" required
+                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none bg-white">
+                <option value="" selected disabled>Select Role</option>
+                <option value="student">Student</option>
+                <option value="alumni">Alumni</option>
+            </select>
+            <p id="roleError" class="text-red-600 text-xs mt-1 hidden"></p>
+        </div>
+
+        <div>
+            <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wide">Department *</label>
+            <select id="department" required
+                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none bg-white">
+                <option value="" selected disabled>Select Department</option>
+                <option value="Management & Commerce">Faculty of Management &amp; Commerce</option>
+                <option value="Law">Faculty of Law</option>
+                <option value="Science & Technology">Faculty of Science &amp; Technology</option>
+                <option value="Hotel & Tourism Management">Faculty of Hotel &amp; Tourism Management</option>
+                <option value="Liberal Arts">Faculty of Liberal Arts</option>
+            </select>
+            <p id="departmentError" class="text-red-600 text-xs mt-1 hidden"></p>
+        </div>
+
+        <div id="alumniGradYearField">
+            <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wide">Graduation Year *</label>
+            <select id="graduationYear"
+                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none bg-white">
+                <option value="" selected disabled>Select Graduation Year</option>
+                <option value="2026">2026</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+                <option value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+                <option value="2018">2018</option>
+                <option value="2017">2017</option>
+                <option value="2016">2016</option>
+                <option value="2015">2015</option>
+            </select>
+            <p id="graduationYearError" class="text-red-600 text-xs mt-1 hidden"></p>
+        </div>
+
+        <div id="studentGradYearField" class="md:col-span-2 hidden">
+            <label for="expected-grad-year" class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wide">Expected Graduation Year *</label>
+            <select id="expected-grad-year" name="expected-grad-year"
+                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none bg-white">
+                <option value="" disabled selected>Select your expected year</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+                <option value="2029">2029</option>
+                <option value="2030">2030</option>
+                <option value="2031">2031</option>
+            </select>
+            <small class="block text-slate-500 mt-1">Current students only. Alumni should use the Alumni Login.</small>
+            <p id="expectedGradYearError" class="text-red-600 text-xs mt-1 hidden"></p>
+        </div>
+
+        
+        <div>
+            <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wide">Graduation Level *</label>
+            <select id="graduationLevel" required
+                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none bg-white">
+                <option value="" selected disabled>Select Level</option>
+                <option value="UG">Undergraduate (UG)</option>
+                <option value="PG">Postgraduate (PG)</option>
+                <option value="Doctoral">Doctoral (Ph.D.)</option>
+            </select>
+            <p id="graduationLevelError" class="text-red-600 text-xs mt-1 hidden"></p>
+        </div>
+
+        <div class="md:col-span-2">
+            <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wide">Program *</label>
+            <select id="program" required disabled
+                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none bg-white disabled:bg-slate-100 disabled:text-slate-400">
+                <option value="" selected disabled>Select Department and Level first</option>
+            </select>
+            <p id="programError" class="text-red-600 text-xs mt-1 hidden"></p>
+        </div>
+
+        <div>
+            <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wide">Password*</label>
+            <div class="relative">
+                <input id="password" type="password" placeholder="Create password" required
+                    class="w-full border border-gray-300 rounded-xl px-4 py-3 pr-11 text-sm focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none">
+                <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1" onclick="togglePasswordVisibility('password', this)" aria-label="Toggle password visibility">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </div>
+            <p id="passwordError" class="text-red-600 text-xs mt-1 hidden"></p>
+        </div>
+
+        <div>
+            <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wide">Confirm Password *</label>
+            <div class="relative">
+                <input id="confirmPassword" type="password" placeholder="Confirm password" required
+                    class="w-full border border-gray-300 rounded-xl px-4 py-3 pr-11 text-sm focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none">
+                <button type="button" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1" onclick="togglePasswordVisibility('confirmPassword', this)" aria-label="Toggle password visibility">
+                    <i class="fa-solid fa-eye"></i>
+                </button>
+            </div>
+            <p id="confirmPasswordError" class="text-red-600 text-xs mt-1 hidden"></p>
+        </div>
+
+        <div class="md:col-span-2">
+            <label class="flex items-center gap-2 text-slate-600 text-sm cursor-pointer">
+                <input type="checkbox" id="terms" required class="rounded text-[#c4161c] focus:ring-[#c4161c]">
+                I agree to the <a href="#" class="text-[#012970] hover:text-[#c4161c]">Terms &amp; Conditions</a> and <a href="#" class="text-[#012970] hover:text-[#c4161c]">Privacy Policy</a>
+            </label>
+            <p id="termsError" class="text-red-600 text-xs mt-1 hidden"></p>
+        </div>
+
+        <div class="md:col-span-2">
+            <button type="submit"
+                class="w-full bg-[#c4161c] hover:bg-[#a01217] text-white py-3.5 rounded-xl font-semibold transition shadow-md">
+                Create Account
+            </button>
+        </div>
+    </form>
+
+    <p class="text-center mt-6 text-slate-600 text-sm">Already have an account?
+        <a href="login.html" class="text-[#012970] font-semibold hover:text-[#c4161c] underline">Login</a>
+    </p>
+    <a href="index.html" class="block text-center mt-3 text-xs text-slate-400 hover:text-[#012970]">← Back to Home</a>
+
 </div>
-
-<!-- EMAIL -->
-<div>
-    <label class="block font-semibold text-gray-700 mb-2">Email Address</label>
-    <input type="email"
-        id="email"
-        placeholder="Enter email" required
-        class="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-900 outline-none">
-    </div>
-
-<!-- PHONE -->
-<div>
-    <label class="block font-semibold text-gray-700 mb-2">Phone Number</label>
-    <input type="tel"
-    id="phone"
-    placeholder="+91 XXXXX XXXXX"
-    required
-    class="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-900 outline-none">
-</div>
-
-<!-- ROLE -->
-<div>
-    <label class="block font-semibold text-gray-700 mb-2">Account Type</label>
-    <select id="role" required class="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-900 outline-none">
-        <option value="" selected disabled>Select Role</option>
-        <option value="student">Student</option>
-        <option value="alumni">Alumni</option>
-    </select>
-</div>
-
-<!-- DEPARTMENT -->
-<div>
-    <label class="block font-semibold text-gray-700 mb-2">Department</label>
-    <select id="department" required class="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-900 outline-none">
-        <option value="" selected disabled>Select Department</option>
-        <option value="Computer Science Engineering">Computer Science Engineering</option>
-        <option value="Electronics Engineering">Electronics Engineering</option>
-        <option value="Mechanical Engineering">Mechanical Engineering</option>
-        <option value="Electrical Engineering">Electrical Engineering</option>
-        <option value="Civil Engineering">Civil Engineering</option>
-    </select>
-</div>
-
-<!-- PASSING YEAR -->
-<div>
-    <label class="block font-semibold text-gray-700 mb-2">Graduation Year</label>
-    <select id="graduationYear" required class="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-900 outline-none">
-        <option value="" selected disabled>Select Year</option>
-        <option value="2018">2026</option>
-        <option value="2019">2025</option>
-        <option value="2020">2024</option>
-        <option value="2021">2023</option>
-        <option value="2022">2022</option>
-        <option value="2023">2021</option>
-        <option value="2024">2020</option>
-        <option value="2025">2019</option>
-        <option value="2026">2018</option>
-        <option value="2027">2017</option>
-        <option value="2028">2016</option>
-    </select>
-</div>
-
-<!-- PASSWORD -->
-<div>
-    <label class="block font-semibold text-gray-700 mb-2">Password</label>
-        <input id="password"
-            type="password"
-            placeholder="Create password" required
-            class="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-900 outline-none">
-</div>
-
-<!-- CONFIRM PASSWORD -->
-<div>
-    <label class="block font-semibold text-gray-700 mb-2">Confirm Password</label>
-    <input id="confirmPassword"
-        type="password"
-        placeholder="Confirm password" required
-        class="w-full border rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-900 outline-none">
-</div>
-
-<!-- TERMS -->
-<div class="md:col-span-2">
-    <label class="flex items-center gap-2 text-gray-600">
-    <input type="checkbox" required>I agree to Terms &amp; Conditions</label>
-</div>
-
-<!-- BUTTON -->
-<div class="md:col-span-2">
-    <button type="submit"
-    class="w-full bg-blue-900 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition">
-        Create Account
-    </button>
-</div>
-</form>
-<!-- LOGIN LINK -->
-<p class="text-center mt-6 text-gray-600">Already have an account?
-    <a href="login.html" class="text-blue-900 font-semibold hover:underline">Login</a>
-</p>
-    <a href="index.html" class="block text-center mt-4 text-gray-500 hover:text-blue-900">Back to Home</a>
-
-</div>
-
 </main>
 </body>
+
+<script>
+const CURRENT_YEAR = new Date().getFullYear();
+
+const PROGRAMS_BY_DEPARTMENT = {
+    "Management & Commerce": {
+        UG: ["BBA", "BBA (Hons.)", "BBA (Hons. with Research)", "B.Com", "B.Com (Hons.)", "B.Com (Hons. with Research)"],
+        PG: ["MBA", "MBA for Working Professionals", "M.Com"],
+        Doctoral: ["Ph.D"]
+    },
+    "Law": {
+        UG: ["BBA-LL.B (Hons.)", "BA-LL.B (Hons.)", "LL.B"],
+        PG: ["LL.M"],
+        Doctoral: ["Ph.D"]
+    },
+    "Science & Technology": {
+        UG: ["BCA", "BCA (Hons.)", "BCA (Hons. with Research)"],
+        PG: ["MCA"],
+        Doctoral: ["Ph.D"]
+    },
+    "Hotel & Tourism Management": {
+        UG: ["BHM", "BTTM"],
+        PG: ["MTTM"],
+        Doctoral: ["Ph.D"]
+    },
+    "Liberal Arts": {
+        UG: [
+            "BA Political Science", "BA Political Science (Hons.)", "BA Political Science (Hons. with Research)",
+            "BA English", "BA English (Hons.)", "BA English (Hons. with Research)",
+            "BA Economics", "BA Economics (Hons.)", "BA Economics (Hons. with Research)",
+            "BA Sociology", "BA Sociology (Hons.)", "BA Sociology (Hons. with Research)",
+            "BA Public Administration", "BA Public Administration (Hons.)", "BA Public Administration (Hons. with Research)",
+            "BA International Relations", "BA International Relations (Hons.)", "BA International Relations (Hons. with Research)",
+            "BA Civil Services",
+            "BA Mass Communication and Journalism", "BA Mass Communication and Journalism (Hons.)", "BA Mass Communication and Journalism (Hons. with Research)"
+        ],
+        PG: ["MA Political Science", "MA Economics"],
+        Doctoral: ["Ph.D"]
+    }
+};
+
+const NAME_PATTERN = /^[A-Za-z][A-Za-z\s'-]{1,49}$/;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d).{8,}$/;
+
+function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const icon = btn.querySelector("i");
+    const isHidden = input.type === "password";
+    input.type = isHidden ? "text" : "password";
+    if (icon) {
+        icon.classList.toggle("fa-eye", !isHidden);
+        icon.classList.toggle("fa-eye-slash", isHidden);
+    }
+}
+
+const registerForm = document.getElementById("registerForm");
+const formMessage = document.getElementById("formMessage");
+const submitBtn = registerForm.querySelector("button[type=submit]");
+
+const countrySelect = document.getElementById("countryCode");
+const phoneInput = document.getElementById("phone");
+const roleSelect = document.getElementById("role");
+const departmentSelect = document.getElementById("department");
+const graduationLevelSelect = document.getElementById("graduationLevel");
+const programSelect = document.getElementById("program");
+const alumniGradYearField = document.getElementById("alumniGradYearField");
+const studentGradYearField = document.getElementById("studentGradYearField");
+const graduationYearSelect = document.getElementById("graduationYear");
+const expectedGradYearSelect = document.getElementById("expected-grad-year");
+const passwordInput = document.getElementById("password");
+const confirmPasswordInput = document.getElementById("confirmPassword");
+const termsCheckbox = document.getElementById("terms");
+
+function showFieldError(fieldId, message) {
+    const errorEl = document.getElementById(`${fieldId}Error`);
+    if (!errorEl) return;
+    errorEl.textContent = message;
+    errorEl.classList.remove("hidden");
+}
+
+function clearFieldError(fieldId) {
+    const errorEl = document.getElementById(`${fieldId}Error`);
+    if (!errorEl) return;
+    errorEl.textContent = "";
+    errorEl.classList.add("hidden");
+}
+
+function clearAllFieldErrors() {
+    document.querySelectorAll('[id$="Error"]').forEach((el) => {
+        el.textContent = "";
+        el.classList.add("hidden");
+    });
+}
+
+function showFormMessage(text, isError) {
+    formMessage.innerHTML = text;
+    formMessage.classList.remove("hidden", "text-red-600", "text-green-600");
+    formMessage.classList.add(isError ? "text-red-600" : "text-green-600");
+}
+
+function hideFormMessage() {
+    formMessage.classList.add("hidden");
+    formMessage.innerHTML = "";
+}
+
+countrySelect.addEventListener("change", function () {
+    const selectedOption = countrySelect.options[countrySelect.selectedIndex];
+    const format = selectedOption.getAttribute("data-format");
+    if (format) {
+        phoneInput.placeholder = format;
+    }
+});
+
+function populateProgramOptions() {
+    const department = departmentSelect.value;
+    const level = graduationLevelSelect.value;
+    programSelect.innerHTML = "";
+
+    if (!department || !level) {
+        programSelect.disabled = true;
+        programSelect.innerHTML = '<option value="" selected disabled>Select Department and Level first</option>';
+        return;
+    }
+
+    const programs = (PROGRAMS_BY_DEPARTMENT[department] || {})[level] || [];
+    if (programs.length === 0) {
+        programSelect.disabled = true;
+        programSelect.innerHTML = '<option value="" selected disabled>No programs available for this combination</option>';
+        return;
+    }
+
+    programSelect.disabled = false;
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    placeholder.textContent = "Select Program";
+    programSelect.appendChild(placeholder);
+
+    programs.forEach((programName) => {
+        const option = document.createElement("option");
+        option.value = programName;
+        option.textContent = programName;
+        programSelect.appendChild(option);
+    });
+}
+
+departmentSelect.addEventListener("change", populateProgramOptions);
+graduationLevelSelect.addEventListener("change", populateProgramOptions);
+
+function toggleGraduationYearFields() {
+    const role = roleSelect.value;
+
+    alumniGradYearField.classList.toggle("hidden", role !== "alumni");
+    studentGradYearField.classList.toggle("hidden", role !== "student");
+
+    if (role === "alumni") {
+        graduationYearSelect.required = true;
+        graduationYearSelect.disabled = false;
+        expectedGradYearSelect.required = false;
+        expectedGradYearSelect.disabled = true;
+        expectedGradYearSelect.value = "";
+    } else if (role === "student") {
+        graduationYearSelect.required = false;
+        graduationYearSelect.disabled = true;
+        graduationYearSelect.value = "";
+        expectedGradYearSelect.required = true;
+        expectedGradYearSelect.disabled = false;
+    } else {
+        graduationYearSelect.required = false;
+        graduationYearSelect.disabled = true;
+        graduationYearSelect.value = "";
+        expectedGradYearSelect.required = false;
+        expectedGradYearSelect.disabled = true;
+        expectedGradYearSelect.value = "";
+    }
+
+    clearFieldError("graduationYear");
+    clearFieldError("expectedGradYear");
+}
+
+roleSelect.addEventListener("change", toggleGraduationYearFields);
+toggleGraduationYearFields();
+
+function validateName(value, fieldId, label) {
+    const trimmed = value.trim();
+    if (!trimmed) {
+        showFieldError(fieldId, `${label} is required.`);
+        return null;
+    }
+    if (!NAME_PATTERN.test(trimmed)) {
+        showFieldError(fieldId, `${label} must be 2-50 letters and may include spaces, hyphens or apostrophes.`);
+        return null;
+    }
+    clearFieldError(fieldId);
+    return trimmed;
+}
+
+function validateOptionalName(value) {
+    const trimmed = value.trim();
+    if (!trimmed) {
+        clearFieldError("middleName");
+        return "";
+    }
+    if (!NAME_PATTERN.test(trimmed)) {
+        showFieldError("middleName", "Middle Name must be 2-50 letters and may include spaces, hyphens or apostrophes.");
+        return null;
+    }
+    clearFieldError("middleName");
+    return trimmed;
+}
+
+function validateEmail(value) {
+    const trimmed = value.trim();
+    if (!trimmed) {
+        showFieldError("email", "Email address is required.");
+        return null;
+    }
+    if (!EMAIL_PATTERN.test(trimmed)) {
+        showFieldError("email", "Enter a valid email address.");
+        return null;
+    }
+    clearFieldError("email");
+    return trimmed;
+}
+
+function validatePhone(value) {
+    const trimmed = value.trim();
+    if (!trimmed) {
+        showFieldError("phone", "Phone number is required.");
+        return null;
+    }
+    const digitsOnly = trimmed.replace(/\D/g, "");
+    if (digitsOnly.length < 7 || digitsOnly.length > 15) {
+        showFieldError("phone", "Enter a valid phone number (7-15 digits).");
+        return null;
+    }
+    clearFieldError("phone");
+    return trimmed;
+}
+
+function validateSelect(value, fieldId, label) {
+    if (!value) {
+        showFieldError(fieldId, `${label} is required.`);
+        return null;
+    }
+    clearFieldError(fieldId);
+    return value;
+}
+
+function validateGraduationYearFields(role) {
+    if (role === "alumni") {
+        const value = graduationYearSelect.value;
+        if (!value) {
+            showFieldError("graduationYear", "Graduation Year is required.");
+            return null;
+        }
+        clearFieldError("graduationYear");
+        return { fieldName: "graduationYear", value: Number(value) };
+    }
+
+    if (role === "student") {
+        const value = expectedGradYearSelect.value;
+        if (!value) {
+            showFieldError("expectedGradYear", "Expected Graduation Year is required.");
+            return null;
+        }
+        const year = Number(value);
+        if (year < CURRENT_YEAR) {
+            showFieldError(
+                "expectedGradYear",
+                'It looks like you selected a past graduation year. If you have already graduated, please use the <a href="login.html" class="underline font-semibold">Alumni Login</a> instead.'
+            );
+            return null;
+        }
+        clearFieldError("expectedGradYear");
+        return { fieldName: "expectedGraduationYear", value: year };
+    }
+
+    return null;
+}
+
+function validatePassword(value) {
+    if (!value) {
+        showFieldError("password", "Password is required.");
+        return null;
+    }
+    if (!PASSWORD_PATTERN.test(value)) {
+        showFieldError("password", "Password must be at least 8 characters and include a letter and a number.");
+        return null;
+    }
+    clearFieldError("password");
+    return value;
+}
+
+function validateConfirmPassword(password, confirmPassword) {
+    if (!confirmPassword) {
+        showFieldError("confirmPassword", "Please confirm your password.");
+        return false;
+    }
+    if (password !== confirmPassword) {
+        showFieldError("confirmPassword", "Passwords do not match.");
+        return false;
+    }
+    clearFieldError("confirmPassword");
+    return true;
+}
+
+function validateTerms() {
+    if (!termsCheckbox.checked) {
+        showFieldError("terms", "You must agree to the Terms & Conditions and Privacy Policy.");
+        return false;
+    }
+    clearFieldError("terms");
+    return true;
+}
+
+registerForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    hideFormMessage();
+    clearAllFieldErrors();
+
+    const firstName = validateName(document.getElementById("firstName").value, "firstName", "First Name");
+    const middleName = validateOptionalName(document.getElementById("middleName").value);
+    const lastName = validateName(document.getElementById("lastName").value, "lastName", "Last Name");
+    const email = validateEmail(document.getElementById("email").value);
+    const phoneRaw = validatePhone(phoneInput.value);
+    const role = validateSelect(roleSelect.value, "role", "Account Type");
+    const department = validateSelect(departmentSelect.value, "department", "Department");
+    const graduationLevel = validateSelect(graduationLevelSelect.value, "graduationLevel", "Graduation Level");
+    const program = validateSelect(programSelect.value, "program", "Program");
+    const gradYearResult = role ? validateGraduationYearFields(role) : null;
+    const password = validatePassword(passwordInput.value);
+    const confirmPasswordValid = validateConfirmPassword(passwordInput.value, confirmPasswordInput.value);
+    const termsValid = validateTerms();
+
+    const isValid =
+        firstName !== null &&
+        middleName !== null &&
+        lastName !== null &&
+        email !== null &&
+        phoneRaw !== null &&
+        role !== null &&
+        department !== null &&
+        graduationLevel !== null &&
+        program !== null &&
+        gradYearResult !== null &&
+        password !== null &&
+        confirmPasswordValid &&
+        termsValid;
+
+    if (!isValid) {
+        showFormMessage("Please fix the highlighted fields and try again.", true);
+        return;
+    }
+
+    const fullName = [firstName, middleName, lastName].filter(Boolean).join(" ");
+    const countryCode = countrySelect.value;
+    const phone = `${countryCode} ${phoneRaw}`;
+
+    const payload = {
+        firstName,
+        middleName,
+        lastName,
+        fullName,
+        email,
+        phone,
+        password,
+        role,
+        department,
+        graduationLevel,
+        program,
+        [gradYearResult.fieldName]: gradYearResult.value
+    };
+
+    submitBtn.disabled = true;
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.textContent = "Creating Account...";
+
+    try {
+        const response = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            showFormMessage(data.message || "Registration failed. Please try again.", true);
+            return;
+        }
+
+        showFormMessage("Registration successful! Redirecting to login...", false);
+        setTimeout(() => {
+            window.location.href = "login.html";
+        }, 1200);
+    } catch (err) {
+        console.error(err);
+        showFormMessage("Could not reach the server. Please try again later.", true);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+    }
+});
+</script>
 </html>

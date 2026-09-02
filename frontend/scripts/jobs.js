@@ -1,29 +1,3 @@
-(function () {
-  const btn  = document.getElementById('menuBtn');
-  const menu = document.getElementById('mobileMenu');
-  if (!btn || !menu) return;
-  btn.addEventListener('click', function () {
-    menu.classList.toggle('hidden');
-    const open = !menu.classList.contains('hidden');
-    btn.setAttribute('aria-expanded', open);
-    btn.innerHTML = open ? '&#10005;' : '&#9776;';
-  });
-  menu.querySelectorAll('a').forEach(function (a) {
-    a.addEventListener('click', function () {
-      menu.classList.add('hidden');
-      btn.setAttribute('aria-expanded', 'false');
-      btn.innerHTML = '&#9776;';
-    });
-  });
-  window.addEventListener('resize', function () {
-    if (window.innerWidth >= 768) {
-      menu.classList.add('hidden');
-      btn.setAttribute('aria-expanded', 'false');
-      btn.innerHTML = '&#9776;';
-    }
-  });
-})();
-
 let allJobs    = [];   // raw list from API
 let selectedJob = null; // job currently open in the details modal
 
@@ -127,6 +101,39 @@ function displayJobs() {
   });
 }
 
+function getCurrentUser() {
+  try {
+    return JSON.parse(localStorage.getItem('user') || 'null');
+  } catch (err) {
+    return null;
+  }
+}
+
+function canPostOpportunity() {
+  const user = getCurrentUser();
+  return Boolean(user && String(user.role || '').toLowerCase() === 'alumni');
+}
+
+function setPostOpportunityButtonsVisibility() {
+  const buttons = document.querySelectorAll('[onclick="openPostModal()"]');
+  buttons.forEach((btn) => {
+    btn.style.display = canPostOpportunity() ? '' : 'none';
+  });
+}
+
+function showPostStatus(message, isError = false) {
+  const msg = document.getElementById('postStatusMessage');
+  if (!msg) return;
+  msg.textContent = message;
+  msg.classList.remove('hidden', 'text-red-600', 'text-green-600');
+  msg.classList.add(isError ? 'text-red-600' : 'text-green-600');
+  msg.className = `text-sm font-medium ${isError ? 'text-red-600' : 'text-green-600'}`;
+}
+
+window.addEventListener('storage', () => {
+  setPostOpportunityButtonsVisibility();
+});
+
 //Details Modal
 function showDetails(id) {
   selectedJob = allJobs.find(j => j.id === id);
@@ -177,9 +184,57 @@ function openApply() {
   const msg = document.getElementById('applyMessage');
   if (msg) { msg.textContent = ''; msg.className = 'text-sm font-medium hidden'; }
   document.getElementById('applicationForm').reset();
+
+  const countrySelect = document.getElementById('appCountryCode');
+  const phoneInput = document.getElementById('appPhone');
+  if (countrySelect && phoneInput) {
+    countrySelect.value = '+91';
+    phoneInput.placeholder = '98765 43210';
+  }
+
+  // Autofill if logged in
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  if (user) {
+    const rawName = user.fullName || user.full_name || '';
+    const parts = rawName.split(' ');
+    if (parts.length === 1) {
+      document.getElementById('appFirstName').value = parts[0] || '';
+    } else if (parts.length === 2) {
+      document.getElementById('appFirstName').value = parts[0] || '';
+      document.getElementById('appLastName').value = parts[1] || '';
+    } else if (parts.length >= 3) {
+      document.getElementById('appFirstName').value = parts[0] || '';
+      document.getElementById('appMiddleName').value = parts.slice(1, -1).join(' ') || '';
+      document.getElementById('appLastName').value = parts[parts.length - 1] || '';
+    }
+    if (user.email) document.getElementById('appEmail').value = user.email;
+    if (user.phone) {
+      const match = user.phone.match(/^(\+\d{1,4})\s*(.*)$/);
+      if (match && countrySelect) {
+        countrySelect.value = match[1];
+        if (phoneInput) phoneInput.value = match[2];
+      } else if (phoneInput) {
+        phoneInput.value = user.phone;
+      }
+    }
+  }
+
   openModal('applyModal');
 }
 function closeApply() { closeModal('applyModal'); }
+
+// Setup country code change listener for jobs apply form
+const appCountrySelect = document.getElementById('appCountryCode');
+const appPhoneInput = document.getElementById('appPhone');
+if (appCountrySelect && appPhoneInput) {
+  appCountrySelect.addEventListener('change', function() {
+    const selectedOption = appCountrySelect.options[appCountrySelect.selectedIndex];
+    const format = selectedOption.getAttribute('data-format');
+    if (format) {
+      appPhoneInput.placeholder = format;
+    }
+  });
+}
 
 //Application Form Submission
 document.getElementById('applicationForm').addEventListener('submit', async function (e) {
@@ -187,9 +242,15 @@ document.getElementById('applicationForm').addEventListener('submit', async func
 
   const submitBtn = this.querySelector('button[type="submit"]');
   const msg       = document.getElementById('applyMessage');
-  const fullName   = document.getElementById('appName').value.trim();
+  const firstName = document.getElementById('appFirstName').value.trim();
+  const middleName = (document.getElementById('appMiddleName')?.value || '').trim();
+  const lastName  = document.getElementById('appLastName').value.trim();
+  const fullName  = [firstName, middleName, lastName].filter(Boolean).join(' ');
+
   const email      = document.getElementById('appEmail').value.trim();
-  const phone      = document.getElementById('appPhone').value.trim();
+  const countryCode = document.getElementById('appCountryCode')?.value || '+91';
+  const rawPhone   = (document.getElementById('appPhone')?.value || '').trim();
+  const phone      = rawPhone ? `${countryCode} ${rawPhone}` : '';
   const resumeUrl  = document.getElementById('appResume').value.trim();
   const coverLetter = document.getElementById('appCover').value.trim();
 
@@ -232,14 +293,38 @@ function showApplyMessage(text, isError) {
 }
 
 //Post Job Modal
-function openPostModal()  { openModal('postModal');  }
-function closePostModal() { closeModal('postModal'); }
+function openPostModal() {
+  if (!canPostOpportunity()) {
+    showPostStatus('Only alumni can post opportunities.', true);
+    return;
+  }
+  const msg = document.getElementById('postStatusMessage');
+  if (msg) {
+    msg.textContent = '';
+    msg.className = 'hidden';
+  }
+  openModal('postModal');
+}
+function closePostModal() {
+  const msg = document.getElementById('postStatusMessage');
+  if (msg) {
+    msg.textContent = '';
+    msg.className = 'hidden';
+  }
+  closeModal('postModal');
+}
 document.getElementById('postForm').addEventListener('submit', async function (e) {
   e.preventDefault();
   const token = localStorage.getItem('token');
+  const currentUser = getCurrentUser();
+
   if (!token) {
-    alert('You must be logged in to post a job. Please login first.');
     window.location.href = 'login.html';
+    return;
+  }
+
+  if (!currentUser || String(currentUser.role || '').toLowerCase() !== 'alumni') {
+    showPostStatus('Only alumni can post opportunities.', true);
     return;
   }
   const submitBtn = this.querySelector('button[type="submit"]');
@@ -252,7 +337,7 @@ document.getElementById('postForm').addEventListener('submit', async function (e
     location:    document.getElementById('postLocation').value.trim(),
     salary:      document.getElementById('postSalary').value.trim(),
     skills:      document.getElementById('postSkills').value.trim(),
-    description: document.getElementById('postDescription').value.trim(),
+    description: document.getElementById('postDesc').value.trim(),
   };
   try {
     const res = await fetch('/api/jobs', {
@@ -265,16 +350,16 @@ document.getElementById('postForm').addEventListener('submit', async function (e
     });
     const data = await res.json();
     if (!res.ok) {
-      alert(data.message || 'Failed to post job. Please try again.');
+      showPostStatus(data.message || 'Failed to post job. Please try again.', true);
       return;
     }
-    alert(`✅ Job posted successfully!`);
+    showPostStatus('✅ Opportunity posted successfully!', false);
     this.reset();
     closePostModal();
     await loadJobs(); // refresh the list
   } catch (err) {
     console.error('Post job error:', err);
-    alert('Could not reach the server. Please try again later.');
+    showPostStatus('Could not reach the server. Please try again later.', true);
   } finally {
     submitBtn.disabled    = false;
     submitBtn.textContent = 'Publish Opportunity';
@@ -299,39 +384,12 @@ function closeModal(id) {
   if (el) el.addEventListener('click', e => { if (e.target === el) closeModal(id); });
 });
 
+setPostOpportunityButtonsVisibility();
+
 // Search and Filter Event Listeners
 searchInput.addEventListener('input', displayJobs);
 filterType.addEventListener('change', displayJobs);
 filterLocation.addEventListener('change', displayJobs);
-
-//Mobile Menu Toggle
-const menuBtn    = document.getElementById('menuBtn');
-const mobileMenu = document.getElementById('mobileMenu');
-
-if (menuBtn && mobileMenu) {
-  menuBtn.addEventListener('click', function () {
-    mobileMenu.classList.toggle('hidden');
-    const isOpen = !mobileMenu.classList.contains('hidden');
-    menuBtn.setAttribute('aria-expanded', isOpen);
-    menuBtn.innerHTML = isOpen ? '✕' : '&#9776;';
-  });
-
-  mobileMenu.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      mobileMenu.classList.add('hidden');
-      menuBtn.setAttribute('aria-expanded', 'false');
-      menuBtn.innerHTML = '&#9776;';
-    });
-  });
-
-  window.addEventListener('resize', () => {
-    if (window.innerWidth >= 768) {
-      mobileMenu.classList.add('hidden');
-      menuBtn.setAttribute('aria-expanded', 'false');
-      menuBtn.innerHTML = '&#9776;';
-    }
-  });
-}
 
 // Scroll to Top
 const topButton = document.getElementById('topButton');

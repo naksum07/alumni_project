@@ -4,7 +4,7 @@ async function searchAlumni(req, res) {
   const { department, year, search } = req.query;
 
   let query = `SELECT id, full_name, department, graduation_year, job_title, company
-               FROM users WHERE role = 'alumni'`;
+               FROM users WHERE role = 'alumni' AND is_approved = TRUE AND status = 'active'`;
   const params = [];
 
   if (department) {

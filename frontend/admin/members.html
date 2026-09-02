@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Members | AlumniConnect</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="../scripts/data-store.js"></script>
+<script src="../scripts/admin-common.js"></script>
+</head>
+<body class="bg-slate-50 font-sans">
+
+<div class="admin-content">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <h1 class="text-3xl font-bold text-gray-800">Members Directory</h1>
+        
+        <div class="flex bg-white rounded-lg shadow-sm overflow-hidden p-1">
+            <button onclick="setFilter('All')" id="btnAll" class="px-4 py-1.5 text-sm font-semibold rounded bg-[#012970] text-white">All</button>
+            <button onclick="setFilter('Student')" id="btnStudent" class="px-4 py-1.5 text-sm font-semibold rounded text-gray-600 hover:bg-gray-100">Students</button>
+            <button onclick="setFilter('Alumni')" id="btnAlumni" class="px-4 py-1.5 text-sm font-semibold rounded text-gray-600 hover:bg-gray-100">Alumni</button>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+        <table class="admin-table" id="membersFullTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Type</th>
+                    <th>Date Registered</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+let currentFilter = 'All';
+
+async function loadMembers() {
+    const res = await fetch('/api/admin/users', { headers: { 'Authorization': 'Bearer ' + localStorage.getItem('adminToken') } });
+    if (!res.ok) return window.location.href = 'login.html';
+    let allUsers = await res.json();
+    let users = allUsers;
+    if (currentFilter !== 'All') {
+        users = users.filter(u => u.role.toLowerCase() === currentFilter.toLowerCase());
+    }
+    
+    const tbody = document.querySelector('#membersFullTable tbody');
+    tbody.innerHTML = '';
+    
+    if (users.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-gray-500">No members found.</td></tr>';
+        return;
+    }
+
+    users.forEach(u => {
+        const badge = u.role === 'alumni' ? 'bg-purple-100 text-purple-800' : 'bg-orange-100 text-orange-800';
+        tbody.innerHTML += `
+            <tr>
+                <td class="font-medium">${u.full_name}</td>
+                <td>${u.email}</td>
+                <td><span class="px-2 py-1 rounded text-xs font-semibold ${badge}">${u.role}</span></td>
+                <td>${new Date(u.created_at).toLocaleDateString()}</td>
+            </tr>
+        `;
+    });
+}
+
+window.setFilter = (type) => {
+    currentFilter = type;
+    
+    // Update button styles
+    ['All', 'Student', 'Alumni'].forEach(t => {
+        const btn = document.getElementById('btn' + t);
+        if(t === type) {
+            btn.className = 'px-4 py-1.5 text-sm font-semibold rounded bg-[#012970] text-white';
+        } else {
+            btn.className = 'px-4 py-1.5 text-sm font-semibold rounded text-gray-600 hover:bg-gray-100';
+        }
+    });
+    
+    loadMembers();
+};
+
+document.addEventListener('DOMContentLoaded', loadMembers);
+</script>
+
+</body>
+</html>

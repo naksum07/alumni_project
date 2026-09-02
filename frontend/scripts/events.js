@@ -1,217 +1,3 @@
-/* ================================================
-           MOBILE MENU
-        ================================================= */
-
-        const menuBtn =
-            document.getElementById("menuBtn");
-
-        const mobileMenu =
-            document.getElementById("mobileMenu");
-
-        const menuIcon =
-            document.getElementById("menuIcon");
-
-
-        menuBtn.addEventListener(
-            "click",
-            function () {
-
-                mobileMenu.classList.toggle("hidden");
-
-
-                if (
-                    mobileMenu.classList.contains("hidden")
-                ) {
-
-                    menuIcon.classList.remove(
-                        "fa-xmark"
-                    );
-
-                    menuIcon.classList.add(
-                        "fa-bars"
-                    );
-
-                } else {
-
-                    menuIcon.classList.remove(
-                        "fa-bars"
-                    );
-
-                    menuIcon.classList.add(
-                        "fa-xmark"
-                    );
-
-                }
-
-            }
-        );
-
-
-        /* ================================================
-           CLOSE MOBILE MENU AFTER CLICK
-        ================================================= */
-
-        document
-            .querySelectorAll(".mobile-link")
-            .forEach(function (link) {
-
-                link.addEventListener(
-                    "click",
-                    function () {
-
-                        mobileMenu.classList.add(
-                            "hidden"
-                        );
-
-                        menuIcon.classList.remove(
-                            "fa-xmark"
-                        );
-
-                        menuIcon.classList.add(
-                            "fa-bars"
-                        );
-
-                    }
-                );
-
-            });
-
-
-        /* ================================================
-           CONTACT
-        ================================================= */
-
-        function contactMessage() {
-
-            alert(
-                "Thank you for contacting the Alumni Office!"
-            );
-
-        }
-
-
-        /* ================================================
-           SCROLL TO TOP BUTTON
-        ================================================= */
-
-        const scrollTopBtn =
-            document.getElementById(
-                "scrollTopBtn"
-            );
-
-
-        window.addEventListener(
-            "scroll",
-            function () {
-
-                if (window.scrollY > 300) {
-
-                    scrollTopBtn.classList.remove(
-                        "hidden"
-                    );
-
-                } else {
-
-                    scrollTopBtn.classList.add(
-                        "hidden"
-                    );
-
-                }
-
-            }
-        );
-
-
-        /* ================================================
-           SCROLL TO TOP
-        ================================================= */
-
-        function scrollToTop() {
-
-            window.scrollTo({
-
-                top: 0,
-
-                behavior: "smooth"
-
-            });
-
-        }
-
-
-        /* ================================================
-           CLOSE MOBILE MENU ON RESIZE
-        ================================================= */
-
-        window.addEventListener(
-            "resize",
-            function () {
-
-                if (window.innerWidth >= 768) {
-
-                    mobileMenu.classList.add(
-                        "hidden"
-                    );
-
-                    menuIcon.classList.remove(
-                        "fa-xmark"
-                    );
-
-                    menuIcon.classList.add(
-                        "fa-bars"
-                    );
-
-                }
-
-            }
-        );
-
-/* =========================================================
-   DASHBOARD — Backend API wiring
-   Reads the logged-in user from localStorage (set by login.html)
-   and populates the welcome message and stats.
-   Redirects to login if no token is found.
-   ========================================================= */
-(function () {
-  const token = localStorage.getItem('token');
-  const user  = JSON.parse(localStorage.getItem('user') || 'null');
-
-  // Guard — send unauthenticated visitors to the login page
-  if (!token || !user) {
-    window.location.href = 'login.html';
-    return;
-  }
-
-  // Populate greeting elements if they exist on the page
-  document.querySelectorAll('[data-user-name]').forEach(el => {
-    el.textContent = user.fullName || user.email;
-  });
-  document.querySelectorAll('[data-user-role]').forEach(el => {
-    el.textContent = user.role.charAt(0).toUpperCase() + user.role.slice(1);
-  });
-
-  // Logout buttons
-  document.querySelectorAll('[data-logout]').forEach(btn => {
-    btn.addEventListener('click', function () {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = 'login.html';
-    });
-  });
-
-  // Load alumni count for the stat card (requires token)
-  fetch('/api/alumni', {
-    headers: { 'Authorization': 'Bearer ' + token }
-  })
-  .then(r => r.ok ? r.json() : [])
-  .then(alumni => {
-    const el = document.getElementById('alumniCount');
-    if (el) el.textContent = alumni.length;
-  })
-  .catch(() => {});
-})();
-
-
 (function () {
   const btn  = document.getElementById('menuBtn');
   const menu = document.getElementById('mobileMenu');
@@ -267,8 +53,58 @@ function openRegistrationModal(eventId, eventName) {
   regMessage.textContent   = '';
   regMessage.className     = 'text-sm font-medium mt-3 hidden';
   regForm.reset();
+
+  // Reset country code placeholder
+  const countrySelect = document.getElementById('regCountryCode');
+  const phoneInput = document.getElementById('regPhone');
+  if (countrySelect && phoneInput) {
+    countrySelect.value = '+91';
+    phoneInput.placeholder = '98765 43210';
+  }
+
+  // If user is logged in, auto-fill
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  if (user) {
+    const rawName = user.fullName || user.full_name || '';
+    const parts = rawName.split(' ');
+    if (parts.length === 1) {
+      document.getElementById('regFirstName').value = parts[0] || '';
+    } else if (parts.length === 2) {
+      document.getElementById('regFirstName').value = parts[0] || '';
+      document.getElementById('regLastName').value = parts[1] || '';
+    } else if (parts.length >= 3) {
+      document.getElementById('regFirstName').value = parts[0] || '';
+      document.getElementById('regMiddleName').value = parts.slice(1, -1).join(' ') || '';
+      document.getElementById('regLastName').value = parts[parts.length - 1] || '';
+    }
+    if (user.email) document.getElementById('regEmail').value = user.email;
+    if (user.phone) {
+      // Check if phone has country code prefix
+      const match = user.phone.match(/^(\+\d{1,4})\s*(.*)$/);
+      if (match && countrySelect) {
+        countrySelect.value = match[1];
+        if (phoneInput) phoneInput.value = match[2];
+      } else if (phoneInput) {
+        phoneInput.value = user.phone;
+      }
+    }
+  }
+
   regModal.classList.remove('hidden');
   regModal.classList.add('flex');
+}
+
+// Setup country code change listener
+const countrySelect = document.getElementById('regCountryCode');
+const phoneInput = document.getElementById('regPhone');
+if (countrySelect && phoneInput) {
+  countrySelect.addEventListener('change', function() {
+    const selectedOption = countrySelect.options[countrySelect.selectedIndex];
+    const format = selectedOption.getAttribute('data-format');
+    if (format) {
+      phoneInput.placeholder = format;
+    }
+  });
 }
 
 function closeRegistrationModal() {
@@ -296,7 +132,7 @@ function renderEvents(events) {
   events.forEach((event, index) => {
     const palette = PALETTES[index % PALETTES.length];
     const card = document.createElement('div');
-    card.className = 'bg-white rounded-2xl shadow-md overflow-hidden hover:-translate-y-2 hover:shadow-xl transition-all duration-300';
+    card.className = 'bg-white rounded-2xl shadow-md overflow-hidden hover:-translate-y-2 hover:shadow-xl transition-all duration-300 border border-slate-100';
     card.innerHTML = `
       <div class="${palette.bg} text-white p-6">
         <i class="fa-solid ${palette.icon} text-4xl"></i>
@@ -304,12 +140,12 @@ function renderEvents(events) {
         ${event.event_time ? `<p class="text-sm opacity-80 mt-1">${event.event_time}</p>` : ''}
       </div>
       <div class="p-6">
-        <h2 class="text-2xl font-bold">${event.name}</h2>
-        <p class="text-gray-600 mt-3">${event.description || ''}</p>
-        ${event.venue ? `<p class="text-gray-500 mt-4"><i class="fa-solid fa-location-dot mr-2"></i>${event.venue}</p>` : ''}
+        <h2 class="text-2xl font-bold text-slate-800">${event.name}</h2>
+        <p class="text-gray-600 mt-3 text-sm leading-relaxed">${event.description || ''}</p>
+        ${event.venue ? `<p class="text-gray-500 mt-4 text-sm flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#c4161c]"></i>${event.venue}</p>` : ''}
         <button
           onclick="openRegistrationModal(${event.id}, '${event.name.replace(/'/g, "\\'")}')"
-          class="w-full bg-blue-700 text-white py-3 rounded-lg mt-6 hover:bg-blue-800 transition font-semibold">
+          class="w-full bg-[#c4161c] hover:bg-[#a01217] text-white py-3 rounded-xl mt-6 transition font-semibold shadow-md">
           Register Now
         </button>
       </div>`;
@@ -341,11 +177,18 @@ async function loadEvents() {
 
 regForm.addEventListener('submit', async function (e) {
   e.preventDefault();
-  const eventId  = regEventId.value;
-  const fullName = document.getElementById('regName').value.trim();
-  const email    = document.getElementById('regEmail').value.trim();
-  const phone    = document.getElementById('regPhone').value.trim();
-  const message  = document.getElementById('regMsgText').value.trim();
+  const eventId   = regEventId.value;
+  const firstName = document.getElementById('regFirstName').value.trim();
+  const middleName = (document.getElementById('regMiddleName')?.value || '').trim();
+  const lastName  = document.getElementById('regLastName').value.trim();
+  const fullName  = [firstName, middleName, lastName].filter(Boolean).join(' ');
+
+  const email     = document.getElementById('regEmail').value.trim();
+  const countryCode = document.getElementById('regCountryCode')?.value || '+91';
+  const rawPhone  = (document.getElementById('regPhone')?.value || '').trim();
+  const phone     = rawPhone ? `${countryCode} ${rawPhone}` : '';
+  const message   = document.getElementById('regMsgText').value.trim();
+
   const submitBtn = regForm.querySelector('button[type="submit"]');
   submitBtn.disabled = true;
   submitBtn.textContent = 'Registering…';
@@ -391,4 +234,8 @@ function scrollToTop() {
 
 //boot
 loadEvents();
+
+window.openRegistrationModal = openRegistrationModal;
+window.closeRegistrationModal = closeRegistrationModal;
+window.scrollToTop = scrollToTop;
 })();

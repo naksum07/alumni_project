@@ -21,6 +21,14 @@ async function registerForEvent(req, res) {
   }
 
   try {
+    const existing = await pool.query(
+      'SELECT id FROM event_registrations WHERE event_id = $1 AND email = $2',
+      [id, email]
+    );
+    if (existing.rows.length > 0) {
+      return res.status(409).json({ message: 'You have already registered for this event' });
+    }
+
     const result = await pool.query(
       `INSERT INTO event_registrations (event_id, full_name, email, phone, message)
        VALUES ($1, $2, $3, $4, $5) RETURNING id`,

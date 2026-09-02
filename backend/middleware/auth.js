@@ -32,11 +32,14 @@ function optionalAuth(req, res, next) {
   next();
 }
 
-function verifyAdmin(req, res, next) {
-  // Guard: req.user must be set by verifyToken before this middleware runs
-  if (!req.user || req.user.role !== 'admin') {
-    return res.status(403).json({ message: 'Admin access only' });
-  }
-  next();
+function requireAdmin(req, res, next) {
+  verifyToken(req, res, () => {
+    if (req.user && req.user.role === 'admin') {
+      next();
+    } else {
+      res.status(403).json({ message: 'Forbidden: Admin access required' });
+    }
+  });
 }
-module.exports = { verifyToken, verifyAdmin, optionalAuth };
+
+module.exports = { verifyToken, optionalAuth, requireAdmin };

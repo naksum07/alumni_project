@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -20,41 +20,44 @@ html{
 
 
 <body class="bg-gray-50 text-gray-800">
-<!-- CANONICAL NAVBAR (paths use ../ because this page is in profiles/ subfolder) -->
 <header>
-  <nav class="fixed top-0 left-0 w-full z-50 bg-blue-900 text-white shadow-lg">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+  <nav class="fixed top-0 left-0 w-full z-50 bg-white text-slate-800 shadow-md border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-6 py-3.5 flex justify-between items-center">
 
-      <a href="../index.html" class="flex items-center gap-3">
-        <span class="text-4xl">🎓</span>
-        <span class="text-2xl font-bold">AlumniConnect</span>
+      <a href="/index.html" class="flex items-center gap-3">
+        <span class="p-1 flex items-center">
+          <img src="/assets/logo.png" alt="ICFAI University Sikkim" class="h-10 w-auto">
+        </span>
+        <span class="text-2xl font-bold text-[#012970] tracking-tight">Alumni<span class="text-[#c4161c]">Connect</span></span>
       </a>
 
-      <div class="hidden md:flex items-center gap-8">
-        <a href="../index.html" class="hover:text-yellow-300 transition">Home</a>
-        <a href="../about.html" class="hover:text-yellow-300 transition">About</a>
-        <a href="../alumni-directory.html" class="hover:text-yellow-300 transition">Alumni</a>
-        <a href="../events.html" class="hover:text-yellow-300 transition">Events</a>
-        <a href="../jobs.html" class="hover:text-yellow-300 transition">Jobs</a>
+      <div class="hidden md:flex items-center gap-8 font-medium text-slate-700">
+        <a href="/index.html" class="hover:text-[#c4161c] transition">Home</a>
+        <a href="/about.html" class="hover:text-[#c4161c] transition">About</a>
+        <a href="/alumni-directory.html" class="hover:text-[#c4161c] transition">Alumni</a>
+        <a href="/student-directory.html" class="hover:text-[#c4161c] transition">Students</a>
+        <a href="/events.html" class="hover:text-[#c4161c] transition">Events</a>
+        <a href="/news-announcements.html" class="hover:text-[#c4161c] transition">News</a>
+        <a href="/jobs.html" class="hover:text-[#c4161c] transition">Jobs</a>
       </div>
 
-      <div class="hidden md:flex gap-3">
-        <a href="../login.html"    class="border border-white px-5 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Login</a>
-        <a href="../register.html" class="bg-yellow-400 text-blue-900 font-semibold px-5 py-2 rounded-lg hover:bg-yellow-300 transition">Register</a>
+      <div class="hidden md:flex gap-3 items-center" id="navAuth">
+        <!-- Filled by JS -->
       </div>
 
-      <button id="menuBtn" aria-label="Open Menu" aria-expanded="false" class="md:hidden text-3xl">☰</button>
+      <button id="menuBtn" aria-label="Open Menu" aria-expanded="false" class="md:hidden text-2xl text-slate-800 focus:outline-none">☰</button>
     </div>
 
-    <div id="mobileMenu" class="hidden md:hidden bg-blue-900 px-6 pb-6">
-      <a href="../index.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Home</a>
-    <a href="../about.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">About</a>
-    <a href="../alumni-directory.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Alumni</a>
-    <a href="../events.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Events</a>
-    <a href="../jobs.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Jobs</a>
-      <div class="mt-4 space-y-3">
-        <a href="../login.html"    class="block text-center border border-white py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Login</a>
-        <a href="../register.html" class="block text-center bg-yellow-400 text-blue-900 py-2 rounded-lg font-semibold">Register</a>
+    <div id="mobileMenu" class="hidden md:hidden bg-white px-6 pb-6 border-b border-gray-200 text-slate-700 shadow-lg">
+      <a href="/index.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Home</a>
+      <a href="/about.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">About</a>
+      <a href="/alumni-directory.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Alumni</a>
+      <a href="/student-directory.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Students</a>
+      <a href="/events.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Events</a>
+      <a href="/news-announcements.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">News</a>
+      <a href="/jobs.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Jobs</a>
+      <div class="mt-4 space-y-3" id="mobileNavAuth">
+        <!-- Filled by JS -->
       </div>
     </div>
   </nav>
@@ -747,38 +750,102 @@ background:#1e3a8a;
 
 
 
-<!-- CANONICAL FOOTER -->
-<footer class="bg-blue-950 text-white py-16 mt-16">
+<!-- FOOTER -->
+<footer class="bg-[#0b1728] text-slate-300 py-16 mt-16">
   <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+
     <div>
-      <h2 class="text-3xl font-bold">&#127891; AlumniConnect</h2>
-      <p class="mt-4 text-gray-400">Connecting students and alumni to create career opportunities, mentorship and lifelong relationships.</p>
+      <h2 class="text-2xl font-bold flex items-center gap-3 text-white">
+        <span class="bg-white rounded-lg p-1.5 flex items-center">
+          <img src="/assets/logo.png" alt="ICFAI University Sikkim" class="h-9 w-auto">
+        </span>
+        AlumniConnect
+      </h2>
+      <p class="mt-4 text-slate-400 text-sm leading-relaxed">
+        The ICFAI University, Sikkim Alumni Network connects graduates worldwide to foster career growth, mentorship, institutional collaboration, and lifelong professional relationships.
+      </p>
+      <div class="flex items-center gap-3 mt-6">
+        <a href="https://www.facebook.com/iusikkim/" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-[#c4161c] text-white flex items-center justify-center transition" aria-label="Facebook">
+          <i class="fa-brands fa-facebook-f text-sm"></i>
+        </a>
+        <a href="https://twitter.com/iusikkim" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-[#c4161c] text-white flex items-center justify-center transition" aria-label="Twitter">
+          <i class="fa-brands fa-x-twitter text-sm"></i>
+        </a>
+        <a href="https://www.linkedin.com/school/the-icfai-university-sikkim/" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-[#c4161c] text-white flex items-center justify-center transition" aria-label="LinkedIn">
+          <i class="fa-brands fa-linkedin-in text-sm"></i>
+        </a>
+        <a href="https://www.instagram.com/iusikkim/" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-[#c4161c] text-white flex items-center justify-center transition" aria-label="Instagram">
+          <i class="fa-brands fa-instagram text-sm"></i>
+        </a>
+        <a href="https://www.youtube.com/channel/UCrR_Kj1_1kX7sK6gN2rG44A" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-[#c4161c] text-white flex items-center justify-center transition" aria-label="YouTube">
+          <i class="fa-brands fa-youtube text-sm"></i>
+        </a>
+      </div>
     </div>
+
     <div>
-      <h3 class="text-xl font-semibold mb-5">Quick Links</h3>
-      <ul class="space-y-3 text-gray-300">
-        <li><a href="../index.html" class="hover:text-yellow-400">Home</a></li>
-        <li><a href="../about.html" class="hover:text-yellow-400">About</a></li>
-        <li><a href="../events.html" class="hover:text-yellow-400">Events</a></li>
-        <li><a href="../jobs.html" class="hover:text-yellow-400">Jobs</a></li>
+      <h3 class="text-lg font-semibold text-white mb-5 border-l-4 border-[#c4161c] pl-3">Quick Links</h3>
+      <ul class="space-y-2.5 text-sm text-slate-400">
+        <li><a href="../index.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> Home</a></li>
+        <li><a href="../about.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> About Us</a></li>
+        <li><a href="../alumni-directory.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> Alumni Directory</a></li>
+        <li><a href="../events.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> Events &amp; Reunions</a></li>
+        <li><a href="../jobs.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> Career &amp; Jobs</a></li>
+        <li><a href="../news-announcements.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> News &amp; Updates</a></li>
+        <li><a href="../feedback.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> Feedback</a></li>
       </ul>
     </div>
+
     <div>
-      <h3 class="text-xl font-semibold mb-5">Resources</h3>
-      <ul class="space-y-3 text-gray-300">
-        <li>Career Opportunities</li><li>Mentorship</li><li>Jobs</li><li>FAQ</li>
-      </ul>
+      <h3 class="text-lg font-semibold text-white mb-5 border-l-4 border-[#c4161c] pl-3">Campus Address</h3>
+      <div class="space-y-3 text-sm text-slate-400">
+        <p class="flex items-start gap-2.5">
+          <i class="fa-solid fa-location-dot text-[#c4161c] mt-1 shrink-0"></i>
+          <span>The ICFAI University, Sikkim<br>Ranka Road, Lower Sichey,<br>Gangtok, Sikkim - 737102</span>
+        </p>
+        <p class="flex items-center gap-2.5">
+          <i class="fa-solid fa-phone text-[#c4161c] shrink-0"></i>
+          <span>Toll Free: 1800 120 8991<br>Helpline: 03592-284000</span>
+        </p>
+        <p class="flex items-center gap-2.5">
+          <i class="fa-solid fa-envelope text-[#c4161c] shrink-0"></i>
+          <span>info@iusikkim.edu.in</span>
+        </p>
+      </div>
     </div>
+
     <div>
-      <h3 class="text-xl font-semibold mb-5">Contact Us</h3>
-      <p>&#128231; alumni@university.com</p>
-      <p class="mt-3">&#128205; University Campus</p>
-      <p class="mt-3">&#128222; +91 98765 43210</p>
+      <h3 class="text-lg font-semibold text-white mb-5 border-l-4 border-[#c4161c] pl-3">Alumni Helpdesk</h3>
+      <p class="text-sm text-slate-400 leading-relaxed mb-4">
+        Need assistance with transcripts, degrees, or alumni registration? Get in touch with the University Alumni Relations Office.
+      </p>
+      <div class="space-y-2 text-sm text-slate-400">
+        <p class="flex items-center gap-2">
+          <i class="fa-solid fa-clock text-[#c4161c]"></i>
+          <span>Mon - Fri: 9:30 AM - 5:30 PM</span>
+        </p>
+        <p class="flex items-center gap-2">
+          <i class="fa-solid fa-graduation-cap text-[#c4161c]"></i>
+          <span>alumni@iusikkim.edu.in</span>
+        </p>
+      </div>
+      <div class="mt-5">
+        <a href="../register.html" class="inline-block bg-[#c4161c] hover:bg-[#a01217] text-white text-xs font-semibold px-4 py-2 rounded transition shadow-sm">
+          Join Alumni Network
+        </a>
+      </div>
     </div>
   </div>
-  <div class="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400">
-    <p>&copy; 2026 AlumniConnect. All Rights Reserved.</p>
-    <p class="mt-2 text-sm">Privacy Policy | Terms &amp; Conditions</p>
+
+  <div class="border-t border-slate-800 mt-12 pt-6 text-center text-slate-500 text-xs max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-3">
+    <p>&copy; 2026 The ICFAI University, Sikkim. All Rights Reserved.</p>
+    <p class="flex gap-4">
+      <a href="https://www.iusikkim.edu.in/" target="_blank" rel="noopener" class="hover:text-slate-300">University Website</a>
+      <span>|</span>
+      <a href="../feedback.html" class="hover:text-slate-300">Feedback</a>
+      <span>|</span>
+      <a href="../about.html" class="hover:text-slate-300">About</a>
+    </p>
   </div>
 </footer>
 
@@ -801,7 +868,121 @@ background:#1e3a8a;
     });
   }
 </script>
-</body>
 
+<script>
+// Shared Global Navigation & Auth Bar Handler
+(function () {
+  function initNav() {
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    const navAuth = document.getElementById('navAuth');
+    const mobileNavAuth = document.getElementById('mobileNavAuth');
+    const isRoot = !window.location.pathname.includes('/events/') && !window.location.pathname.includes('/profiles/');
+    const pathPrefix = isRoot ? '' : '../';
+
+    if (token && user) {
+      const firstName = (user.fullName || user.full_name || 'You').split(' ')[0];
+
+      if (navAuth) {
+        navAuth.innerHTML = `
+          <span class="text-slate-700 font-medium text-sm">Hi, <strong class="text-[#012970]">${firstName}</strong></span>
+          <a href="${pathPrefix}my-profile.html"
+             class="border border-slate-300 text-slate-700 px-4 py-2 rounded-lg hover:border-[#012970] hover:text-[#012970] transition text-sm">
+            👤 My Profile
+          </a>
+          <button id="globalNavLogoutBtn"
+             class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-4 py-2 rounded-lg transition text-sm shadow-sm">
+            Logout
+          </button>`;
+      }
+
+      if (mobileNavAuth) {
+        mobileNavAuth.innerHTML = `
+          <p class="text-slate-700 text-sm py-1">Logged in as <strong class="text-[#012970]">${firstName}</strong></p>
+          <a href="${pathPrefix}my-profile.html"
+             class="block text-center border border-slate-300 text-slate-700 py-2 rounded-lg hover:border-[#012970] hover:text-[#012970] transition text-sm">
+            👤 My Profile
+          </a>
+          <button id="globalMobileLogoutBtn"
+             class="w-full text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">
+            Logout
+          </button>`;
+      }
+
+      function doLogout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.reload();
+      }
+
+      const logoutBtn = document.getElementById('globalNavLogoutBtn');
+      const mobileLogoutBtn = document.getElementById('globalMobileLogoutBtn');
+      if (logoutBtn) logoutBtn.addEventListener('click', doLogout);
+      if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', doLogout);
+
+    } else {
+      if (navAuth) {
+        navAuth.innerHTML = `
+          <a href="${pathPrefix}login.html"
+             class="border border-slate-300 text-slate-700 px-5 py-2 rounded-lg font-medium hover:border-[#012970] hover:text-[#012970] transition text-sm">
+            Login
+          </a>
+          <a href="${pathPrefix}register.html"
+             class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-5 py-2 rounded-lg transition text-sm shadow-sm">
+            Register
+          </a>`;
+      }
+
+      if (mobileNavAuth) {
+        mobileNavAuth.innerHTML = `
+          <a href="${pathPrefix}login.html"
+             class="block text-center border border-slate-300 text-slate-700 py-2 rounded-lg font-medium hover:border-[#012970] hover:text-[#012970] transition text-sm">
+            Login
+          </a>
+          <a href="${pathPrefix}register.html"
+             class="block text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">
+            Register
+          </a>`;
+      }
+    }
+
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    if (menuBtn && mobileMenu && !menuBtn.dataset.bound) {
+      menuBtn.dataset.bound = "true";
+      menuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        const isOpen = !mobileMenu.classList.contains('hidden');
+        menuBtn.setAttribute('aria-expanded', isOpen);
+        menuBtn.innerHTML = isOpen ? '✕' : '☰';
+      });
+
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+          menuBtn.setAttribute('aria-expanded', 'false');
+          menuBtn.innerHTML = '☰';
+        });
+      });
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) {
+          mobileMenu.classList.add('hidden');
+          menuBtn.setAttribute('aria-expanded', 'false');
+          menuBtn.innerHTML = '☰';
+        }
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNav);
+  } else {
+    initNav();
+  }
+})();
+</script>
+</body>
 </html>
 

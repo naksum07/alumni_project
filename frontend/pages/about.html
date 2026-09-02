@@ -1,124 +1,103 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>About Us | AlumniConnect</title>
 <script src="/scripts/about.js" defer></script>
-  <!-- TAILWIND CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- AOS ANIMATION -->
-  <linkhref="https://unpkg.com/aos@2.3.1/dist/aos.css"rel="stylesheet">
-  <style>
-    html {
-      scroll-behavior: smooth;
-    }
+<!-- TAILWIND CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- FONT AWESOME -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<!-- AOS ANIMATION -->
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<style>
+  html {
+    scroll-behavior: smooth;
+  }
     /* Prevent content from hiding behind fixed navbar */
-    section {
+section {
       scroll-margin-top: 90px;
     }
-  </style>
+</style>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
   <!-- HEADER / NAVBAR -->
   <header>
-  <nav class="fixed top-0 left-0 w-full z-50 bg-blue-900 text-white shadow-lg">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <nav class="fixed top-0 left-0 w-full z-50 bg-white text-slate-800 shadow-md border-b border-gray-100">
+      <div class="max-w-7xl mx-auto px-6 py-3.5 flex justify-between items-center">
 
-      <a href="index.html" class="flex items-center gap-3">
-        <span class="text-4xl">🎓</span>
-        <span class="text-2xl font-bold">AlumniConnect</span>
-      </a>
+        <a href="index.html" class="flex items-center gap-3">
+          <span class="p-1 flex items-center">
+            <img src="/assets/logo.png" alt="ICFAI University Sikkim" class="h-10 w-auto">
+          </span>
+          <span class="text-2xl font-bold text-[#012970] tracking-tight">Alumni<span class="text-[#c4161c]">Connect</span></span>
+        </a>
 
-      <div class="hidden md:flex items-center gap-8">
-        <a href="index.html" class="hover:text-yellow-300 transition">Home</a>
-        <a href="about.html" class="text-yellow-400 font-semibold">About</a>
-        <a href="alumni-directory.html" class="hover:text-yellow-300 transition">Alumni</a>
-        <a href="events.html" class="hover:text-yellow-300 transition">Events</a>
-        <a href="jobs.html" class="hover:text-yellow-300 transition">Jobs</a>
+        <div class="hidden md:flex items-center gap-8 font-medium text-slate-700">
+          <a href="index.html" class="hover:text-[#c4161c] transition">Home</a>
+          <a href="about.html" class="text-[#c4161c] font-semibold">About</a>
+          <div class="relative group">
+            <button type="button" class="flex items-center gap-1 font-medium hover:text-[#c4161c] transition focus:outline-none">
+              Directory
+              <i class="fa-solid fa-chevron-down text-[10px] mt-0.5"></i>
+            </button>
+            <div class="absolute left-0 top-full mt-3 hidden group-hover:block group-focus-within:block bg-white border border-slate-200 rounded-xl shadow-lg min-w-[180px] py-2 z-50">
+              <a href="alumni-directory.html" class="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-[#c4161c]">Alumni</a>
+              <a href="student-directory.html" class="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-[#c4161c]">Students</a>
+            </div>
+          </div>
+          <a href="events.html" class="hover:text-[#c4161c] transition">Events</a>
+          <a href="news-announcements.html" class="hover:text-[#c4161c] transition">News</a>
+          <a href="jobs.html" class="hover:text-[#c4161c] transition">Jobs</a>
+        </div>
+
+        <div class="hidden md:flex gap-3 items-center" id="navAuth">
+          <!-- Filled by JS -->
+        </div>
+
+        <button id="menuBtn" aria-label="Open Menu" aria-expanded="false" class="md:hidden text-2xl text-slate-800 focus:outline-none">☰</button>
       </div>
 
-      <div class="hidden md:flex gap-3">
-        <a href="login.html"    class="border border-white px-5 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Login</a>
-        <a href="register.html" class="bg-yellow-400 text-blue-900 font-semibold px-5 py-2 rounded-lg hover:bg-yellow-300 transition">Register</a>
+      <div id="mobileMenu" class="hidden md:hidden bg-white px-6 pb-6 border-b border-gray-200 text-slate-700 shadow-lg">
+        <a href="index.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Home</a>
+        <a href="about.html" class="block py-3 border-b border-gray-100 text-[#c4161c] font-semibold">About</a>
+        <div class="py-3 border-b border-gray-100">
+          <div class="font-medium text-slate-700 mb-2">Directory</div>
+          <div class="space-y-2 pl-3 text-sm">
+            <a href="alumni-directory.html" class="block hover:text-[#c4161c]">Alumni</a>
+            <a href="student-directory.html" class="block hover:text-[#c4161c]">Students</a>
+          </div>
+        </div>
+        <a href="events.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Events</a>
+        <a href="news-announcements.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">News</a>
+        <a href="jobs.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Jobs</a>
+        <div class="mt-4 space-y-3" id="mobileNavAuth">
+          <!-- Filled by JS -->
+        </div>
       </div>
-
-      <button id="menuBtn" aria-label="Open Menu" aria-expanded="false" class="md:hidden text-3xl">☰</button>
-    </div>
-
-    <div id="mobileMenu" class="hidden md:hidden bg-blue-900 px-6 pb-6">
-      <a href="index.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Home</a>
-    <a href="about.html" class="block py-3 border-b border-blue-800 text-yellow-400 font-semibold">About</a>
-    <a href="alumni-directory.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Alumni</a>
-    <a href="events.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Events</a>
-    <a href="jobs.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Jobs</a>
-      <div class="mt-4 space-y-3">
-        <a href="login.html"    class="block text-center border border-white py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Login</a>
-        <a href="register.html" class="block text-center bg-yellow-400 text-blue-900 py-2 rounded-lg font-semibold">Register</a>
-      </div>
-    </div>
-  </nav>
-</header>
+    </nav>
+  </header>
 
   <!-- MAIN CONTENT -->
   <main>
     <!-- HERO SECTION -->
 
-    <section
-      class="bg-gradient-to-r
-             from-blue-950
-             via-blue-900
-             to-blue-700
-             text-white
-             pt-28 pb-20
-             sm:pt-32 sm:pb-24"
-    >
+    <section class="bg-gradient-to-r from-blue-950 via-blue-900 to-blue-700 text-white pt-28 pb-20 sm:pt-32 sm:pb-24">
 
-      <div
-        class="max-w-7xl
-               mx-auto
-               px-4 sm:px-6 lg:px-8
-               grid
-               lg:grid-cols-2
-               gap-12
-               items-center"
-      >
-
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
 
         <!-- LEFT CONTENT -->
 
         <div data-aos="fade-right">
 
-          <p
-            class="text-yellow-400
-                   font-semibold
-                   text-base sm:text-lg"
-          >
-            WELCOME TO ALUMNI CONNECT
-          </p>
+          <p class="text-yellow-400 font-semibold text-base sm:text-lg">WELCOME TO ALUMNI CONNECT</p>
 
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mt-4">Connecting Alumni. Building Careers. Creating Futures.</h1>
 
-          <h1
-            class="text-4xl
-                   sm:text-5xl
-                   lg:text-6xl
-                   font-extrabold
-                   leading-tight
-                   mt-4"
-          >
-            Connecting Alumni.
-            Building Careers.
-            Creating Futures.
-          </h1>
-
-
-          <p
-            class="mt-6
-                   text-blue-100
-                   text-base sm:text-lg
-                   leading-8"
-          >
+          <p class="mt-6 text-blue-100 text-base sm:text-lg leading-8">
             AlumniConnect is a professional platform that
             connects students, graduates, and industry
             professionals.
@@ -128,103 +107,45 @@
             relationships.
           </p>
 
-
           <!-- BUTTONS -->
 
-          <div
-            class="mt-8
-                   flex flex-col
-                   sm:flex-row
-                   gap-4"
-          >
+          <div class="mt-8 flex flex-col sm:flex-row gap-4">
 
-            <a
-              href="register.html"
-              class="text-center
-                     bg-yellow-400
-                     text-blue-950
-                     px-8 py-3
-                     rounded-xl
-                     font-bold
-                     hover:bg-yellow-300
-                     transition duration-300"
-            >
+            <a href="register.html" class="text-center bg-yellow-400 text-blue-950 px-8 py-3 rounded-xl font-bold hover:bg-yellow-300 transition duration-300">
               Join Our Community
             </a>
 
-
-            <a
-              href="#story"
-              class="text-center
-                     border border-white
-                     px-8 py-3
-                     rounded-xl
-                     hover:bg-white
-                     hover:text-blue-900
-                     transition duration-300"
-            >
+            <a href="#story" class="text-center border border-white px-8 py-3 rounded-xl hover:bg-white hover:text-blue-900 transition duration-300">
               Read Our Story
             </a>
 
           </div>
 
-
           <!-- STATS -->
 
-          <div
-            class="grid
-                   grid-cols-3
-                   gap-4 sm:gap-6
-                   mt-12"
-          >
+          <div class="grid grid-cols-3 gap-4 sm:gap-6 mt-12">
 
             <div>
 
-              <h2
-                class="text-2xl sm:text-3xl
-                       font-bold
-                       text-yellow-400"
-              >
-                12K+
-              </h2>
+              <h2 class="text-2xl sm:text-3xl font-bold text-yellow-400">12K+</h2>
 
-              <p class="text-sm text-blue-100">
-                Alumni
-              </p>
+              <p class="text-sm text-blue-100">Alumni</p>
 
             </div>
 
-
             <div>
 
-              <h2
-                class="text-2xl sm:text-3xl
-                       font-bold
-                       text-yellow-400"
-              >
-                850+
-              </h2>
+              <h2 class="text-2xl sm:text-3xl font-bold text-yellow-400">850+</h2>
 
-              <p class="text-sm text-blue-100">
-                Companies
-              </p>
+              <p class="text-sm text-blue-100">Companies</p>
 
             </div>
 
-
             <div>
 
-              <h2
-                class="text-2xl sm:text-3xl
-                       font-bold
-                       text-yellow-400"
-              >
-                300+
-              </h2>
+              <h2 class="text-2xl sm:text-3xl font-bold text-yellow-400">300+</h2>
 
-              <p class="text-sm text-blue-100">
-                Events
-              </p>
+              <p class="text-sm text-blue-100">Events</p>
 
             </div>
 
@@ -232,48 +153,19 @@
 
         </div>
 
-
-
         <!-- RIGHT IMAGE -->
 
-        <div
-          data-aos="fade-left"
-          class="relative"
-        >
+        <div data-aos="fade-left" class="relative">
 
-          <img
-            src="https://images.unsplash.com/photo-1523240795612-9a054b0db644"
-            alt="Alumni meeting"
-            class="rounded-3xl
-                   shadow-2xl
-                   w-full
-                   h-[350px]
-                   sm:h-[450px]
-                   lg:h-[500px]
-                   object-cover"
-          >
-
+          <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644" alt="Alumni meeting" class="rounded-3xl shadow-2xl w-full h-[350px] sm:h-[450px] lg:h-[500px] object-cover">
 
           <!-- FLOATING CARD -->
 
-          <div
-            class="absolute
-                   bottom-5 left-5
-                   sm:bottom-6 sm:left-6
-                   bg-white
-                   text-blue-900
-                   p-4 sm:p-5
-                   rounded-2xl
-                   shadow-xl"
-          >
+          <div class="absolute bottom-5 left-5 sm:bottom-6 sm:left-6 bg-white text-blue-900 p-4 sm:p-5 rounded-2xl shadow-xl">
 
-            <h3 class="font-bold text-xl">
-              5000+
-            </h3>
+            <h3 class="font-bold text-xl">5000+</h3>
 
-            <p class="text-sm sm:text-base">
-              Students Guided
-            </p>
+            <p class="text-sm sm:text-base">Students Guided</p>
 
           </div>
 
@@ -285,68 +177,27 @@
 
     <!-- OUR STORY -->
 
-    <section
-      id="story"
-      class="py-20 sm:py-24 bg-white"
-    >
+    <section id="story" class="py-20 sm:py-24 bg-white">
 
-      <div
-        class="max-w-7xl
-               mx-auto
-               px-4 sm:px-6 lg:px-8
-               grid
-               lg:grid-cols-2
-               gap-12 lg:gap-14
-               items-center"
-      >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 lg:gap-14 items-center">
 
         <!-- IMAGE -->
 
         <div data-aos="zoom-in">
 
-          <img
-            src="https://images.unsplash.com/photo-1523240795612-9a054b0db644"
-            alt="University students"
-            class="rounded-3xl
-                   shadow-2xl
-                   w-full
-                   h-[350px]
-                   sm:h-[450px]
-                   object-cover"
-          >
+          <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644" alt="University students" class="rounded-3xl shadow-2xl w-full h-[350px] sm:h-[450px] object-cover">
 
         </div>
-
 
         <!-- CONTENT -->
 
         <div data-aos="fade-left">
 
-          <p
-            class="text-blue-700
-                   font-semibold"
-          >
-            OUR JOURNEY
-          </p>
+          <p class="text-blue-700 font-semibold">OUR JOURNEY</p>
 
+          <h2 class="text-4xl md:text-5xl font-bold text-blue-950 mt-3">Our Story</h2>
 
-          <h2
-            class="text-4xl
-                   md:text-5xl
-                   font-bold
-                   text-blue-950
-                   mt-3"
-          >
-            Our Story
-          </h2>
-
-
-          <p
-            class="mt-6
-                   text-gray-600
-                   text-base sm:text-lg
-                   leading-8"
-          >
+          <p class="mt-6 text-gray-600 text-base sm:text-lg leading-8">
             AlumniConnect started with a simple vision:
             to create a strong connection between students
             and alumni.
@@ -355,109 +206,46 @@
             guide the next generation towards success.
           </p>
 
-
-          <p
-            class="mt-5
-                   text-gray-600
-                   text-base sm:text-lg
-                   leading-8"
-          >
+          <p class="mt-5 text-gray-600 text-base sm:text-lg leading-8">
             Through mentorship programs, professional
             networking, career opportunities, and community
             events, AlumniConnect helps students learn from
             real-world experiences.
           </p>
 
-
           <!-- FEATURES -->
 
-          <div
-            class="grid
-                   sm:grid-cols-2
-                   gap-4 sm:gap-5
-                   mt-8"
-          >
+          <div class="grid sm:grid-cols-2 gap-4 sm:gap-5 mt-8">
 
-            <div
-              class="bg-blue-50
-                     p-5
-                     rounded-xl"
-            >
+            <div class="bg-blue-50 p-5 rounded-xl">
 
-              <h3
-                class="font-bold
-                       text-blue-900
-                       text-lg sm:text-xl"
-              >
-                🤝 Mentorship
-              </h3>
+              <h3 class="font-bold text-blue-900 text-lg sm:text-xl">🤝 Mentorship</h3>
 
-              <p class="text-gray-600 mt-2">
-                Learn from experienced alumni.
-              </p>
+              <p class="text-gray-600 mt-2">Learn from experienced alumni.</p>
 
             </div>
 
+            <div class="bg-blue-50 p-5 rounded-xl">
 
-            <div
-              class="bg-blue-50
-                     p-5
-                     rounded-xl"
-            >
+              <h3 class="font-bold text-blue-900 text-lg sm:text-xl">🌎 Network</h3>
 
-              <h3
-                class="font-bold
-                       text-blue-900
-                       text-lg sm:text-xl"
-              >
-                🌎 Network
-              </h3>
-
-              <p class="text-gray-600 mt-2">
-                Connect globally.
-              </p>
+              <p class="text-gray-600 mt-2">Connect globally.</p>
 
             </div>
 
+            <div class="bg-blue-50 p-5 rounded-xl">
 
-            <div
-              class="bg-blue-50
-                     p-5
-                     rounded-xl"
-            >
+              <h3 class="font-bold text-blue-900 text-lg sm:text-xl">🚀 Growth</h3>
 
-              <h3
-                class="font-bold
-                       text-blue-900
-                       text-lg sm:text-xl"
-              >
-                🚀 Growth
-              </h3>
-
-              <p class="text-gray-600 mt-2">
-                Build your career.
-              </p>
+              <p class="text-gray-600 mt-2">Build your career.</p>
 
             </div>
 
+            <div class="bg-blue-50 p-5 rounded-xl">
 
-            <div
-              class="bg-blue-50
-                     p-5
-                     rounded-xl"
-            >
+              <h3 class="font-bold text-blue-900 text-lg sm:text-xl">🎓 Community</h3>
 
-              <h3
-                class="font-bold
-                       text-blue-900
-                       text-lg sm:text-xl"
-              >
-                🎓 Community
-              </h3>
-
-              <p class="text-gray-600 mt-2">
-                Stay connected forever.
-              </p>
+              <p class="text-gray-600 mt-2">Stay connected forever.</p>
 
             </div>
 
@@ -473,38 +261,15 @@
 
     <section class="py-20 sm:py-24 bg-gray-100">
 
-      <div
-        class="max-w-7xl
-               mx-auto
-               px-4 sm:px-6 lg:px-8"
-      >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <div
-          class="text-center"
-          data-aos="fade-up"
-        >
+        <div class="text-center" data-aos="fade-up">
 
-          <p class="text-blue-700 font-semibold">
-            OUR COMMUNITY
-          </p>
+          <p class="text-blue-700 font-semibold">OUR COMMUNITY</p>
 
-          <h2
-            class="text-4xl
-                   md:text-5xl
-                   font-bold
-                   text-blue-950
-                   mt-3"
-          >
-            Alumni Around The World
-          </h2>
+          <h2 class="text-4xl md:text-5xl font-bold text-blue-950 mt-3">Alumni Around The World</h2>
 
-          <p
-            class="mt-5
-                   text-gray-600
-                   text-base sm:text-lg
-                   max-w-3xl
-                   mx-auto"
-          >
+          <p class="mt-5 text-gray-600 text-base sm:text-lg max-w-3xl mx-auto">
             Our alumni community brings together
             professionals, entrepreneurs, and leaders who
             continue to support and inspire future
@@ -513,54 +278,21 @@
 
         </div>
 
-
-
         <!-- IMAGE CARDS -->
 
-        <div
-          class="grid
-                 md:grid-cols-2
-                 lg:grid-cols-3
-                 gap-8
-                 mt-14"
-        >
-
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-14">
 
           <!-- CARD 1 -->
 
-          <div
-            data-aos="fade-up"
-            class="bg-white
-                   rounded-3xl
-                   overflow-hidden
-                   shadow-xl
-                   hover:-translate-y-3
-                   transition duration-300"
-          >
+          <div data-aos="fade-up" class="bg-white rounded-3xl overflow-hidden shadow-xl hover:-translate-y-3 transition duration-300">
 
-            <img
-              src="https://images.unsplash.com/photo-1521737711867-e3b97375f902"
-              alt="Alumni Team"
-              class="w-full
-                     h-60 sm:h-64
-                     object-cover"
-            >
+            <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902" alt="Alumni Team" class="w-full h-60 sm:h-64 object-cover">
 
             <div class="p-7">
 
-              <h3
-                class="text-2xl
-                       font-bold
-                       text-blue-950"
-              >
-                Professional Network
-              </h3>
+              <h3 class="text-2xl font-bold text-blue-950">Professional Network</h3>
 
-              <p
-                class="mt-3
-                       text-gray-600
-                       leading-7"
-              >
+              <p class="mt-3 text-gray-600 leading-7">
                 Connecting graduates from different
                 industries and creating professional
                 opportunities.
@@ -570,43 +302,17 @@
 
           </div>
 
-
-
           <!-- CARD 2 -->
 
-          <div
-            data-aos="fade-up"
-            class="bg-white
-                   rounded-3xl
-                   overflow-hidden
-                   shadow-xl
-                   hover:-translate-y-3
-                   transition duration-300"
-          >
+          <div data-aos="fade-up" class="bg-white rounded-3xl overflow-hidden shadow-xl hover:-translate-y-3 transition duration-300">
 
-            <img
-              src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4"
-              alt="Students Networking"
-              class="w-full
-                     h-60 sm:h-64
-                     object-cover"
-            >
+            <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4" alt="Students Networking" class="w-full h-60 sm:h-64 object-cover">
 
             <div class="p-7">
 
-              <h3
-                class="text-2xl
-                       font-bold
-                       text-blue-950"
-              >
-                Strong Connections
-              </h3>
+              <h3 class="text-2xl font-bold text-blue-950">Strong Connections</h3>
 
-              <p
-                class="mt-3
-                       text-gray-600
-                       leading-7"
-              >
+              <p class="mt-3 text-gray-600 leading-7">
                 Building lifelong relationships between
                 students and successful alumni.
               </p>
@@ -615,48 +321,17 @@
 
           </div>
 
-
-
           <!-- CARD 3 -->
 
-          <div
-            data-aos="fade-up"
-            class="bg-white
-                   rounded-3xl
-                   overflow-hidden
-                   shadow-xl
-                   hover:-translate-y-3
-                   transition duration-300
-                   md:col-span-2
-                   lg:col-span-1"
-          >
+          <div data-aos="fade-up" class="bg-white rounded-3xl overflow-hidden shadow-xl hover:-translate-y-3 transition duration-300 md:col-span-2 lg:col-span-1">
 
-            <img
-              src="https://images.unsplash.com/photo-1556761175-b413da4baf72"
-              alt="Business Meeting"
-              class="w-full
-                     h-60 sm:h-64
-                     object-cover"
-            >
+            <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72" alt="Business Meeting" class="w-full h-60 sm:h-64 object-cover">
 
             <div class="p-7">
 
-              <h3
-                class="text-2xl
-                       font-bold
-                       text-blue-950"
-              >
-                Future Leaders
-              </h3>
+              <h3 class="text-2xl font-bold text-blue-950">Future Leaders</h3>
 
-              <p
-                class="mt-3
-                       text-gray-600
-                       leading-7"
-              >
-                Helping students develop skills and become
-                tomorrow's leaders.
-              </p>
+              <p class="mt-3 text-gray-600 leading-7">Helping students develop skills and become tomorrow's leaders.</p>
 
             </div>
 
@@ -664,31 +339,13 @@
 
         </div>
 
-
-
         <!-- COMMUNITY MESSAGE -->
 
-        <div
-          data-aos="zoom-in"
-          class="mt-16
-                 bg-blue-900
-                 text-white
-                 rounded-3xl
-                 p-8 sm:p-10
-                 text-center"
-        >
+        <div data-aos="zoom-in" class="mt-16 bg-blue-900 text-white rounded-3xl p-8 sm:p-10 text-center">
 
-          <h3 class="text-3xl font-bold">
-            Together We Grow
-          </h3>
+          <h3 class="text-3xl font-bold">Together We Grow</h3>
 
-          <p
-            class="mt-4
-                   text-blue-100
-                   text-base sm:text-lg
-                   max-w-3xl
-                   mx-auto"
-          >
+          <p class="mt-4 text-blue-100 text-base sm:text-lg max-w-3xl mx-auto">
             Every connection creates a new opportunity.
             Every story inspires someone.
             Every alumni relationship builds a stronger
@@ -705,38 +362,15 @@
 
     <section class="py-20 sm:py-24 bg-white">
 
-      <div
-        class="max-w-7xl
-               mx-auto
-               px-4 sm:px-6 lg:px-8"
-      >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <div
-          class="text-center"
-          data-aos="fade-up"
-        >
+        <div class="text-center" data-aos="fade-up">
 
-          <p class="text-blue-700 font-semibold">
-            WHAT WE DO
-          </p>
+          <p class="text-blue-700 font-semibold">WHAT WE DO</p>
 
-          <h2
-            class="text-4xl
-                   md:text-5xl
-                   font-bold
-                   text-blue-950
-                   mt-3"
-          >
-            Our Mission & Vision
-          </h2>
+          <h2 class="text-4xl md:text-5xl font-bold text-blue-950 mt-3">Our Mission & Vision</h2>
 
-          <p
-            class="mt-5
-                   text-gray-600
-                   text-base sm:text-lg
-                   max-w-3xl
-                   mx-auto"
-          >
+          <p class="mt-5 text-gray-600 text-base sm:text-lg max-w-3xl mx-auto">
             Creating meaningful connections, supporting
             career growth, and building a powerful alumni
             ecosystem.
@@ -744,165 +378,67 @@
 
         </div>
 
-
-
         <!-- MISSION CARDS -->
 
-        <div
-          class="grid
-                 md:grid-cols-2
-                 lg:grid-cols-3
-                 gap-8
-                 mt-14"
-        >
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-14">
 
           <!-- CONNECT -->
 
-          <div
-            data-aos="fade-up"
-            class="bg-blue-50
-                   p-8
-                   rounded-3xl
-                   text-center
-                   shadow-lg
-                   hover:-translate-y-3
-                   transition duration-300"
-          >
+          <div data-aos="fade-up" class="bg-blue-50 p-8 rounded-3xl text-center shadow-lg hover:-translate-y-3 transition duration-300">
 
             <div class="text-6xl">
               🤝
             </div>
 
-            <h3
-              class="text-2xl
-                     font-bold
-                     text-blue-950
-                     mt-5"
-            >
-              Connect
-            </h3>
+            <h3 class="text-2xl font-bold text-blue-950 mt-5">Connect</h3>
 
-            <p
-              class="mt-4
-                     text-gray-600
-                     leading-7"
-            >
+            <p class="mt-4 text-gray-600 leading-7">
               Create strong relationships between students,
               graduates, and industry professionals.
             </p>
 
           </div>
 
-
-
           <!-- GROW -->
 
-          <div
-            data-aos="fade-up"
-            class="bg-blue-50
-                   p-8
-                   rounded-3xl
-                   text-center
-                   shadow-lg
-                   hover:-translate-y-3
-                   transition duration-300"
-          >
+          <div data-aos="fade-up" class="bg-blue-50 p-8 rounded-3xl text-center shadow-lg hover:-translate-y-3 transition duration-300">
 
             <div class="text-6xl">
               🚀
             </div>
 
-            <h3
-              class="text-2xl
-                     font-bold
-                     text-blue-950
-                     mt-5"
-            >
-              Grow
-            </h3>
+            <h3 class="text-2xl font-bold text-blue-950 mt-5">Grow</h3>
 
-            <p
-              class="mt-4
-                     text-gray-600
-                     leading-7"
-            >
+            <p class="mt-4 text-gray-600 leading-7">
               Provide career opportunities, mentorship,
               and professional development.
             </p>
 
           </div>
 
-
-
           <!-- INSPIRE -->
 
-          <div
-            data-aos="fade-up"
-            class="bg-blue-50
-                   p-8
-                   rounded-3xl
-                   text-center
-                   shadow-lg
-                   hover:-translate-y-3
-                   transition duration-300
-                   md:col-span-2
-                   lg:col-span-1"
-          >
+          <div data-aos="fade-up" class="bg-blue-50 p-8 rounded-3xl text-center shadow-lg hover:-translate-y-3 transition duration-300 md:col-span-2 lg:col-span-1">
 
             <div class="text-6xl">
               🎓
             </div>
 
-            <h3
-              class="text-2xl
-                     font-bold
-                     text-blue-950
-                     mt-5"
-            >
-              Inspire
-            </h3>
+            <h3 class="text-2xl font-bold text-blue-950 mt-5">Inspire</h3>
 
-            <p
-              class="mt-4
-                     text-gray-600
-                     leading-7"
-            >
-              Share experiences and motivate the next
-              generation of students.
-            </p>
+            <p class="mt-4 text-gray-600 leading-7">Share experiences and motivate the next generation of students.</p>
 
           </div>
 
         </div>
 
-
-
         <!-- VISION -->
 
-        <div
-          data-aos="zoom-in"
-          class="mt-16
-                 bg-gradient-to-r
-                 from-blue-950
-                 to-blue-700
-                 rounded-3xl
-                 p-8 sm:p-12
-                 text-white
-                 text-center"
-        >
+        <div data-aos="zoom-in" class="mt-16 bg-gradient-to-r from-blue-950 to-blue-700 rounded-3xl p-8 sm:p-12 text-white text-center">
 
-          <h2 class="text-4xl font-bold">
-            Our Vision
-          </h2>
+          <h2 class="text-4xl font-bold">Our Vision</h2>
 
-          <p
-            class="mt-6
-                   text-base sm:text-lg
-                   text-blue-100
-                   max-w-4xl
-                   mx-auto
-                   leading-8"
-          >
+          <p class="mt-6 text-base sm:text-lg text-blue-100 max-w-4xl mx-auto leading-8">
             To become a globally connected alumni community
             where students receive guidance, graduates share
             knowledge, and every member gets opportunities
@@ -911,102 +447,39 @@
 
         </div>
 
-
-
         <!-- GOALS -->
 
-        <div
-          class="grid
-                 grid-cols-2
-                 lg:grid-cols-4
-                 gap-4 sm:gap-6
-                 mt-16"
-        >
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-16">
 
-          <div
-            class="bg-gray-100
-                   rounded-2xl
-                   p-5 sm:p-6
-                   text-center"
-          >
+          <div class="bg-gray-100 rounded-2xl p-5 sm:p-6 text-center">
 
-            <h3
-              class="text-xl
-                     font-bold
-                     text-blue-900"
-            >
-              01
-            </h3>
+            <h3 class="text-xl font-bold text-blue-900">01</h3>
 
-            <p class="mt-3">
-              Career Support
-            </p>
+            <p class="mt-3">Career Support</p>
 
           </div>
 
+          <div class="bg-gray-100 rounded-2xl p-5 sm:p-6 text-center">
 
-          <div
-            class="bg-gray-100
-                   rounded-2xl
-                   p-5 sm:p-6
-                   text-center"
-          >
+            <h3 class="text-xl font-bold text-blue-900">02</h3>
 
-            <h3
-              class="text-xl
-                     font-bold
-                     text-blue-900"
-            >
-              02
-            </h3>
-
-            <p class="mt-3">
-              Alumni Networking
-            </p>
+            <p class="mt-3">Alumni Networking</p>
 
           </div>
 
+          <div class="bg-gray-100 rounded-2xl p-5 sm:p-6 text-center">
 
-          <div
-            class="bg-gray-100
-                   rounded-2xl
-                   p-5 sm:p-6
-                   text-center"
-          >
+            <h3 class="text-xl font-bold text-blue-900">03</h3>
 
-            <h3
-              class="text-xl
-                     font-bold
-                     text-blue-900"
-            >
-              03
-            </h3>
-
-            <p class="mt-3">
-              Student Mentorship
-            </p>
+            <p class="mt-3">Student Mentorship</p>
 
           </div>
 
+          <div class="bg-gray-100 rounded-2xl p-5 sm:p-6 text-center">
 
-          <div
-            class="bg-gray-100
-                   rounded-2xl
-                   p-5 sm:p-6
-                   text-center"
-          >
+            <h3 class="text-xl font-bold text-blue-900">04</h3>
 
-            <h3
-              class="text-xl
-                     font-bold
-                     text-blue-900"
-            >
-              04
-            </h3>
-
-            <p class="mt-3">
-              Global Community
-            </p>
+            <p class="mt-3">Global Community</p>
 
           </div>
 
@@ -1020,195 +493,78 @@
 
     <section class="py-20 sm:py-24 bg-gray-100">
 
-      <div
-        class="max-w-7xl
-               mx-auto
-               px-4 sm:px-6 lg:px-8"
-      >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        <div
-          class="text-center"
-          data-aos="fade-up"
-        >
+        <div class="text-center" data-aos="fade-up">
 
-          <p class="text-blue-700 font-semibold">
-            WHY US
-          </p>
+          <p class="text-blue-700 font-semibold">WHY US</p>
 
-          <h2
-            class="text-4xl
-                   md:text-5xl
-                   font-bold
-                   text-blue-950
-                   mt-3"
-          >
-            Why Choose AlumniConnect?
-          </h2>
+          <h2 class="text-4xl md:text-5xl font-bold text-blue-950 mt-3">Why Choose AlumniConnect?</h2>
 
-          <p
-            class="mt-5
-                   text-gray-600
-                   text-base sm:text-lg"
-          >
+          <p class="mt-5 text-gray-600 text-base sm:text-lg">
             A platform designed to create opportunities,
             connections, and lifelong learning.
           </p>
 
         </div>
 
-
-
         <!-- FEATURES -->
 
-        <div
-          class="grid
-                 grid-cols-1
-                 sm:grid-cols-2
-                 lg:grid-cols-4
-                 gap-6
-                 mt-14"
-        >
-
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-14">
 
           <!-- MENTORSHIP -->
 
-          <div
-            class="bg-white
-                   p-7
-                   rounded-2xl
-                   shadow-lg
-                   text-center
-                   hover:-translate-y-2
-                   transition duration-300"
-          >
+          <div class="bg-white p-7 rounded-2xl shadow-lg text-center hover:-translate-y-2 transition duration-300">
 
             <div class="text-5xl">
               👨‍🏫
             </div>
 
-            <h3
-              class="text-xl
-                     font-bold
-                     text-blue-900
-                     mt-5"
-            >
-              Mentorship
-            </h3>
+            <h3 class="text-xl font-bold text-blue-900 mt-5">Mentorship</h3>
 
-            <p
-              class="mt-3
-                     text-gray-600"
-            >
-              Get guidance from experienced professionals.
-            </p>
+            <p class="mt-3 text-gray-600">Get guidance from experienced professionals.</p>
 
           </div>
 
-
-
           <!-- NETWORKING -->
 
-          <div
-            class="bg-white
-                   p-7
-                   rounded-2xl
-                   shadow-lg
-                   text-center
-                   hover:-translate-y-2
-                   transition duration-300"
-          >
+          <div class="bg-white p-7 rounded-2xl shadow-lg text-center hover:-translate-y-2 transition duration-300">
 
             <div class="text-5xl">
               🌐
             </div>
 
-            <h3
-              class="text-xl
-                     font-bold
-                     text-blue-900
-                     mt-5"
-            >
-              Networking
-            </h3>
+            <h3 class="text-xl font-bold text-blue-900 mt-5">Networking</h3>
 
-            <p
-              class="mt-3
-                     text-gray-600"
-            >
-              Connect with alumni worldwide.
-            </p>
+            <p class="mt-3 text-gray-600">Connect with alumni worldwide.</p>
 
           </div>
 
-
-
           <!-- CAREER -->
 
-          <div
-            class="bg-white
-                   p-7
-                   rounded-2xl
-                   shadow-lg
-                   text-center
-                   hover:-translate-y-2
-                   transition duration-300"
-          >
+          <div class="bg-white p-7 rounded-2xl shadow-lg text-center hover:-translate-y-2 transition duration-300">
 
             <div class="text-5xl">
               💼
             </div>
 
-            <h3
-              class="text-xl
-                     font-bold
-                     text-blue-900
-                     mt-5"
-            >
-              Career Growth
-            </h3>
+            <h3 class="text-xl font-bold text-blue-900 mt-5">Career Growth</h3>
 
-            <p
-              class="mt-3
-                     text-gray-600"
-            >
-              Discover jobs and opportunities.
-            </p>
+            <p class="mt-3 text-gray-600">Discover jobs and opportunities.</p>
 
           </div>
 
-
-
           <!-- COMMUNITY -->
 
-          <div
-            class="bg-white
-                   p-7
-                   rounded-2xl
-                   shadow-lg
-                   text-center
-                   hover:-translate-y-2
-                   transition duration-300"
-          >
+          <div class="bg-white p-7 rounded-2xl shadow-lg text-center hover:-translate-y-2 transition duration-300">
 
             <div class="text-5xl">
               ❤️
             </div>
 
-            <h3
-              class="text-xl
-                     font-bold
-                     text-blue-900
-                     mt-5"
-            >
-              Community
-            </h3>
+            <h3 class="text-xl font-bold text-blue-900 mt-5">Community</h3>
 
-            <p
-              class="mt-3
-                     text-gray-600"
-            >
-              Stay connected beyond graduation.
-            </p>
+            <p class="mt-3 text-gray-600">Stay connected beyond graduation.</p>
 
           </div>
 
@@ -1221,75 +577,222 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="bg-blue-950 text-white py-16">
-  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
+  <footer class="bg-[#0b1728] text-slate-300 py-16">
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
 
-    <div>
-      <h2 class="text-3xl font-bold">🎓 AlumniConnect</h2>
-      <p class="mt-4 text-gray-400">
-        Connecting students and alumni to create career
-        opportunities, mentorship and lifelong relationships.
+      <div>
+        <h2 class="text-2xl font-bold flex items-center gap-3 text-white">
+          <span class="bg-white rounded-lg p-1.5 flex items-center">
+            <img src="/assets/logo.png" alt="ICFAI University Sikkim" class="h-9 w-auto">
+          </span>
+          AlumniConnect
+        </h2>
+        <p class="mt-4 text-slate-400 text-sm leading-relaxed">
+          The ICFAI University, Sikkim Alumni Network connects graduates worldwide to foster career growth, mentorship, institutional collaboration, and lifelong professional relationships.
+        </p>
+        <div class="flex items-center gap-3 mt-6">
+          <a href="https://www.facebook.com/iusikkim/" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-[#c4161c] text-white flex items-center justify-center transition" aria-label="Facebook">
+            <i class="fa-brands fa-facebook-f text-sm"></i>
+          </a>
+          <a href="https://twitter.com/iusikkim" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-[#c4161c] text-white flex items-center justify-center transition" aria-label="Twitter">
+            <i class="fa-brands fa-x-twitter text-sm"></i>
+          </a>
+          <a href="https://www.linkedin.com/school/the-icfai-university-sikkim/" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-[#c4161c] text-white flex items-center justify-center transition" aria-label="LinkedIn">
+            <i class="fa-brands fa-linkedin-in text-sm"></i>
+          </a>
+          <a href="https://www.instagram.com/iusikkim/" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-[#c4161c] text-white flex items-center justify-center transition" aria-label="Instagram">
+            <i class="fa-brands fa-instagram text-sm"></i>
+          </a>
+          <a href="https://www.youtube.com/channel/UCrR_Kj1_1kX7sK6gN2rG44A" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-[#c4161c] text-white flex items-center justify-center transition" aria-label="YouTube">
+            <i class="fa-brands fa-youtube text-sm"></i>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg font-semibold text-white mb-5 border-l-4 border-[#c4161c] pl-3">Quick Links</h3>
+        <ul class="space-y-2.5 text-sm text-slate-400">
+          <li><a href="index.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> Home</a></li>
+          <li><a href="about.html" class="text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> About Us</a></li>
+          <li><a href="alumni-directory.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> Alumni Directory</a></li>
+          <li><a href="events.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> Events &amp; Reunions</a></li>
+          <li><a href="jobs.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> Career &amp; Jobs</a></li>
+          <li><a href="news-announcements.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> News &amp; Updates</a></li>
+          <li><a href="feedback.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> Feedback</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-lg font-semibold text-white mb-5 border-l-4 border-[#c4161c] pl-3">Campus Address</h3>
+        <div class="space-y-3 text-sm text-slate-400">
+          <p class="flex items-start gap-2.5">
+            <i class="fa-solid fa-location-dot text-[#c4161c] mt-1 shrink-0"></i>
+            <span>The ICFAI University, Sikkim<br>Ranka Road, Lower Sichey,<br>Gangtok, Sikkim - 737102</span>
+          </p>
+          <p class="flex items-center gap-2.5">
+            <i class="fa-solid fa-phone text-[#c4161c] shrink-0"></i>
+            <span>Toll Free: 1800 120 8991<br>Helpline: 03592-284000</span>
+          </p>
+          <p class="flex items-center gap-2.5">
+            <i class="fa-solid fa-envelope text-[#c4161c] shrink-0"></i>
+            <span>info@iusikkim.edu.in</span>
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-lg font-semibold text-white mb-5 border-l-4 border-[#c4161c] pl-3">Alumni Helpdesk</h3>
+        <p class="text-sm text-slate-400 leading-relaxed mb-4">
+          Need assistance with transcripts, degrees, or alumni registration? Get in touch with the University Alumni Relations Office.
+        </p>
+        <div class="space-y-2 text-sm text-slate-400">
+          <p class="flex items-center gap-2">
+            <i class="fa-solid fa-clock text-[#c4161c]"></i>
+            <span>Mon - Fri: 9:30 AM - 5:30 PM</span>
+          </p>
+          <p class="flex items-center gap-2">
+            <i class="fa-solid fa-graduation-cap text-[#c4161c]"></i>
+            <span>alumni@iusikkim.edu.in</span>
+          </p>
+        </div>
+        <div class="mt-5">
+          <a href="register.html" class="inline-block bg-[#c4161c] hover:bg-[#a01217] text-white text-xs font-semibold px-4 py-2 rounded transition shadow-sm">
+            Join Alumni Network
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-slate-800 mt-12 pt-6 text-center text-slate-500 text-xs max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-3">
+      <p>&copy; 2026 The ICFAI University, Sikkim. All Rights Reserved.</p>
+      <p class="flex gap-4">
+        <a href="https://www.iusikkim.edu.in/" target="_blank" rel="noopener" class="hover:text-slate-300">University Website</a>
+        <span>|</span>
+        <a href="feedback.html" class="hover:text-slate-300">Feedback</a>
+        <span>|</span>
+        <a href="about.html" class="hover:text-slate-300">About</a>
       </p>
     </div>
-
-    <div>
-      <h3 class="text-xl font-semibold mb-5">Quick Links</h3>
-      <ul class="space-y-3 text-gray-300">
-        <li><a href="index.html"            class="hover:text-yellow-400">Home</a></li>
-        <li><a href="about.html"            class="hover:text-yellow-400">About</a></li>
-        <li><a href="alumni-directory.html" class="hover:text-yellow-400">Alumni</a></li>
-        <li><a href="events.html"           class="hover:text-yellow-400">Events</a></li>
-        <li><a href="jobs.html"             class="hover:text-yellow-400">Jobs</a></li>
-      </ul>
-    </div>
-
-    <div>
-      <h3 class="text-xl font-semibold mb-5">Resources</h3>
-      <ul class="space-y-3 text-gray-300">
-        <li>Career Opportunities</li>
-        <li>Mentorship</li>
-       <li><a href="feedback.html" class="hover:text-yellow-400">Feedback</a></li>
-        <li>FAQ</li>
-      </ul>
-    </div>
-
-    <div>
-      <h3 class="text-xl font-semibold mb-5">Contact Us</h3>
-      <p>📧 alumni@university.com</p>
-      <p class="mt-3">📍 University Campus</p>
-      <p class="mt-3">📞 +91 98765 43210</p>
-    </div>
-  </div>
-
-  <div class="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400">
-    <p>&copy; 2026 AlumniConnect. All Rights Reserved.</p>
-    <p class="mt-2 text-sm">Privacy Policy | Terms &amp; Conditions</p>
-  </div>
-</footer>
+  </footer>
 
   <!-- SCROLL TO TOP BUTTON -->
 
-  <button
-    id="topBtn"
-    type="button"
-    onclick="goTop()"
-    aria-label="Scroll to top"
-    class="hidden
-           fixed
-           bottom-5 right-5
-           sm:bottom-8 sm:right-8
-           bg-blue-800
-           text-white
-           w-12 h-12
-           sm:w-14 sm:h-14
-           rounded-full
-           text-2xl sm:text-3xl
-           font-bold
-           shadow-2xl
-           hover:bg-blue-950
-           hover:-translate-y-1
-           transition duration-300
-           z-40">↑
-</button>
+  <button id="topBtn" type="button" onclick="goTop()" aria-label="Scroll to top" class="hidden fixed bottom-5 right-5 sm:bottom-8 sm:right-8 bg-blue-800 text-white w-12 h-12 sm:w-14 sm:h-14 rounded-full text-2xl sm:text-3xl font-bold shadow-2xl hover:bg-blue-950 hover:-translate-y-1 transition duration-300 z-40">↑</button>
 </body>
+
+<script>
+// Shared Global Navigation & Auth Bar Handler
+(function () {
+  function initNav() {
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    const navAuth = document.getElementById('navAuth');
+    const mobileNavAuth = document.getElementById('mobileNavAuth');
+    const isRoot = !window.location.pathname.includes('/events/') && !window.location.pathname.includes('/profiles/');
+    const pathPrefix = isRoot ? '' : '../';
+
+    if (token && user) {
+      const firstName = (user.fullName || user.full_name || 'You').split(' ')[0];
+
+      if (navAuth) {
+        navAuth.innerHTML = `
+          <span class="text-slate-700 font-medium text-sm">Hi, <strong class="text-[#012970]">${firstName}</strong></span>
+          <a href="${pathPrefix}my-profile.html"
+             class="border border-slate-300 text-slate-700 px-4 py-2 rounded-lg hover:border-[#012970] hover:text-[#012970] transition text-sm">
+            👤 My Profile
+          </a>
+          <button id="globalNavLogoutBtn"
+             class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-4 py-2 rounded-lg transition text-sm shadow-sm">
+            Logout
+          </button>`;
+      }
+
+      if (mobileNavAuth) {
+        mobileNavAuth.innerHTML = `
+          <p class="text-slate-700 text-sm py-1">Logged in as <strong class="text-[#012970]">${firstName}</strong></p>
+          <a href="${pathPrefix}my-profile.html"
+             class="block text-center border border-slate-300 text-slate-700 py-2 rounded-lg hover:border-[#012970] hover:text-[#012970] transition text-sm">
+            👤 My Profile
+          </a>
+          <button id="globalMobileLogoutBtn"
+             class="w-full text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">
+            Logout
+          </button>`;
+      }
+
+      function doLogout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.reload();
+      }
+
+      const logoutBtn = document.getElementById('globalNavLogoutBtn');
+      const mobileLogoutBtn = document.getElementById('globalMobileLogoutBtn');
+      if (logoutBtn) logoutBtn.addEventListener('click', doLogout);
+      if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', doLogout);
+
+    } else {
+      if (navAuth) {
+        navAuth.innerHTML = `
+          <a href="${pathPrefix}login.html"
+             class="border border-slate-300 text-slate-700 px-5 py-2 rounded-lg font-medium hover:border-[#012970] hover:text-[#012970] transition text-sm">
+            Login
+          </a>
+          <a href="${pathPrefix}register.html"
+             class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-5 py-2 rounded-lg transition text-sm shadow-sm">
+            Register
+          </a>`;
+      }
+
+      if (mobileNavAuth) {
+        mobileNavAuth.innerHTML = `
+          <a href="${pathPrefix}login.html"
+             class="block text-center border border-slate-300 text-slate-700 py-2 rounded-lg font-medium hover:border-[#012970] hover:text-[#012970] transition text-sm">
+            Login
+          </a>
+          <a href="${pathPrefix}register.html"
+             class="block text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">
+            Register
+          </a>`;
+      }
+    }
+
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    if (menuBtn && mobileMenu && !menuBtn.dataset.bound) {
+      menuBtn.dataset.bound = "true";
+      menuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        const isOpen = !mobileMenu.classList.contains('hidden');
+        menuBtn.setAttribute('aria-expanded', isOpen);
+        menuBtn.innerHTML = isOpen ? '✕' : '☰';
+      });
+
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+          menuBtn.setAttribute('aria-expanded', 'false');
+          menuBtn.innerHTML = '☰';
+        });
+      });
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) {
+          mobileMenu.classList.add('hidden');
+          menuBtn.setAttribute('aria-expanded', 'false');
+          menuBtn.innerHTML = '☰';
+        }
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNav);
+  } else {
+    initNav();
+  }
+})();
+</script>
 </html>

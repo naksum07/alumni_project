@@ -1,6 +1,6 @@
 const requestView = document.getElementById('requestView');
-const sentView     = document.getElementById('sentView');
-const requestMsg   = document.getElementById('requestMessage');
+const sentView    = document.getElementById('sentView');
+const requestMsg  = document.getElementById('requestMessage');
 
 function showMsg(el, text, isError) {
   el.textContent = text;

@@ -277,24 +277,24 @@ const searchInput =
     const firstName = (user.fullName || user.full_name || 'You').split(' ')[0];
  
     navAuth.innerHTML = `
-      <span class="text-blue-200 font-medium">Hi, <strong class="text-yellow-300">${firstName}</strong></span>
+      <span class="text-slate-700 font-medium text-sm">Hi, <strong class="text-[#012970]">${firstName}</strong></span>
       <a href="my-profile.html"
-         class="border border-white px-4 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition text-sm">
+         class="border border-slate-300 text-slate-700 px-4 py-2 rounded-lg hover:border-[#012970] hover:text-[#012970] transition text-sm">
         👤 My Profile
       </a>
       <button id="logoutBtn"
-         class="bg-yellow-400 text-blue-900 font-semibold px-4 py-2 rounded-lg hover:bg-yellow-300 transition text-sm">
+         class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-4 py-2 rounded-lg transition text-sm shadow-sm">
         Logout
       </button>`;
  
     mobileNavAuth.innerHTML = `
-      <p class="text-blue-200 text-sm py-1">Logged in as <strong class="text-yellow-300">${firstName}</strong></p>
+      <p class="text-slate-700 text-sm py-1">Logged in as <strong class="text-[#012970]">${firstName}</strong></p>
       <a href="my-profile.html"
-         class="block text-center border border-white py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">
+         class="block text-center border border-slate-300 text-slate-700 py-2 rounded-lg hover:border-[#012970] hover:text-[#012970] transition text-sm">
         👤 My Profile
       </a>
       <button id="mobileLogoutBtn"
-         class="w-full text-center bg-yellow-400 text-blue-900 py-2 rounded-lg font-semibold">
+         class="w-full text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">
         Logout
       </button>`;
  
@@ -310,25 +310,23 @@ const searchInput =
     // ---- NOT LOGGED IN — show Login / Register (page still works fine) ----
     navAuth.innerHTML = `
       <a href="login.html"
-         class="border border-white px-5 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">
+         class="border border-slate-300 text-slate-700 px-5 py-2 rounded-lg font-medium hover:border-[#012970] hover:text-[#012970] transition text-sm">
         Login
       </a>
       <a href="register.html"
-         class="bg-yellow-400 text-blue-900 font-semibold px-5 py-2 rounded-lg hover:bg-yellow-300 transition">
+         class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-5 py-2 rounded-lg transition text-sm shadow-sm">
         Register
       </a>`;
  
     mobileNavAuth.innerHTML = `
       <a href="login.html"
-         class="block text-center border border-white py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">
+         class="block text-center border border-slate-300 text-slate-700 py-2 rounded-lg font-medium hover:border-[#012970] hover:text-[#012970] transition text-sm">
         Login
       </a>
       <a href="register.html"
-         class="block text-center bg-yellow-400 text-blue-900 py-2 rounded-lg font-semibold">
+         class="block text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">
         Register
       </a>`;
- 
-    sessionStorage.setItem('returnTo', 'alumni-directory.html');
   }
  
   // Mobile hamburger toggle
@@ -361,8 +359,6 @@ const searchInput =
  
   //Alumni directory data loading (unrelated to auth/nav)
   const alumniGrid = document.getElementById('alumniGrid');
-  const resultCount = document.getElementById('resultCount');
-  const emptyState = document.getElementById('emptyState');
  
   // Single source of truth for what the grid looks like — always call
   // this with the final alumni list (even an empty one) so "empty" and
@@ -393,7 +389,7 @@ const searchInput =
             <p class="text-blue-700 mt-1 font-medium">${a.job_title || 'Alumni'}</p>
             <p class="text-gray-500 text-sm mt-2">${a.department || 'Department'} ${a.graduation_year ? `• Batch ${a.graduation_year}` : ''}</p>
             <p class="text-gray-500 text-sm mt-1">${a.company || 'AlumniConnect'}</p>
-            <a href="my-profile.html" class="block mt-5 bg-blue-700 text-white py-2.5 rounded-lg hover:bg-blue-800 transition">
+            <a href="my-profile.html?id=${a.id}" class="block mt-5 bg-blue-700 text-white py-2.5 rounded-lg hover:bg-blue-800 transition">
               View Profile
             </a>
           </div>
@@ -425,6 +421,8 @@ const searchInput =
     }
   }
  
-  loadLiveAlumni();
+  const urlSearch = new URLSearchParams(window.location.search).get('search') || '';
+  if (urlSearch && searchInput) searchInput.value = urlSearch;
+  loadLiveAlumni(urlSearch);
 })();
  

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -26,46 +26,62 @@
 </head>
 
 <body class="bg-gray-50 text-gray-800">
-<header>
-  <nav class="fixed top-0 left-0 w-full z-50 bg-blue-900 text-white shadow-lg">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+<!-- HEADER / NAVBAR -->
+  <header>
+    <nav class="fixed top-0 left-0 w-full z-50 bg-white text-slate-800 shadow-md border-b border-gray-100">
+      <div class="max-w-7xl mx-auto px-6 py-3.5 flex justify-between items-center">
 
-      <a href="index.html" class="flex items-center gap-3">
-        <span class="text-4xl">🎓</span>
-        <span class="text-2xl font-bold">AlumniConnect</span>
-      </a>
+        <a href="index.html" class="flex items-center gap-3">
+          <span class="p-1 flex items-center">
+            <img src="/assets/logo.png" alt="ICFAI University Sikkim" class="h-10 w-auto">
+          </span>
+          <span class="text-2xl font-bold text-[#012970] tracking-tight">Alumni<span class="text-[#c4161c]">Connect</span></span>
+        </a>
 
-      <div class="hidden md:flex items-center gap-8">
-        <a href="index.html" class="hover:text-yellow-300 transition">Home</a>
-        <a href="about.html" class="hover:text-yellow-300 transition">About</a>
-        <a href="alumni-directory.html" class="hover:text-yellow-300 transition">Alumni</a>
-        <a href="events.html" class="hover:text-yellow-300 transition">Events</a>
-        <a href="jobs.html" class="text-yellow-400 font-semibold">Jobs</a>
+        <div class="hidden md:flex items-center gap-8 font-medium text-slate-700">
+          <a href="index.html" class="hover:text-[#c4161c] transition">Home</a>
+          <a href="about.html" class="hover:text-[#c4161c] font-semibold">About</a>
+          <div class="relative group">
+            <button type="button" class="flex items-center gap-1 font-medium hover:text-[#c4161c] transition focus:outline-none">
+              Directory
+              <i class="fa-solid fa-chevron-down text-[10px] mt-0.5"></i>
+            </button>
+            <div class="absolute left-0 top-full mt-3 hidden group-hover:block group-focus-within:block bg-white border border-slate-200 rounded-xl shadow-lg min-w-[180px] py-2 z-50">
+              <a href="alumni-directory.html" class="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-[#c4161c]">Alumni</a>
+              <a href="student-directory.html" class="block px-4 py-2 text-sm hover:bg-slate-50 hover:text-[#c4161c]">Students</a>
+            </div>
+          </div>
+          <a href="events.html" class="hover:text-[#c4161c] transition">Events</a>
+          <a href="news-announcements.html" class="hover:text-[#c4161c] transition">News</a>
+          <a href="jobs.html" class="text-[#c4161c] transition">Jobs</a>
+        </div>
+
+        <div class="hidden md:flex gap-3 items-center" id="navAuth">
+          <!-- Filled by JS -->
+        </div>
+
+        <button id="menuBtn" aria-label="Open Menu" aria-expanded="false" class="md:hidden text-2xl text-slate-800 focus:outline-none">☰</button>
       </div>
 
-      <div class="hidden md:flex gap-3">
-        <a href="login.html"    class="border border-white px-5 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Login</a>
-        <a href="register.html" class="bg-yellow-400 text-blue-900 font-semibold px-5 py-2 rounded-lg hover:bg-yellow-300 transition">Register</a>
+      <div id="mobileMenu" class="hidden md:hidden bg-white px-6 pb-6 border-b border-gray-200 text-slate-700 shadow-lg">
+        <a href="index.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Home</a>
+        <a href="about.html" class="block py-3 border-b border-gray-100 text-[#c4161c] font-semibold">About</a>
+        <div class="py-3 border-b border-gray-100">
+          <div class="font-medium text-slate-700 mb-2">Directory</div>
+          <div class="space-y-2 pl-3 text-sm">
+            <a href="alumni-directory.html" class="block hover:text-[#c4161c]">Alumni</a>
+            <a href="student-directory.html" class="block hover:text-[#c4161c]">Students</a>
+          </div>
+        </div>
+        <a href="events.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Events</a>
+        <a href="news-announcements.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">News</a>
+        <a href="jobs.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Jobs</a>
+        <div class="mt-4 space-y-3" id="mobileNavAuth">
+          <!-- Filled by JS -->
+        </div>
       </div>
-
-      <button id="menuBtn" aria-label="Open Menu" aria-expanded="false" class="md:hidden text-3xl">☰</button>
-    </div>
-
-    <div id="mobileMenu" class="hidden md:hidden bg-blue-900 px-6 pb-6">
-      <a href="index.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Home</a>
-    <a href="about.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">About</a>
-    <a href="alumni-directory.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Alumni</a>
-    <a href="events.html" class="block py-3 border-b border-blue-800 hover:text-yellow-300">Events</a>
-    <a href="jobs.html" class="block py-3 border-b border-blue-800 text-yellow-400 font-semibold">Jobs</a>
-      <div class="mt-4 space-y-3">
-        <a href="login.html"    class="block text-center border border-white py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">Login</a>
-        <a href="register.html" class="block text-center bg-yellow-400 text-blue-900 py-2 rounded-lg font-semibold">Register</a>
-      </div>
-    </div>
-  </nav>
-</header>
-
-</header>
+    </nav>
+  </header>
 <!--HERO SECTION-->
 
 <section>
@@ -500,114 +516,56 @@
         class="absolute
                right-5 top-4
                text-3xl
-               text-slate-400
-               hover:text-slate-700">
-
-        &times;
-
-      </button>
-
-
-      <h2
-        class="text-2xl font-bold">
-
-        Apply Now
-
-      </h2>
-
-
-      <p
-        id="applyJobTitle"
-        class="text-blue-600
-               font-semibold
-               mt-2 mb-7">
-
-      </p>
-
-
-      <form
-        id="applicationForm"
-        class="space-y-4">
-
-
-        <input
-          type="text"
-          id="appName"
-          required
-          placeholder="Full Name"
-          class="w-full
-                 border
-                 rounded-xl
-                 p-3.5">
-
-
-        <input
-          type="email"
-          id="appEmail"
-          required
-          placeholder="Email Address"
-          class="w-full
-                 border
-                 rounded-xl
-                 p-3.5">
-
-
-        <input
-          type="tel"
-          id="appPhone"
-          required
-          placeholder="Phone Number"
-          class="w-full
-                 border
-                 rounded-xl
-                 p-3.5">
-
-
-        <input
-          type="url"
-          id="appResume"
-          required
-          placeholder="Resume URL"
-          class="w-full
-                 border
-                 rounded-xl
-                 p-3.5">
-
-
-        <textarea
-          id="appCover"
-          rows="4"
-          placeholder="Short Cover Letter"
-          class="w-full
-                 border
-                 rounded-xl
-                 p-3.5">
-        </textarea>
-
-
-        <button
-          type="submit"
-          class="w-full
-                 bg-blue-600
-                 hover:bg-blue-700
-                 text-white
-                 py-3.5
-                 rounded-xl
-                 font-semibold">
-
-          Submit Application
-
-        </button>
-
-        <!-- Inline feedback message -->
+<div id="applyModal" class="hidden fixed inset-0 z-[70] bg-slate-900/70 backdrop-blur-sm items-center justify-center p-5">
+  <div class="bg-white rounded-2xl max-w-lg w-full">
+    <div class="p-8 relative">
+      <button onclick="closeApply()" class="absolute right-5 top-4 text-3xl text-slate-400 hover:text-slate-700">&times;</button>
+      <h2 class="text-2xl font-bold text-[#012970]">Apply Now</h2>
+      <p id="applyJobTitle" class="text-[#c4161c] font-semibold mt-2 mb-7"></p>
+      <form id="applicationForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Full Name *</label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <input type="text" id="appFirstName" required placeholder="First Name *" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]">
+            <input type="text" id="appMiddleName" placeholder="Middle Name" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]">
+            <input type="text" id="appLastName" required placeholder="Last Name *" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Email Address *</label>
+          <input type="email" id="appEmail" required placeholder="Email Address" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Phone Number *</label>
+          <div class="flex gap-2">
+            <select id="appCountryCode" class="border border-gray-300 rounded-xl p-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] shrink-0">
+              <option value="+91" data-format="98765 43210" selected>🇮🇳 +91 (IN)</option>
+              <option value="+1" data-format="(555) 123-4567">🇺🇸 +1 (US)</option>
+              <option value="+44" data-format="7911 123456">🇬🇧 +44 (UK)</option>
+              <option value="+61" data-format="412 345 678">🇦🇺 +61 (AU)</option>
+              <option value="+977" data-format="984-1234567">🇳🇵 +977 (NP)</option>
+              <option value="+975" data-format="17 12 34 56">🇧🇹 +975 (BT)</option>
+              <option value="+880" data-format="1712-345678">🇧🇩 +880 (BD)</option>
+              <option value="+971" data-format="50 123 4567">🇦🇪 +971 (AE)</option>
+              <option value="+65" data-format="8123 4567">🇸🇬 +65 (SG)</option>
+              <option value="+1" data-format="(555) 123-4567">🇨🇦 +1 (CA)</option>
+            </select>
+            <input type="tel" id="appPhone" required placeholder="98765 43210" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Resume URL *</label>
+          <input type="url" id="appResume" required placeholder="https://example.com/my-resume.pdf" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wide">Cover Letter / Note</label>
+          <textarea id="appCover" rows="3" placeholder="Short cover letter or note to the hiring team..." class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]"></textarea>
+        </div>
+        <button type="submit" class="w-full bg-[#c4161c] hover:bg-[#a01217] text-white py-3.5 rounded-xl font-semibold transition shadow-md">Submit Application</button>
         <p id="applyMessage" class="text-sm font-medium hidden"></p>
-
       </form>
-
     </div>
-
   </div>
-
 </div>
 
 
@@ -615,202 +573,132 @@
 <!-- =====================================================
      POST OPPORTUNITY MODAL
 ===================================================== -->
+<div id="postModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm items-center justify-center p-5">
+  <div class="bg-white rounded-3xl max-w-xl w-full p-8 relative shadow-2xl">
+    <button onclick="closePostModal()" class="absolute right-5 top-4 text-3xl text-slate-400 hover:text-slate-700">&times;</button>
+    <h2 class="text-2xl font-bold text-[#012970]">Post an Opportunity</h2>
+    <p class="text-slate-500 mt-1 mb-6 text-sm">Share full-time roles, internships, or freelance work with fellow alumni.</p>
 
-<div
-  id="postModal"
-  class="hidden fixed inset-0
-         z-[60]
-         bg-slate-900/70
-         backdrop-blur-sm
-         items-center justify-center
-         p-5">
-
-
-  <div
-    class="bg-white
-           rounded-2xl
-           max-w-lg
-           w-full
-           max-h-[90vh]
-           overflow-y-auto">
-
-
-    <div
-      class="p-8 relative">
-
-
-      <button
-        onclick="closePostModal()"
-        class="absolute
-               right-5 top-4
-               text-3xl
-               text-slate-400
-               hover:text-slate-700">
-
-        &times;
-
-      </button>
-
-
-      <h2
-        class="text-2xl
-               font-bold
-               mb-7">
-
-        Post Job / Internship
-
-      </h2>
-
-
-      <form
-        id="postForm"
-        class="space-y-4">
-
-
-        <input
-          id="postTitle"
-          required
-          placeholder="Job / Internship Title"
-          class="w-full
-                 border
-                 rounded-xl
-                 p-3.5">
-
-
-        <input
-          id="postCompany"
-          required
-          placeholder="Company Name"
-          class="w-full
-                 border
-                 rounded-xl
-                 p-3.5">
-
-
-        <select
-          id="postType"
-          class="w-full
-                 border
-                 rounded-xl
-                 p-3.5">
-
-          <option value="Job">
-            Full-Time Job
-          </option>
-
-          <option value="Internship">
-            Internship
-          </option>
-
+    <form id="postForm" class="space-y-4">
+      <p id="postStatusMessage" class="hidden"></p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" id="postTitle" required placeholder="Job Title *" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]">
+        <input type="text" id="postCompany" required placeholder="Company Name *" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]">
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input type="text" id="postLocation" required placeholder="Location (e.g. Remote, Gangtok) *" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]">
+        <select id="postType" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]">
+          <option>Full Time</option>
+          <option>Part Time</option>
+          <option>Internship</option>
+          <option>Contract</option>
         </select>
+      </div>
+      <input type="text" id="postSalary" placeholder="Salary / Stipend (optional)" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]">
+      <input type="text" id="postSkills" placeholder="Skills (comma separated, e.g. Python, SQL)" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]">
+      <textarea id="postDesc" rows="3" required placeholder="Job description and requirements *" class="w-full border border-gray-300 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]"></textarea>
 
-
-        <input
-          id="postLocation"
-          required
-          placeholder="Location"
-          class="w-full
-                 border
-                 rounded-xl
-                 p-3.5">
-
-
-        <input
-          id="postSalary"
-          placeholder="Salary / Stipend"
-          class="w-full
-                 border
-                 rounded-xl
-                 p-3.5">
-
-
-        <input
-          id="postSkills"
-          required
-          placeholder="Required Skills"
-          class="w-full
-                 border
-                 rounded-xl
-                 p-3.5">
-
-
-        <textarea
-          id="postDescription"
-          required
-          rows="4"
-          placeholder="Job Description"
-          class="w-full
-                 border
-                 rounded-xl
-                 p-3.5">
-        </textarea>
-
-
-        <button
-          type="submit"
-          class="w-full
-                 bg-blue-600
-                 hover:bg-blue-700
-                 text-white
-                 py-3.5
-                 rounded-xl
-                 font-semibold">
-
-          Publish Opportunity
-
-        </button>
-
-      </form>
-
-    </div>
-
+      <button type="submit" class="w-full bg-[#c4161c] hover:bg-[#a01217] text-white py-3.5 rounded-xl font-semibold transition shadow-md">
+        Publish Opportunity
+      </button>
+    </form>
   </div>
-
 </div>
 
-<footer class="bg-blue-950 text-white py-16">
+<footer class="bg-[#0b1728] text-slate-300 py-16">
   <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-4 gap-10">
-
     <div>
-      <h2 class="text-3xl font-bold">🎓 AlumniConnect</h2>
-      <p class="mt-4 text-gray-400">
-        Connecting students and alumni to create career
-        opportunities, mentorship and lifelong relationships.
+      <h2 class="text-2xl font-bold flex items-center gap-3 text-white">
+        <span class="bg-white rounded-lg p-1.5 flex items-center">
+          <img src="/assets/logo.png" alt="ICFAI University Sikkim" class="h-9 w-auto">
+        </span>
+        AlumniConnect
+      </h2>
+      <p class="mt-4 text-slate-400 text-sm leading-relaxed">
+        The ICFAI University, Sikkim Alumni Network connects graduates worldwide to foster career growth, mentorship, institutional collaboration, and lifelong professional relationships.
       </p>
+      <div class="flex items-center gap-3 mt-6">
+        <a href="https://www.facebook.com/iusikkim/" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-[#c4161c] text-white flex items-center justify-center transition" aria-label="Facebook">
+          <i class="fa-brands fa-facebook-f text-sm"></i>
+        </a>
+        <a href="https://twitter.com/iusikkim" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-[#c4161c] text-white flex items-center justify-center transition" aria-label="Twitter">
+          <i class="fa-brands fa-x-twitter text-sm"></i>
+        </a>
+        <a href="https://www.linkedin.com/school/the-icfai-university-sikkim/" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-[#c4161c] text-white flex items-center justify-center transition" aria-label="LinkedIn">
+          <i class="fa-brands fa-linkedin-in text-sm"></i>
+        </a>
+        <a href="https://www.instagram.com/iusikkim/" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-[#c4161c] text-white flex items-center justify-center transition" aria-label="Instagram">
+          <i class="fa-brands fa-instagram text-sm"></i>
+        </a>
+        <a href="https://www.youtube.com/channel/UCrR_Kj1_1kX7sK6gN2rG44A" target="_blank" rel="noopener" class="w-9 h-9 rounded-full bg-slate-800 hover:bg-[#c4161c] text-white flex items-center justify-center transition" aria-label="YouTube">
+          <i class="fa-brands fa-youtube text-sm"></i>
+        </a>
+      </div>
     </div>
 
     <div>
-      <h3 class="text-xl font-semibold mb-5">Quick Links</h3>
-      <ul class="space-y-3 text-gray-300">
-        <li><a href="index.html"            class="hover:text-yellow-400">Home</a></li>
-        <li><a href="about.html"            class="hover:text-yellow-400">About</a></li>
-        <li><a href="alumni-directory.html" class="hover:text-yellow-400">Alumni</a></li>
-        <li><a href="events.html"           class="hover:text-yellow-400">Events</a></li>
-        <li><a href="jobs.html"             class="hover:text-yellow-400">Jobs</a></li>
+      <h3 class="text-lg font-semibold text-white mb-5 border-l-4 border-[#c4161c] pl-3">Quick Links</h3>
+      <ul class="space-y-2.5 text-sm text-slate-400">
+        <li><a href="index.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> Home</a></li>
+        <li><a href="about.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> About Us</a></li>
+        <li><a href="alumni-directory.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> Alumni Directory</a></li>
+        <li><a href="events.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> Events &amp; Reunions</a></li>
+        <li><a href="jobs.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> Career &amp; Jobs</a></li>
+        <li><a href="news-announcements.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> News &amp; Updates</a></li>
+        <li><a href="feedback.html" class="hover:text-white transition flex items-center gap-2"><span class="text-[#c4161c]">›</span> Feedback</a></li>
       </ul>
     </div>
 
     <div>
-      <h3 class="text-xl font-semibold mb-5">Resources</h3>
-      <ul class="space-y-3 text-gray-300">
-        <li>Career Opportunities</li>
-        <li>Mentorship</li>
-        <li><a href="feedback.html"             class="hover:text-yellow-400">Feedback</a></li>
-        <li>FAQ</li>
-      </ul>
+      <h3 class="text-lg font-semibold text-white mb-5 border-l-4 border-[#c4161c] pl-3">Campus Address</h3>
+      <div class="space-y-3 text-sm text-slate-400">
+        <p class="flex items-start gap-2.5">
+          <i class="fa-solid fa-location-dot text-[#c4161c] mt-1 shrink-0"></i>
+          <span>The ICFAI University, Sikkim<br>Ranka Road, Lower Sichey,<br>Gangtok, Sikkim - 737102</span>
+        </p>
+        <p class="flex items-center gap-2.5">
+          <i class="fa-solid fa-phone text-[#c4161c] shrink-0"></i>
+          <span>Toll Free: 1800 120 8991<br>Helpline: 03592-284000</span>
+        </p>
+        <p class="flex items-center gap-2.5">
+          <i class="fa-solid fa-envelope text-[#c4161c] shrink-0"></i>
+          <span>info@iusikkim.edu.in</span>
+        </p>
+      </div>
     </div>
 
     <div>
-      <h3 class="text-xl font-semibold mb-5">Contact Us</h3>
-      <p>📧 alumni@university.com</p>
-      <p class="mt-3">📍 University Campus</p>
-      <p class="mt-3">📞 +91 98765 43210</p>
+      <h3 class="text-lg font-semibold text-white mb-5 border-l-4 border-[#c4161c] pl-3">Alumni Helpdesk</h3>
+      <p class="text-sm text-slate-400 leading-relaxed mb-4">
+        Need assistance with transcripts, degrees, or alumni registration? Get in touch with the University Alumni Relations Office.
+      </p>
+      <div class="space-y-2 text-sm text-slate-400">
+        <p class="flex items-center gap-2">
+          <i class="fa-solid fa-clock text-[#c4161c]"></i>
+          <span>Mon - Fri: 9:30 AM - 5:30 PM</span>
+        </p>
+        <p class="flex items-center gap-2">
+          <i class="fa-solid fa-graduation-cap text-[#c4161c]"></i>
+          <span>alumni@iusikkim.edu.in</span>
+        </p>
+      </div>
+      <div class="mt-5">
+        <a href="register.html" class="inline-block bg-[#c4161c] hover:bg-[#a01217] text-white text-xs font-semibold px-4 py-2 rounded transition shadow-sm">
+          Join Alumni Network
+        </a>
+      </div>
     </div>
   </div>
 
-  <div class="border-t border-gray-700 mt-10 pt-6 text-center text-gray-400">
-    <p>&copy; 2026 AlumniConnect. All Rights Reserved.</p>
-    <p class="mt-2 text-sm">Privacy Policy | Terms &amp; Conditions</p>
+  <div class="border-t border-slate-800 mt-12 pt-6 text-center text-slate-500 text-xs max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-3">
+    <p>&copy; 2026 The ICFAI University, Sikkim. All Rights Reserved.</p>
+    <p class="flex gap-4">
+      <a href="https://www.iusikkim.edu.in/" target="_blank" rel="noopener" class="hover:text-slate-300">University Website</a>
+      <span>|</span>
+      <a href="feedback.html" class="hover:text-slate-300">Feedback</a>
+      <span>|</span>
+      <a href="about.html" class="hover:text-slate-300">About</a>
+    </p>
   </div>
 </footer>
 
@@ -818,10 +706,125 @@
 <button
   id="topButton"
   aria-label="Scroll to top"
-  class="hidden fixed bottom-6 right-6 z-50 w-12 h-12 bg-blue-600 hover:bg-blue-700
+  class="hidden fixed bottom-6 right-6 z-50 w-12 h-12 bg-[#012970] hover:bg-[#c4161c]
          text-white rounded-full shadow-xl items-center justify-center text-xl
          font-bold transition-all duration-300 hover:-translate-y-1">
   ↑
 </button>
 </body>
+
+<script>
+// Shared Global Navigation & Auth Bar Handler
+(function () {
+  function initNav() {
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    const navAuth = document.getElementById('navAuth');
+    const mobileNavAuth = document.getElementById('mobileNavAuth');
+    const isRoot = !window.location.pathname.includes('/events/') && !window.location.pathname.includes('/profiles/');
+    const pathPrefix = isRoot ? '' : '../';
+
+    if (token && user) {
+      const firstName = (user.fullName || user.full_name || 'You').split(' ')[0];
+
+      if (navAuth) {
+        navAuth.innerHTML = `
+          <span class="text-slate-700 font-medium text-sm">Hi, <strong class="text-[#012970]">${firstName}</strong></span>
+          <a href="${pathPrefix}my-profile.html"
+             class="border border-slate-300 text-slate-700 px-4 py-2 rounded-lg hover:border-[#012970] hover:text-[#012970] transition text-sm">
+            👤 My Profile
+          </a>
+          <button id="globalNavLogoutBtn"
+             class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-4 py-2 rounded-lg transition text-sm shadow-sm">
+            Logout
+          </button>`;
+      }
+
+      if (mobileNavAuth) {
+        mobileNavAuth.innerHTML = `
+          <p class="text-slate-700 text-sm py-1">Logged in as <strong class="text-[#012970]">${firstName}</strong></p>
+          <a href="${pathPrefix}my-profile.html"
+             class="block text-center border border-slate-300 text-slate-700 py-2 rounded-lg hover:border-[#012970] hover:text-[#012970] transition text-sm">
+            👤 My Profile
+          </a>
+          <button id="globalMobileLogoutBtn"
+             class="w-full text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">
+            Logout
+          </button>`;
+      }
+
+      function doLogout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.reload();
+      }
+
+      const logoutBtn = document.getElementById('globalNavLogoutBtn');
+      const mobileLogoutBtn = document.getElementById('globalMobileLogoutBtn');
+      if (logoutBtn) logoutBtn.addEventListener('click', doLogout);
+      if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', doLogout);
+
+    } else {
+      if (navAuth) {
+        navAuth.innerHTML = `
+          <a href="${pathPrefix}login.html"
+             class="border border-slate-300 text-slate-700 px-5 py-2 rounded-lg font-medium hover:border-[#012970] hover:text-[#012970] transition text-sm">
+            Login
+          </a>
+          <a href="${pathPrefix}register.html"
+             class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-5 py-2 rounded-lg transition text-sm shadow-sm">
+            Register
+          </a>`;
+      }
+
+      if (mobileNavAuth) {
+        mobileNavAuth.innerHTML = `
+          <a href="${pathPrefix}login.html"
+             class="block text-center border border-slate-300 text-slate-700 py-2 rounded-lg font-medium hover:border-[#012970] hover:text-[#012970] transition text-sm">
+            Login
+          </a>
+          <a href="${pathPrefix}register.html"
+             class="block text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">
+            Register
+          </a>`;
+      }
+    }
+
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+
+    if (menuBtn && mobileMenu && !menuBtn.dataset.bound) {
+      menuBtn.dataset.bound = "true";
+      menuBtn.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+        const isOpen = !mobileMenu.classList.contains('hidden');
+        menuBtn.setAttribute('aria-expanded', isOpen);
+        menuBtn.innerHTML = isOpen ? '✕' : '☰';
+      });
+
+      mobileMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenu.classList.add('hidden');
+          menuBtn.setAttribute('aria-expanded', 'false');
+          menuBtn.innerHTML = '☰';
+        });
+      });
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) {
+          mobileMenu.classList.add('hidden');
+          menuBtn.setAttribute('aria-expanded', 'false');
+          menuBtn.innerHTML = '☰';
+        }
+      });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initNav);
+  } else {
+    initNav();
+  }
+})();
+</script>
 </html>

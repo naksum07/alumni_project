@@ -7,7 +7,7 @@
 <meta name="description" content="Login to AlumniConnect alumni portal and connect with your alumni community.">
 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135755.png">
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="/scripts/login.js" defer></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
     html{ 
@@ -15,19 +15,23 @@
     }
 </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-slate-50 text-gray-800">
 
 <!-- MAIN CONTENT -->
-<main class="min-h-screen flex items-center justify-center pt-24 pb-12 px-4">
+<main class="min-h-screen flex items-center justify-center py-12 px-4">
 
 <!-- LOGIN CONTAINER -->
-<div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 mx-4">
+<div class="w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-100 p-8 sm:p-10 mx-4">
 
 <!-- LOGO -->
 <div class="text-center mb-8">
-    <div class="text-5xl">🎓</div>
-    <h1 class="text-3xl font-bold text-blue-900 mt-3">AlumniConnect</h1>
-    <p class="text-gray-500 mt-2">Login to your alumni account</p>
+    <a href="index.html" class="inline-flex items-center gap-2 mb-3">
+        <span class="p-1 flex items-center">
+            <img src="/assets/logo.png" alt="ICFAI University Sikkim" class="h-12 w-auto">
+        </span>
+    </a>
+    <h1 class="text-3xl font-bold text-[#012970]">Welcome <span class="text-[#c4161c]">Back</span></h1>
+    <p class="text-slate-500 mt-1 text-sm">Login to your ICFAI University Sikkim portal</p>
 </div>
 
 <!-- FORM -->
@@ -36,53 +40,137 @@
 
 <!-- EMAIL -->
 <div class="mb-5">
-    <label class="block text-gray-700 font-semibold mb-2">Email Address</label>
+    <label class="block text-slate-700 font-semibold mb-1.5 text-xs uppercase tracking-wide">Email Address</label>
     <input type="email"
         id="email"
         placeholder="Enter your email address" required
-        class="w-full border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-900">
+        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]">
 </div>
 
 <!-- PASSWORD -->
 <div class="mb-5">
-    <label class="block text-gray-700 font-semibold mb-2">Password</label>
+    <label class="block text-slate-700 font-semibold mb-1.5 text-xs uppercase tracking-wide">Password</label>
     <div class="relative">
         <input type="password"
-        id="password"
-        placeholder="Enter password" required
-        class="w-full border rounded-lg px-4 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-900">
-    <button type="button"
-        id="toggleButton"
-        onclick="togglePassword()"
-        class="absolute right-3 top-3 text-gray-500">Show</button>
+            id="password"
+            placeholder="Enter password" required
+            class="w-full border border-gray-300 rounded-xl px-4 py-3 pr-11 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]">
+        <button type="button"
+            id="toggleButton"
+            onclick="togglePasswordVisibility('password', this)"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1"
+            aria-label="Toggle password visibility">
+            <i class="fa-solid fa-eye"></i>
+        </button>
     </div>
 </div>
 
 <!-- OPTIONS -->
-<div class="flex justify-between items-center mb-6">
-    <label class="flex items-center gap-2 text-gray-600">
-    <input type="checkbox">Remember me</label>
-    <a href="forgot-password.html" class="text-blue-900 hover:underline">Forgot Password</a>
+<div class="flex justify-between items-center mb-6 text-sm">
+    <label class="flex items-center gap-2 text-slate-600 cursor-pointer">
+        <input type="checkbox" class="rounded text-[#c4161c] focus:ring-[#c4161c]">Remember me
+    </label>
+    <a href="forgot-password.html" class="text-[#012970] hover:text-[#c4161c] hover:underline font-medium">Forgot Password?</a>
 </div>
 
 <!-- LOGIN BUTTON -->
 <button type="submit"
-    class="w-full bg-blue-900 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition">
+    class="w-full bg-[#c4161c] hover:bg-[#a01217] text-white py-3.5 rounded-xl font-semibold transition shadow-md">
     Login
 </button>
 </form>
 
 <!-- REGISTER -->
-<p class="text-center text-gray-600 mt-6">
+<p class="text-center text-slate-600 mt-6 text-sm">
     Don't have an account?
-    <a href="register.html" class="text-blue-900 font-semibold hover:underline">Create Account</a>
+    <a href="register.html" class="text-[#012970] font-semibold hover:text-[#c4161c] underline">Create Account</a>
 </p>
 
 <!-- BACK HOME -->
-<a href="index.html" class="block text-center mt-5 text-gray-500 hover:text-blue-900">Back to Home</a>
+<a href="index.html" class="block text-center mt-3 text-xs text-slate-400 hover:text-[#012970]">← Back to Home</a>
 
 </div>
 
 </main>
+
+<script>
+// SHOW / HIDE PASSWORD
+function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    const icon = btn.querySelector('i');
+    if (input.type === "password") {
+        input.type = "text";
+        if (icon) {
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        }
+    } else {
+        input.type = "password";
+        if (icon) {
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+}
+
+const loginForm = document.getElementById("loginForm");
+const formMessage = document.getElementById("formMessage");
+const loginBtn = loginForm.querySelector("button[type=submit]");
+
+function showMessage(text, isError) {
+    formMessage.textContent = text;
+    formMessage.classList.remove("hidden", "text-red-600", "text-green-600");
+    formMessage.classList.add(isError ? "text-red-600" : "text-green-600");
+}
+
+// LOGIN — CALLS THE BACKEND API
+loginForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (email === "" || password === "") {
+        showMessage("Please fill all fields", true);
+        return;
+    }
+
+    loginBtn.disabled = true;
+    const originalBtnText = loginBtn.textContent;
+    loginBtn.textContent = "Logging in...";
+
+    try {
+        const response = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            showMessage(data.message || "Login failed. Please try again.", true);
+            return;
+        }
+
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        showMessage("Login successful! Redirecting…", false);
+        setTimeout(() => {
+            const returnTo = sessionStorage.getItem('returnTo') || 'index.html';
+            sessionStorage.removeItem('returnTo');
+            window.location.href = returnTo;
+        }, 800);
+    } catch (err) {
+        console.error(err);
+        showMessage("Could not reach the server. Please try again later.", true);
+    } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = originalBtnText;
+    }
+});
+</script>
 </body>
 </html>

@@ -295,7 +295,7 @@
 
         feedbackForm.addEventListener(
             "submit",
-            function (event) {
+            async function (event) {
                 event.preventDefault();
 
                 /* Require rating */
@@ -315,6 +315,37 @@
                         );
                     return;
                 }
+
+                /* Call the backend API */
+                try {
+                    const token = localStorage.getItem('token');
+                    const headers = { 'Content-Type': 'application/json' };
+                    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                    const res = await fetch('/api/feedback', {
+                        method: 'POST',
+                        headers,
+                        body: JSON.stringify({
+                            rating: Number(ratingInput.value),
+                            message: feedback.value
+                        }),
+                    });
+
+                    if (!res.ok) {
+                        const data = await res.json();
+                        ratingText.textContent = data.message || 'Submission failed. Please try again.';
+                        ratingText.classList.remove('text-gray-500');
+                        ratingText.classList.add('text-red-600', 'font-semibold');
+                        return;
+                    }
+                } catch (err) {
+                    console.error('Feedback error:', err);
+                    ratingText.textContent = 'Could not reach the server. Please try again later.';
+                    ratingText.classList.remove('text-gray-500');
+                    ratingText.classList.add('text-red-600', 'font-semibold');
+                    return;
+                }
+
                 /* Show success modal */
                 successModal.classList.remove(
                     "hidden"
@@ -455,4 +486,3 @@
                 }
             }
         );
-

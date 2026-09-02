@@ -1,8 +1,9 @@
-
+if (typeof AOS !== "undefined") {
     AOS.init({
-        duration:1000,
-        once:true
-});
+        duration: 1000,
+        once: true
+    });
+}
 function toggleMenu(){
     const menu=document.getElementById("mobileMenu");
     menu.classList.toggle("hidden");
@@ -35,6 +36,7 @@ entries.forEach(entry=>{
         startCounter(counter);
     }
 );
+    observer.unobserve(entry.target);
 }
 });
 },
@@ -68,25 +70,25 @@ fetch('/api/test')
 
     // Desktop nav
     navAuth.innerHTML = `
-      <span class="text-blue-200 font-medium">Hi, <strong class="text-yellow-300">${firstName}</strong></span>
+      <span class="text-slate-700 font-medium text-sm">Hi, <strong class="text-[#012970]">${firstName}</strong></span>
       <a href="my-profile.html"
-         class="border border-white px-4 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition text-sm">
+         class="border border-slate-300 text-slate-700 px-4 py-2 rounded-lg hover:border-[#012970] hover:text-[#012970] transition text-sm">
         👤 My Profile
       </a>
       <button id="logoutBtn"
-         class="bg-yellow-400 text-blue-900 font-semibold px-4 py-2 rounded-lg hover:bg-yellow-300 transition text-sm">
+         class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-4 py-2 rounded-lg transition text-sm shadow-sm">
         Logout
       </button>`;
 
     // Mobile nav
     mobileNavAuth.innerHTML = `
-      <p class="text-blue-200 text-sm py-1">Logged in as <strong class="text-yellow-300">${firstName}</strong></p>
+      <p class="text-slate-700 text-sm py-1">Logged in as <strong class="text-[#012970]">${firstName}</strong></p>
       <a href="my-profile.html"
-         class="block text-center border border-white py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">
+         class="block text-center border border-slate-300 text-slate-700 py-2 rounded-lg hover:border-[#012970] hover:text-[#012970] transition text-sm">
         👤 My Profile
       </a>
       <button id="mobileLogoutBtn"
-         class="w-full text-center bg-yellow-400 text-blue-900 py-2 rounded-lg font-semibold">
+         class="w-full text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">
         Logout
       </button>`;
 
@@ -100,24 +102,32 @@ fetch('/api/test')
     document.getElementById('mobileLogoutBtn').addEventListener('click', doLogout);
 
   } else {
-    // ---- NOT LOGGED IN — show Login / Register ----
+    // ---- NOT LOGGED IN — show Login / Register / Admin Login ----
     navAuth.innerHTML = `
+      <a href="/admin/login.html"
+         class="text-slate-500 font-medium hover:text-[#012970] transition text-sm px-2">
+        Admin Login
+      </a>
       <a href="login.html"
-         class="border border-white px-5 py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">
+         class="border border-slate-300 text-slate-700 px-5 py-2 rounded-lg font-medium hover:border-[#012970] hover:text-[#012970] transition text-sm">
         Login
       </a>
       <a href="register.html"
-         class="bg-yellow-400 text-blue-900 font-semibold px-5 py-2 rounded-lg hover:bg-yellow-300 transition">
+         class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-5 py-2 rounded-lg transition text-sm shadow-sm">
         Register
       </a>`;
 
     mobileNavAuth.innerHTML = `
+      <a href="/admin/login.html"
+         class="block text-center text-slate-500 py-2 rounded-lg font-medium hover:bg-gray-100 transition text-sm">
+        Admin Login
+      </a>
       <a href="login.html"
-         class="block text-center border border-white py-2 rounded-lg hover:bg-white hover:text-blue-900 transition">
+         class="block text-center border border-slate-300 text-slate-700 py-2 rounded-lg font-medium hover:border-[#012970] hover:text-[#012970] transition text-sm">
         Login
       </a>
       <a href="register.html"
-         class="block text-center bg-yellow-400 text-blue-900 py-2 rounded-lg font-semibold">
+         class="block text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">
         Register
       </a>`;
 
@@ -175,17 +185,18 @@ fetch('/api/test')
 // SCROLL BUTTON
 window.onscroll=function(){
     let btn=document.getElementById("topBtn");
+    if(btn){
         if(window.scrollY > 400){
             btn.classList.remove("hidden");
         }
         else{
             btn.classList.add("hidden");
         }
+    }
 };
 function goTop(){
     window.scrollTo({
     top:0,
     behavior:"smooth"
 });
-}     
-
+}

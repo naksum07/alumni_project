@@ -60,9 +60,13 @@ async function getJobById(req, res) {
   }
 }
 
-// POST /api/jobs (requires login — alumni or admin)
+// POST /api/jobs (requires login — alumni only)
 async function postJob(req, res) {
   const { title, company, location, jobType, salary, skills, description } = req.body;
+
+  if (!req.user || String(req.user.role || '').toLowerCase() !== 'alumni') {
+    return res.status(403).json({ message: 'Only alumni can post opportunities.' });
+  }
 
   if (!title || !company) {
     return res.status(400).json({ message: 'Job title and company are required' });
@@ -82,13 +86,12 @@ async function postJob(req, res) {
   }
 }
 
-// Shared helper: only the job's poster or an admin may modify/close/delete it
+// Shared helper: only the job's poster may modify/close/delete it
 async function canModifyJob(req, jobId) {
   const result = await pool.query('SELECT posted_by FROM jobs WHERE id = $1', [jobId]);
   if (result.rows.length === 0) return { found: false };
   const isOwner = Number(result.rows[0].posted_by) === Number(req.user.id);
-  const isAdmin = req.user.role === 'admin';
-  return { found: true, allowed: isOwner || isAdmin };
+  return { found: true, allowed: isOwner };
 }
 
 // PUT /api/jobs/:id
@@ -193,7 +196,7 @@ async function applyToJob(req, res) {
   }
 }
 
-// GET /api/jobs/:id/applications (job poster or admin only)
+// GET /api/jobs/:id/applications (job poster only)
 async function listApplications(req, res) {
   const { id } = req.params;
 

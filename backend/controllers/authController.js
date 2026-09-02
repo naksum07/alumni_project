@@ -10,10 +10,25 @@ const SELF_REGISTERABLE_ROLES = ['student', 'alumni'];
 
 // POST /api/auth/register
 async function register(req, res) {
-  const { fullName, email, phone, password, role, department, graduationYear } = req.body;
+  let { fullName, firstName, middleName, lastName, email, phone, password, role, department, graduationYear, expectedGraduationYear } = req.body;
+
+  if (!fullName && (firstName || lastName)) {
+    fullName = [firstName, middleName, lastName].filter(Boolean).join(' ');
+  }
+
+  const finalGradYear = graduationYear || expectedGraduationYear || req.body['expected-grad-year'] || null;
 
   if (!fullName || !email || !password) {
     return res.status(400).json({ message: 'Full name, email, and password are required' });
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ message: 'Please provide a valid email address' });
+  }
+
+  if (password.length < 8) {
+    return res.status(400).json({ message: 'Password must be at least 8 characters long' });
   }
 
   const safeRole = SELF_REGISTERABLE_ROLES.includes(role) ? role : 'student';
@@ -30,7 +45,7 @@ async function register(req, res) {
       `INSERT INTO users (full_name, email, phone, password_hash, role, department, graduation_year)
        VALUES ($1, $2, $3, $4, $5, $6, $7)
        RETURNING id, full_name, email, role`,
-      [fullName, email, phone, passwordHash, safeRole, department, graduationYear]
+      [fullName, email, phone, passwordHash, safeRole, department, finalGradYear]
     );
 
     res.status(201).json({ message: 'Registration successful', user: result.rows[0] });
@@ -84,7 +99,13 @@ async function login(req, res) {
     res.json({
       message: 'Login successful',
       token,
-      user: { id: user.id, fullName: user.full_name, email: user.email, role: user.role },
+      user: {
+        id: user.id,
+        fullName: user.full_name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role
+      },
     });
   } catch (err) {
     console.error(err);
@@ -117,7 +138,7 @@ async function forgotPassword(req, res) {
     // is NEVER sent — the token should arrive by email only.
     const responsePayload = { message: 'If that email exists, a reset link has been sent.' };
     if (process.env.NODE_ENV !== 'production') {
-      responsePayload.devToken = token;
+      responsePayload.devResetUrl = `/reset-password.html?token=${token}`;
     }
     res.json(responsePayload);
   } catch (err) {
@@ -160,4 +181,47 @@ async function resetPassword(req, res) {
   }
 }
 
-module.exports = { register, login, forgotPassword, resetPassword };
+
+// POST /api/admin/login (handled in authController but mounted in adminRoutes)
+async function adminLogin(req, res) {
+  const { username, passcode } = req.body;
+  if (!username || !passcode) {
+    return res.status(400).json({ message: 'Username and passcode are required' });
+  }
+
+  try {
+    const result = await pool.query('SELECT * FROM users WHERE email = $1 AND role = \'admin\'', [username]);
+    const user = result.rows[0];
+
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid admin credentials' });
+    }
+
+    const passwordMatches = await bcrypt.compare(passcode, user.password_hash);
+    if (!passwordMatches) {
+      return res.status(401).json({ message: 'Invalid admin credentials' });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '2h' }
+    );
+
+    res.json({
+      message: 'Admin login successful',
+      token,
+      user: {
+        id: user.id,
+        fullName: user.full_name,
+        email: user.email,
+        role: user.role
+      },
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error during admin login' });
+  }
+}
+
+module.exports = { register, login, forgotPassword, resetPassword, adminLogin };
