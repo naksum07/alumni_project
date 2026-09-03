@@ -8,6 +8,7 @@ async function getFeedback(req, res) {
               u.full_name AS author_name
        FROM feedback f
        LEFT JOIN users u ON u.id = f.user_id
+       WHERE (u.status = 'active' OR f.user_id IS NULL)
        ORDER BY f.created_at DESC`
     );
     res.json(result.rows);

@@ -9,14 +9,42 @@
 <script src="../scripts/data-store.js"></script>
 <script src="../scripts/admin-common.js"></script>
 </head>
-<body class="bg-slate-50 font-sans">
-
-<div class="admin-content">
-    <div class="flex justify-between items-center mb-8">
+    <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-800">News & Announcements</h1>
-        <button onclick="document.getElementById('addNewsModal').classList.remove('hidden')" class="bg-[#c4161c] hover:bg-[#a01217] text-white px-5 py-2.5 rounded shadow flex items-center gap-2 font-medium">
+        <button onclick="document.getElementById('addNewsModal').classList.remove('hidden')" class="bg-[#c4161c] hover:bg-[#a01217] text-white px-5 py-2.5 rounded-xl shadow-sm flex items-center gap-2 font-semibold transition">
             <i class="fa-solid fa-plus"></i> New Post
         </button>
+    </div>
+
+    <!-- FILTERS CARD -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+            
+            <!-- SEARCH -->
+            <div class="md:col-span-2 relative">
+                <span class="absolute left-4 top-3 text-slate-400"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" id="searchInput" placeholder="Search title or content..." class="w-full border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm transition">
+            </div>
+
+            <!-- DATE RANGE -->
+            <div class="flex gap-2 relative">
+                <input type="date" id="dateFrom" class="w-1/2 border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-blue-500 text-sm transition" title="From">
+                <input type="date" id="dateTo" class="w-1/2 border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-blue-500 text-sm transition" title="To">
+            </div>
+
+            <!-- STATUS -->
+            <div class="relative">
+                <select id="statusSelect" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 text-sm bg-white appearance-none transition">
+                    <option value="">All Statuses</option>
+                    <option value="Published">Published</option>
+                    <option value="Draft">Draft</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                </div>
+            </div>
+            
+        </div>
     </div>
 
     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -80,8 +108,21 @@ function getToken() {
     return typeof getAdminToken === 'function' ? getAdminToken() : (localStorage.getItem('adminToken') || localStorage.getItem('token'));
 }
 
+let searchTimeout;
+
 async function loadNews() {
-    const res = await fetch('/api/admin/news', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+    const search = document.getElementById('searchInput')?.value;
+    const dateFrom = document.getElementById('dateFrom')?.value;
+    const dateTo = document.getElementById('dateTo')?.value;
+    const status = document.getElementById('statusSelect')?.value;
+
+    const params = new URLSearchParams();
+    if (search) params.append('search', search);
+    if (dateFrom) params.append('date_from', dateFrom);
+    if (dateTo) params.append('date_to', dateTo);
+    if (status) params.append('status', status);
+
+    const res = await fetch('/api/admin/news?' + params.toString(), { headers: { 'Authorization': 'Bearer ' + getToken() } });
     if (!res.ok) {
         if (typeof clearAdminTokens === 'function') clearAdminTokens();
         return window.location.href = 'login.html';
@@ -149,7 +190,47 @@ window.deleteNews = async (id) => {
     }
 };
 
-document.addEventListener('DOMContentLoaded', loadNews);
+document.addEventListener('DOMContentLoaded', () => {
+    const url = new URL(window.location);
+    if (url.searchParams.get('search')) document.getElementById('searchInput').value = url.searchParams.get('search');
+    if (url.searchParams.get('date_from')) document.getElementById('dateFrom').value = url.searchParams.get('date_from');
+    if (url.searchParams.get('date_to')) document.getElementById('dateTo').value = url.searchParams.get('date_to');
+    if (url.searchParams.get('status')) document.getElementById('statusSelect').value = url.searchParams.get('status');
+
+    loadNews();
+
+    const updateUrlAndReload = () => {
+        const currentUrl = new URL(window.location);
+        const search = document.getElementById('searchInput').value;
+        const dateFrom = document.getElementById('dateFrom').value;
+        const dateTo = document.getElementById('dateTo').value;
+        const status = document.getElementById('statusSelect').value;
+
+        if (search) currentUrl.searchParams.set('search', search);
+        else currentUrl.searchParams.delete('search');
+
+        if (dateFrom) currentUrl.searchParams.set('date_from', dateFrom);
+        else currentUrl.searchParams.delete('date_from');
+
+        if (dateTo) currentUrl.searchParams.set('date_to', dateTo);
+        else currentUrl.searchParams.delete('date_to');
+
+        if (status) currentUrl.searchParams.set('status', status);
+        else currentUrl.searchParams.delete('status');
+
+        window.history.replaceState({}, '', currentUrl);
+        loadNews();
+    };
+
+    document.getElementById('searchInput').addEventListener('input', () => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(updateUrlAndReload, 300);
+    });
+
+    ['dateFrom', 'dateTo', 'statusSelect'].forEach(id => {
+        document.getElementById(id).addEventListener('change', updateUrlAndReload);
+    });
+});
 </script>
 
 </body>

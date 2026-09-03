@@ -12,13 +12,38 @@
 <body class="bg-slate-50 font-sans">
 
 <div class="admin-content">
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Members Directory</h1>
-        
-        <div class="flex bg-white rounded-lg shadow-sm overflow-hidden p-1">
-            <button onclick="setFilter('All')" id="btnAll" class="px-4 py-1.5 text-sm font-semibold rounded bg-[#012970] text-white">All</button>
-            <button onclick="setFilter('Student')" id="btnStudent" class="px-4 py-1.5 text-sm font-semibold rounded text-gray-600 hover:bg-gray-100">Students</button>
-            <button onclick="setFilter('Alumni')" id="btnAlumni" class="px-4 py-1.5 text-sm font-semibold rounded text-gray-600 hover:bg-gray-100">Alumni</button>
+    </div>
+
+    <!-- FILTERS CARD -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+            
+            <!-- SEARCH -->
+            <div class="md:col-span-2 relative">
+                <span class="absolute left-4 top-3 text-slate-400"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" id="searchInput" placeholder="Search name or email..." class="w-full border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm transition">
+            </div>
+
+            <!-- SORT -->
+            <div class="relative">
+                <select id="sortSelect" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 text-sm bg-white appearance-none transition">
+                    <option value="recent">Recently Added</option>
+                    <option value="alpha">Alphabetical</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                </div>
+            </div>
+
+            <!-- ROLE TOGGLE -->
+            <div class="flex bg-slate-100 rounded-xl p-1">
+                <button onclick="setFilter('All')" id="btnAll" class="flex-1 px-3 py-2 text-sm font-semibold rounded-lg bg-white text-[#012970] shadow-sm transition">All</button>
+                <button onclick="setFilter('Student')" id="btnStudent" class="flex-1 px-3 py-2 text-sm font-semibold rounded-lg text-slate-500 hover:text-slate-700 transition">Students</button>
+                <button onclick="setFilter('Alumni')" id="btnAlumni" class="flex-1 px-3 py-2 text-sm font-semibold rounded-lg text-slate-500 hover:text-slate-700 transition">Alumni</button>
+            </div>
+            
         </div>
     </div>
 
@@ -30,6 +55,8 @@
                     <th>Email</th>
                     <th>Type</th>
                     <th>Date Registered</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -39,13 +66,22 @@
 
 <script>
 let currentFilter = 'All';
+let searchTimeout;
 
 function getToken() {
     return typeof getAdminToken === 'function' ? getAdminToken() : (localStorage.getItem('adminToken') || localStorage.getItem('token'));
 }
 
 async function loadMembers() {
-    const res = await fetch('/api/admin/users', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+    const search = document.getElementById('searchInput').value;
+    const sort = document.getElementById('sortSelect').value;
+    
+    // Construct query parameters
+    const params = new URLSearchParams();
+    if (search) params.append('search', search);
+    if (sort) params.append('sort', sort);
+
+    const res = await fetch('/api/admin/users?' + params.toString(), { headers: { 'Authorization': 'Bearer ' + getToken() } });
     if (!res.ok) {
         if (typeof clearAdminTokens === 'function') clearAdminTokens();
         return window.location.href = 'login.html';
@@ -62,24 +98,46 @@ async function loadMembers() {
     tbody.innerHTML = '';
     
     if (users.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center py-6 text-gray-500">No members found.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-gray-500">No members found.</td></tr>';
         return;
     }
 
-    users.forEach(u => {
+        users.forEach(u => {
         const roleLower = String(u.role || '').toLowerCase();
-        const badge = roleLower === 'alumni' 
+        const typeBadge = roleLower === 'alumni' 
             ? 'bg-purple-100 text-purple-800' 
             : roleLower === 'admin' 
               ? 'bg-blue-100 text-blue-800' 
               : 'bg-orange-100 text-orange-800';
+              
+        const statusLower = String(u.status || 'active').toLowerCase();
+        const statusBadge = statusLower === 'suspended' || statusLower === 'blocked'
+            ? '<span class="px-2 py-1 rounded text-xs font-semibold bg-red-100 text-red-800">Blocked</span>'
+            : '<span class="px-2 py-1 rounded text-xs font-semibold bg-green-100 text-green-800">Active</span>';
+            
+        const isBlocked = statusLower === 'suspended' || statusLower === 'blocked';
+        const blockAction = isBlocked ? 'active' : 'suspended';
+        const blockIcon = isBlocked ? 'fa-unlock' : 'fa-ban';
+        const blockText = isBlocked ? 'Unblock' : 'Block';
+        const blockColor = isBlocked ? 'text-green-600 hover:text-green-800' : 'text-orange-600 hover:text-orange-800';
+
         const dateStr = u.created_at ? new Date(u.created_at).toLocaleDateString() : 'N/A';
+        
         tbody.innerHTML += `
             <tr>
                 <td class="font-medium">${u.full_name || 'N/A'}</td>
                 <td>${u.email || 'N/A'}</td>
-                <td><span class="px-2 py-1 rounded text-xs font-semibold ${badge}">${u.role || 'user'}</span></td>
+                <td><span class="px-2 py-1 rounded text-xs font-semibold ${typeBadge}">${u.role || 'user'}</span></td>
                 <td>${dateStr}</td>
+                <td>${statusBadge}</td>
+                <td>
+                    <button onclick="adminToggleBlock(${u.id}, '${blockAction}')" class="${blockColor} mr-3" title="${blockText}">
+                        <i class="fa-solid ${blockIcon}"></i>
+                    </button>
+                    <button onclick="adminDeleteUser(${u.id})" class="text-red-600 hover:text-red-800" title="Delete">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </td>
             </tr>
         `;
     });
@@ -99,10 +157,85 @@ window.setFilter = (type) => {
         }
     });
     
+    // Update URL parameter
+    const url = new URL(window.location);
+    url.searchParams.set('role', type);
+    window.history.replaceState({}, '', url);
+
     loadMembers();
 };
 
-document.addEventListener('DOMContentLoaded', loadMembers);
+document.addEventListener('DOMContentLoaded', () => {
+    const url = new URL(window.location);
+    const searchParam = url.searchParams.get('search');
+    const sortParam = url.searchParams.get('sort');
+    const roleParam = url.searchParams.get('role');
+
+    if (searchParam) document.getElementById('searchInput').value = searchParam;
+    if (sortParam) document.getElementById('sortSelect').value = sortParam;
+    if (roleParam) {
+        currentFilter = roleParam;
+        window.setFilter(roleParam); // this will trigger loadMembers
+    } else {
+        loadMembers();
+    }
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            const currentUrl = new URL(window.location);
+            if (e.target.value) currentUrl.searchParams.set('search', e.target.value);
+            else currentUrl.searchParams.delete('search');
+            window.history.replaceState({}, '', currentUrl);
+            loadMembers();
+        }, 300);
+    });
+
+    document.getElementById('sortSelect').addEventListener('change', (e) => {
+        const currentUrl = new URL(window.location);
+        if (e.target.value) currentUrl.searchParams.set('sort', e.target.value);
+        else currentUrl.searchParams.delete('sort');
+        window.history.replaceState({}, '', currentUrl);
+        loadMembers();
+    });
+});
+
+window.adminToggleBlock = async (id, newStatus) => {
+    if (confirm(`Are you sure you want to ${newStatus === 'active' ? 'unblock' : 'block'} this user?`)) {
+        try {
+            const res = await fetch(`/api/admin/users/${id}/status`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + getToken()
+                },
+                body: JSON.stringify({ status: newStatus })
+            });
+            if (!res.ok) throw new Error('Failed to update status');
+            loadMembers();
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+};
+
+window.adminDeleteUser = async (id) => {
+    if (confirm('Are you sure you want to permanently delete this user and all their content? This action cannot be undone.')) {
+        try {
+            const res = await fetch(`/api/admin/users/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + getToken()
+                }
+            });
+            if (!res.ok) throw new Error('Failed to delete user');
+            loadMembers();
+        } catch (err) {
+            alert(err.message);
+        }
+    }
+};
+
 </script>
 
 </body>

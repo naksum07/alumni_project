@@ -16,6 +16,7 @@ const {
   createNews,
   toggleNewsStatus,
   deleteNews,
+  deleteFeedback,
 } = require('../controllers/adminController');
 const { verifyToken, requireAdmin } = require('../middleware/auth');
 
@@ -50,5 +51,8 @@ router.get('/news', listNews);
 router.post('/news', createNews);
 router.patch('/news/:id/toggle', toggleNewsStatus);
 router.delete('/news/:id', deleteNews);
+
+// Feedback
+router.delete('/feedback/:id', deleteFeedback);
 
 module.exports = router;

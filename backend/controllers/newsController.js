@@ -4,10 +4,11 @@ const pool = require('../config/db');
 async function getPublicNews(req, res) {
   try {
     const result = await pool.query(
-      `SELECT id, title, content, category, image_url, publish_date, visibility, created_at
-       FROM news
-       WHERE status = 'Published'
-       ORDER BY publish_date DESC`
+      `SELECT n.id, n.title, n.content, n.category, n.image_url, n.publish_date, n.visibility, n.created_at
+       FROM news n
+       JOIN users u ON u.id = n.posted_by
+       WHERE n.status = 'Published' AND u.role = 'admin'
+       ORDER BY n.publish_date DESC`
     );
     res.json(result.rows);
   } catch (err) {

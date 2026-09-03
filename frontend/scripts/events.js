@@ -109,10 +109,16 @@ function renderEvents(events) {
     const palette = PALETTES[index % PALETTES.length];
     const card = document.createElement('div');
     card.className = 'bg-white rounded-2xl shadow-md overflow-hidden hover:-translate-y-2 hover:shadow-xl transition-all duration-300 border border-slate-100';
+
+    let dateDisplay = formatDate(event.event_date);
+    if (event.event_date_end) {
+        dateDisplay += ' – ' + formatDate(event.event_date_end);
+    }
+
     card.innerHTML = `
       <div class="${palette.bg} text-white p-6">
         <i class="fa-solid ${palette.icon} text-4xl"></i>
-        <p class="mt-4 font-semibold">${formatDate(event.event_date)}</p>
+        <p class="mt-4 font-semibold">${dateDisplay}</p>
         ${event.event_time ? `<p class="text-sm opacity-80 mt-1">${event.event_time}</p>` : ''}
       </div>
       <div class="p-6">

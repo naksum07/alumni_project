@@ -9,14 +9,43 @@
 <script src="../scripts/data-store.js"></script>
 <script src="../scripts/admin-common.js"></script>
 </head>
-<body class="bg-slate-50 font-sans">
-
-<div class="admin-content">
-    <div class="flex justify-between items-center mb-8">
+    <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold text-gray-800">Manage Events</h1>
-        <button onclick="document.getElementById('addEventModal').classList.remove('hidden')" class="bg-[#c4161c] hover:bg-[#a01217] text-white px-5 py-2.5 rounded shadow flex items-center gap-2 font-medium">
+        <button onclick="document.getElementById('addEventModal').classList.remove('hidden')" class="bg-[#c4161c] hover:bg-[#a01217] text-white px-5 py-2.5 rounded-xl shadow-sm flex items-center gap-2 font-semibold transition">
             <i class="fa-solid fa-plus"></i> New Event
         </button>
+    </div>
+
+    <!-- FILTERS CARD -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+            
+            <!-- SEARCH -->
+            <div class="md:col-span-2 relative">
+                <span class="absolute left-4 top-3 text-slate-400"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" id="searchInput" placeholder="Search title or desc..." class="w-full border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm transition">
+            </div>
+
+            <!-- DATE RANGE -->
+            <div class="flex gap-2 relative">
+                <input type="date" id="dateFrom" class="w-1/2 border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-blue-500 text-sm transition" title="From">
+                <input type="date" id="dateTo" class="w-1/2 border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-blue-500 text-sm transition" title="To">
+            </div>
+
+            <!-- STATUS -->
+            <div class="relative">
+                <select id="statusSelect" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 text-sm bg-white appearance-none transition">
+                    <option value="">All Statuses</option>
+                    <option value="upcoming">Upcoming</option>
+                    <option value="ongoing">Ongoing</option>
+                    <option value="completed">Completed</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                </div>
+            </div>
+            
+        </div>
     </div>
 
     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
@@ -49,14 +78,24 @@
                 <label class="block text-sm font-semibold mb-1">Host</label>
                 <input type="text" id="evHost" required class="w-full border rounded px-3 py-2">
             </div>
-            <div class="mb-3">
-                <label class="block text-sm font-semibold mb-1">Date</label>
-                <input type="date" id="evDate" required class="w-full border rounded px-3 py-2">
+            <div class="mb-3 grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">Start Date *</label>
+                    <input type="date" id="evDate" required class="w-full border rounded px-3 py-2 text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">End Date (Optional)</label>
+                    <input type="date" id="evDateEnd" class="w-full border rounded px-3 py-2 text-sm">
+                </div>
             </div>
             <div class="mb-3 grid grid-cols-2 gap-3">
                 <div>
-                    <label class="block text-sm font-semibold mb-1">Time</label>
-                    <input type="text" id="evTime" placeholder="e.g. 10:00 AM - 4:00 PM" class="w-full border rounded px-3 py-2">
+                    <label class="block text-sm font-semibold mb-1">Time (Start - End)</label>
+                    <div class="flex items-center gap-2">
+                        <input type="time" id="evTimeStart" class="w-full border rounded px-2 py-2 text-sm">
+                        <span class="text-gray-500">-</span>
+                        <input type="time" id="evTimeEnd" class="w-full border rounded px-2 py-2 text-sm">
+                    </div>
                 </div>
                 <div>
                     <label class="block text-sm font-semibold mb-1">Venue</label>
@@ -104,8 +143,21 @@ function getToken() {
     return typeof getAdminToken === 'function' ? getAdminToken() : (localStorage.getItem('adminToken') || localStorage.getItem('token'));
 }
 
+let searchTimeout;
+
 async function loadEvents() {
-    const res = await fetch('/api/admin/events', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+    const search = document.getElementById('searchInput')?.value;
+    const dateFrom = document.getElementById('dateFrom')?.value;
+    const dateTo = document.getElementById('dateTo')?.value;
+    const status = document.getElementById('statusSelect')?.value;
+
+    const params = new URLSearchParams();
+    if (search) params.append('search', search);
+    if (dateFrom) params.append('date_from', dateFrom);
+    if (dateTo) params.append('date_to', dateTo);
+    if (status) params.append('status', status);
+
+    const res = await fetch('/api/admin/events?' + params.toString(), { headers: { 'Authorization': 'Bearer ' + getToken() } });
     if (!res.ok) {
         if (typeof clearAdminTokens === 'function') clearAdminTokens();
         return window.location.href = 'login.html';
@@ -117,7 +169,10 @@ async function loadEvents() {
     tbody.innerHTML = events.length ? '' : '<tr><td colspan="6" class="text-center py-4 text-gray-500">No events found.</td></tr>';
     events.forEach(e => {
         const title = e.title || e.name || 'Untitled';
-        const dateStr = e.date ? new Date(e.date).toLocaleDateString() : '';
+        let dateStr = e.date ? new Date(e.date).toLocaleDateString() : '';
+        if (e.event_date_end) {
+             dateStr += ' - ' + new Date(e.event_date_end).toLocaleDateString();
+        }
         const badgeColor = e.status === 'completed' ? 'bg-green-100 text-green-800' : e.status === 'ongoing' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800';
         tbody.innerHTML += `
             <tr>
@@ -143,7 +198,8 @@ document.getElementById('addEventForm').addEventListener('submit', async (e) => 
         host: document.getElementById('evHost').value,
         eventDate: document.getElementById('evDate').value,
         date: document.getElementById('evDate').value,
-        eventTime: document.getElementById('evTime')?.value || null,
+        eventDateEnd: document.getElementById('evDateEnd')?.value || null,
+        eventTime: ((document.getElementById('evTimeStart')?.value && document.getElementById('evTimeEnd')?.value) ? (document.getElementById('evTimeStart').value + ' - ' + document.getElementById('evTimeEnd').value) : null),
         venue: document.getElementById('evVenue')?.value || null,
         description: document.getElementById('evDesc')?.value || null,
         status: document.getElementById('evStatus').value
@@ -182,7 +238,47 @@ window.viewParticipants = async (id) => {
     document.getElementById('participantsModal').classList.remove('hidden');
 };
 
-document.addEventListener('DOMContentLoaded', loadEvents);
+document.addEventListener('DOMContentLoaded', () => {
+    const url = new URL(window.location);
+    if (url.searchParams.get('search')) document.getElementById('searchInput').value = url.searchParams.get('search');
+    if (url.searchParams.get('date_from')) document.getElementById('dateFrom').value = url.searchParams.get('date_from');
+    if (url.searchParams.get('date_to')) document.getElementById('dateTo').value = url.searchParams.get('date_to');
+    if (url.searchParams.get('status')) document.getElementById('statusSelect').value = url.searchParams.get('status');
+
+    loadEvents();
+
+    const updateUrlAndReload = () => {
+        const currentUrl = new URL(window.location);
+        const search = document.getElementById('searchInput').value;
+        const dateFrom = document.getElementById('dateFrom').value;
+        const dateTo = document.getElementById('dateTo').value;
+        const status = document.getElementById('statusSelect').value;
+
+        if (search) currentUrl.searchParams.set('search', search);
+        else currentUrl.searchParams.delete('search');
+
+        if (dateFrom) currentUrl.searchParams.set('date_from', dateFrom);
+        else currentUrl.searchParams.delete('date_from');
+
+        if (dateTo) currentUrl.searchParams.set('date_to', dateTo);
+        else currentUrl.searchParams.delete('date_to');
+
+        if (status) currentUrl.searchParams.set('status', status);
+        else currentUrl.searchParams.delete('status');
+
+        window.history.replaceState({}, '', currentUrl);
+        loadEvents();
+    };
+
+    document.getElementById('searchInput').addEventListener('input', () => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(updateUrlAndReload, 300);
+    });
+
+    ['dateFrom', 'dateTo', 'statusSelect'].forEach(id => {
+        document.getElementById(id).addEventListener('change', updateUrlAndReload);
+    });
+});
 </script>
 
 </body>

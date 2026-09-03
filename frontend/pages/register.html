@@ -16,7 +16,7 @@
     <div class="text-center mb-8">
         <a href="index.html" class="inline-flex items-center gap-2 mb-3">
             <span class="p-1 flex items-center">
-                <img src="/assets/logo.png" alt="ICFAI University Sikkim" class="h-12 w-auto">
+                <img src="../assets/logo.png" alt="ICFAI University Sikkim" class="h-12 w-auto">
             </span>
         </a>
         <h1 class="text-3xl font-bold text-[#012970]">Join Alumni<span class="text-[#c4161c]">Connect</span></h1>
@@ -85,6 +85,18 @@
                 <option value="alumni">Alumni</option>
             </select>
             <p id="roleError" class="text-red-600 text-xs mt-1 hidden"></p>
+        </div>
+        <div>
+           <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wide">Gender *</label>
+            <select id="gender" required 
+                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none bg-white">             
+                <option value="" selected disabled>Select Gender</option>                
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>            
+                <option value="Other">Other</option>               
+                <option value="Prefer not to say">Prefer not to say</option>        
+            </select>
+                <p id="genderError" class="text-red-600 text-xs mt-1 hidden"></p>       
         </div>
 
         <div>
@@ -159,6 +171,18 @@
             </select>
             <p id="programError" class="text-red-600 text-xs mt-1 hidden"></p>
         </div>
+        <div id="alumniCompanyField" class="hidden">
+            <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wide">Company Name</label>
+            <input type="text" id="company" placeholder="E.g. Google, Self-Employed"
+                class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none">
+                <p id="companyError" class="text-red-600 text-xs mt-1 hidden"></p>
+            </div>
+                <div id="alumniProfessionField" class="hidden">
+                    <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wide">Profession/Job Title</label>
+                    <input type="text" id="jobTitle" placeholder="E.g. Software Engineer"
+                  class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] outline-none">            
+                  <p id="jobTitleError" class="text-red-600 text-xs mt-1 hidden"></p>
+           </div>
 
         <div>
             <label class="block font-semibold text-slate-700 mb-1.5 text-xs uppercase tracking-wide">Password*</label>
@@ -272,6 +296,11 @@ const submitBtn = registerForm.querySelector("button[type=submit]");
 const countrySelect = document.getElementById("countryCode");
 const phoneInput = document.getElementById("phone");
 const roleSelect = document.getElementById("role");
+const genderSelect = document.getElementById("gender");
+const companyInput = document.getElementById("company");
+const jobTitleInput = document.getElementById("jobTitle");
+const alumniCompanyField = document.getElementById("alumniCompanyField");
+const alumniProfessionField = document.getElementById("alumniProfessionField");
 const departmentSelect = document.getElementById("department");
 const graduationLevelSelect = document.getElementById("graduationLevel");
 const programSelect = document.getElementById("program");
@@ -542,6 +571,16 @@ registerForm.addEventListener("submit", async function (e) {
     const graduationLevel = validateSelect(graduationLevelSelect.value, "graduationLevel", "Graduation Level");
     const program = validateSelect(programSelect.value, "program", "Program");
     const gradYearResult = role ? validateGraduationYearFields(role) : null;
+    const gender = validateSelect(genderSelect.value, "gender", "Gender");
+    
+    // Optional/conditional fields based on role
+    let company = "";
+    let jobTitle = "";
+    if (role === "alumni") {
+        company = companyInput.value.trim();
+        jobTitle = jobTitleInput.value.trim();
+    }
+
     const password = validatePassword(passwordInput.value);
     const confirmPasswordValid = validateConfirmPassword(passwordInput.value, confirmPasswordInput.value);
     const termsValid = validateTerms();
@@ -557,6 +596,7 @@ registerForm.addEventListener("submit", async function (e) {
         graduationLevel !== null &&
         program !== null &&
         gradYearResult !== null &&
+        gender !== null &&
         password !== null &&
         confirmPasswordValid &&
         termsValid;
@@ -582,6 +622,9 @@ registerForm.addEventListener("submit", async function (e) {
         department,
         graduationLevel,
         program,
+        gender,
+        company,
+        jobTitle,
         [gradYearResult.fieldName]: gradYearResult.value
     };
 

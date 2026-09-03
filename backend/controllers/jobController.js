@@ -10,7 +10,7 @@ async function listJobs(req, res) {
                       u.full_name AS posted_by_name
                FROM jobs j
                LEFT JOIN users u ON u.id = j.posted_by
-               WHERE j.status = 'open'`;
+               WHERE j.status = 'open' AND (u.status = 'active' OR j.posted_by IS NULL)`;
   const params = [];
 
   if (location) {

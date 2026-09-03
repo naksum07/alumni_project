@@ -10,7 +10,7 @@ const SELF_REGISTERABLE_ROLES = ['student', 'alumni'];
 
 // POST /api/auth/register
 async function register(req, res) {
-  let { fullName, firstName, middleName, lastName, email, phone, password, role, department, graduationYear, expectedGraduationYear } = req.body;
+  let { fullName, firstName, middleName, lastName, email, phone, password, role, department, graduationYear, expectedGraduationYear, gender, company, jobTitle } = req.body;
 
   if (!fullName && (firstName || lastName)) {
     fullName = [firstName, middleName, lastName].filter(Boolean).join(' ');
@@ -42,10 +42,10 @@ async function register(req, res) {
     const passwordHash = await bcrypt.hash(password, 10);
 
     const result = await pool.query(
-      `INSERT INTO users (full_name, email, phone, password_hash, role, department, graduation_year)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `INSERT INTO users (full_name, email, phone, password_hash, role, department, graduation_year, gender, company, job_title)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
        RETURNING id, full_name, email, role`,
-      [fullName, email, phone, passwordHash, safeRole, department, finalGradYear]
+      [fullName, email, phone, passwordHash, safeRole, department, finalGradYear, gender || null, company || null, jobTitle || null]
     );
 
     res.status(201).json({ message: 'Registration successful', user: result.rows[0] });

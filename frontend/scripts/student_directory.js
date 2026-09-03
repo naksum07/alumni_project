@@ -56,26 +56,28 @@
   } else {
     if (navAuth) {
       navAuth.innerHTML = `
-        <a href="login.html"
-           class="border border-slate-300 text-slate-700 px-5 py-2 rounded-lg font-medium hover:border-[#012970] hover:text-[#012970] transition text-sm">
-          Login
+        <a href="../admin/login.html"
+           class="text-slate-500 font-medium hover:text-[#012970] transition text-sm px-2 border-r border-gray-200 pr-4">
+          Admin Login
         </a>
-        <a href="register.html"
+        <a href="login.html"
            class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-5 py-2 rounded-lg transition text-sm shadow-sm">
-          Register
+          Login / Register
         </a>`;
     }
-
+ 
     if (mobileNavAuth) {
       mobileNavAuth.innerHTML = `
-        <a href="login.html"
-           class="block text-center border border-slate-300 text-slate-700 py-2 rounded-lg font-medium hover:border-[#012970] hover:text-[#012970] transition text-sm">
-          Login
+        <a href="../admin/login.html"
+           class="block text-center text-slate-500 py-2 rounded-lg font-medium hover:bg-gray-100 transition text-sm border-b border-gray-200 pb-3 mb-3">
+          Admin Login
         </a>
-        <a href="register.html"
-           class="block text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">
-          Register
-        </a>`;
+        <div class="space-y-2">
+          <a href="login.html"
+             class="block text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">
+            Login / Register
+          </a>
+        </div>`;
     }
 
     sessionStorage.setItem('returnTo', 'student-directory.html');

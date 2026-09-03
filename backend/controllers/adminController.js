@@ -4,11 +4,11 @@ const pool = require('../config/db');
 // Lists all users. Optional ?status= filters by status (active/suspended/etc),
 // or pass ?approved=false to see accounts awaiting approval.
 async function listUsers(req, res) {
-  const { status, approved } = req.query;
+  const { status, approved, sort, search } = req.query;
 
   let query = `SELECT id, full_name, email, phone, role, department, graduation_year,
                       job_title, company, is_approved, status, created_at
-               FROM users WHERE 1=1`;
+               FROM users WHERE role != 'admin'`;
   const params = [];
 
   if (status) {
@@ -19,8 +19,16 @@ async function listUsers(req, res) {
     params.push(approved === 'true');
     query += ` AND is_approved = $${params.length}`;
   }
+  if (search) {
+    params.push(`%${search}%`);
+    query += ` AND (full_name ILIKE $${params.length} OR email ILIKE $${params.length})`;
+  }
 
-  query += ' ORDER BY created_at DESC';
+  if (sort === 'alpha') {
+    query += ' ORDER BY full_name ASC';
+  } else {
+    query += ' ORDER BY created_at DESC';
+  }
 
   try {
     const result = await pool.query(query, params);
@@ -124,17 +132,43 @@ async function deleteUser(req, res) {
 
 // GET /api/admin/events
 async function listEventsAdmin(req, res) {
-  try {
-    const result = await pool.query(`
+  const { date_from, date_to, status, search } = req.query;
+  
+  let query = `
       SELECT e.id, e.name, e.name AS title, COALESCE(e.host, 'Admin') AS host,
-             e.event_date AS date, e.event_date, e.event_time, e.venue, e.description,
+             e.event_date AS date, e.event_date, e.event_date_end, e.event_time, e.venue, e.description,
              COALESCE(e.status, 'upcoming') AS status,
              COUNT(er.id)::int AS "participantCount"
       FROM events e
       LEFT JOIN event_registrations er ON e.id = er.event_id
+      WHERE 1=1
+  `;
+  const params = [];
+
+  if (date_from) {
+    params.push(date_from);
+    query += ` AND e.event_date >= $${params.length}`;
+  }
+  if (date_to) {
+    params.push(date_to);
+    query += ` AND e.event_date <= $${params.length}`;
+  }
+  if (status) {
+    params.push(status);
+    query += ` AND COALESCE(e.status, 'upcoming') = $${params.length}`;
+  }
+  if (search) {
+    params.push(`%${search}%`);
+    query += ` AND (e.name ILIKE $${params.length} OR e.description ILIKE $${params.length})`;
+  }
+
+  query += `
       GROUP BY e.id
       ORDER BY e.event_date DESC
-    `);
+  `;
+
+  try {
+    const result = await pool.query(query, params);
     res.json(result.rows);
   } catch (err) {
     console.error(err);
@@ -146,17 +180,18 @@ async function listEventsAdmin(req, res) {
 async function createEvent(req, res) {
   const name = req.body.name || req.body.title;
   const eventDate = req.body.eventDate || req.body.date;
+  const eventDateEnd = req.body.eventDateEnd;
   const { eventTime, venue, description, host, status } = req.body;
 
   if (!name || !eventDate) {
-    return res.status(400).json({ message: 'Event title/name and date are required' });
+    return res.status(400).json({ message: 'Event title/name and start date are required' });
   }
 
   try {
     const result = await pool.query(
-      `INSERT INTO events (name, event_date, event_time, venue, description, host, status)
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-      [name, eventDate, eventTime || null, venue || null, description || null, host || 'Admin', status || 'upcoming']
+      `INSERT INTO events (name, event_date, event_date_end, event_time, venue, description, host, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+      [name, eventDate, eventDateEnd || null, eventTime || null, venue || null, description || null, host || 'Admin', status || 'upcoming']
     );
 
     const event = result.rows[0];
@@ -180,6 +215,7 @@ async function updateEvent(req, res) {
   const { id } = req.params;
   const name = req.body.name || req.body.title;
   const eventDate = req.body.eventDate || req.body.date;
+  const eventDateEnd = req.body.eventDateEnd;
   const { eventTime, venue, description, host, status } = req.body;
 
   try {
@@ -187,13 +223,14 @@ async function updateEvent(req, res) {
       `UPDATE events SET
          name = COALESCE($1, name),
          event_date = COALESCE($2, event_date),
-         event_time = COALESCE($3, event_time),
-         venue = COALESCE($4, venue),
-         description = COALESCE($5, description),
-         host = COALESCE($6, host),
-         status = COALESCE($7, status)
-       WHERE id = $8 RETURNING *`,
-      [name || null, eventDate || null, eventTime || null, venue || null, description || null, host || null, status || null, id]
+         event_date_end = COALESCE($3, event_date_end),
+         event_time = COALESCE($4, event_time),
+         venue = COALESCE($5, venue),
+         description = COALESCE($6, description),
+         host = COALESCE($7, host),
+         status = COALESCE($8, status)
+       WHERE id = $9 RETURNING *`,
+      [name || null, eventDate || null, eventDateEnd || null, eventTime || null, venue || null, description || null, host || null, status || null, id]
     );
 
     if (result.rows.length === 0) {
@@ -247,7 +284,7 @@ async function getDashboardStats(req, res) {
   try {
     const userStats = await pool.query(`
       SELECT 
-        COUNT(*) as total_users,
+        COUNT(CASE WHEN role != 'admin' THEN 1 END) as total_users,
         COUNT(CASE WHEN role = 'alumni' THEN 1 END) as total_alumni,
         COUNT(CASE WHEN role = 'student' THEN 1 END) as total_students
       FROM users
@@ -297,8 +334,32 @@ async function getDashboardStats(req, res) {
 
 // GET /api/admin/news
 async function listNews(req, res) {
+  const { date_from, date_to, status, search } = req.query;
+  
+  let query = 'SELECT * FROM news WHERE 1=1';
+  const params = [];
+
+  if (date_from) {
+    params.push(date_from);
+    query += ` AND publish_date::date >= $${params.length}`;
+  }
+  if (date_to) {
+    params.push(date_to);
+    query += ` AND publish_date::date <= $${params.length}`;
+  }
+  if (status) {
+    params.push(status);
+    query += ` AND status = $${params.length}`;
+  }
+  if (search) {
+    params.push(`%${search}%`);
+    query += ` AND (title ILIKE $${params.length} OR content ILIKE $${params.length})`;
+  }
+
+  query += ' ORDER BY publish_date DESC';
+
   try {
-    const result = await pool.query('SELECT * FROM news ORDER BY publish_date DESC');
+    const result = await pool.query(query, params);
     res.json(result.rows);
   } catch (err) {
     console.error(err);
@@ -313,9 +374,9 @@ async function createNews(req, res) {
 
   try {
     const result = await pool.query(
-      `INSERT INTO news (title, content, category, visibility, status)
-       VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-      [title, content, category || 'News', audience || 'Everyone', status || 'Draft']
+      `INSERT INTO news (title, content, category, visibility, status, posted_by)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+      [title, content, category || 'News', audience || 'Everyone', status || 'Draft', req.user?.id || 1]
     );
     res.status(201).json({ message: 'News created', news: result.rows[0] });
   } catch (err) {
@@ -356,6 +417,19 @@ async function deleteNews(req, res) {
   }
 }
 
+// DELETE /api/admin/feedback/:id
+async function deleteFeedback(req, res) {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('DELETE FROM feedback WHERE id = $1 RETURNING id', [id]);
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Feedback not found' });
+    res.json({ message: 'Feedback deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error while deleting feedback' });
+  }
+}
+
 module.exports = {
   listUsers,
   approveUser,
@@ -371,5 +445,6 @@ module.exports = {
   listNews,
   createNews,
   toggleNewsStatus,
-  deleteNews
+  deleteNews,
+  deleteFeedback
 };
