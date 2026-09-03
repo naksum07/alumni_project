@@ -123,8 +123,12 @@ async function loadNews() {
 
     const res = await fetch('/api/admin/news?' + params.toString(), { headers: { 'Authorization': 'Bearer ' + getToken() } });
     if (!res.ok) {
-        if (typeof clearAdminTokens === 'function') clearAdminTokens();
-        return window.location.href = 'login.html';
+        if (res.status === 401 || res.status === 403) {
+            if (typeof clearAdminTokens === 'function') clearAdminTokens();
+            return window.location.href = 'login.html';
+        }
+        console.error('Failed to load news:', res.status);
+        return;
     }
     const data = await res.json();
     const news = Array.isArray(data) ? data : [];

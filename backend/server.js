@@ -14,6 +14,7 @@ const jobRoutes = require('./routes/jobRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
 const newsRoutes = require('./routes/newsRoutes');
 const externalJobRoutes = require('./routes/externalJobRoutes');
+const announcementRoutes = require('./routes/announcementRoutes');
 
 const app = express();
 app.use(cors({ origin: process.env.ALLOWED_ORIGIN || '*' }));
@@ -36,6 +37,7 @@ app.use('/api/jobs', jobRoutes);
 app.use('/api/feedback', feedbackRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/external-jobs', externalJobRoutes);
+app.use('/api/announcements', announcementRoutes);
 
 app.get('/api/test', (req, res) => {
   res.send('Backend is connected!');

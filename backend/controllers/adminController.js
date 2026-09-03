@@ -376,7 +376,7 @@ async function createNews(req, res) {
     const result = await pool.query(
       `INSERT INTO news (title, content, category, visibility, status, posted_by)
        VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [title, content, category || 'News', audience || 'Everyone', status || 'Draft', req.user?.id || 1]
+      [title, content, category || 'News', audience || 'Everyone', status || 'Draft', req.user?.id || null]
     );
     res.status(201).json({ message: 'News created', news: result.rows[0] });
   } catch (err) {
@@ -430,6 +430,83 @@ async function deleteFeedback(req, res) {
   }
 }
 
+// GET /api/admin/announcements
+async function listAnnouncements(req, res) {
+  const { status, search } = req.query;
+
+  let query = 'SELECT * FROM announcements WHERE 1=1';
+  const params = [];
+
+  if (status) {
+    params.push(status);
+    query += ` AND status = $${params.length}`;
+  }
+  if (search) {
+    params.push(`%${search}%`);
+    query += ` AND (title ILIKE $${params.length} OR content ILIKE $${params.length})`;
+  }
+
+  query += ' ORDER BY created_at DESC';
+
+  try {
+    const result = await pool.query(query, params);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error while fetching announcements' });
+  }
+}
+
+// POST /api/admin/announcements
+async function createAnnouncement(req, res) {
+  const { title, content, priority, status } = req.body;
+  if (!title || !content) return res.status(400).json({ message: 'Title and content are required' });
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO announcements (title, content, priority, status, created_by)
+       VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [title, content, priority || 'normal', status || 'Published', req.user?.id || null]
+    );
+    res.status(201).json({ message: 'Announcement created', announcement: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error while creating announcement' });
+  }
+}
+
+// PATCH /api/admin/announcements/:id/toggle
+async function toggleAnnouncementStatus(req, res) {
+  const { id } = req.params;
+  try {
+    const ann = await pool.query('SELECT status FROM announcements WHERE id = $1', [id]);
+    if (ann.rows.length === 0) return res.status(404).json({ message: 'Announcement not found' });
+
+    const newStatus = ann.rows[0].status === 'Published' ? 'Draft' : 'Published';
+    const result = await pool.query(
+      'UPDATE announcements SET status = $1 WHERE id = $2 RETURNING *',
+      [newStatus, id]
+    );
+    res.json({ message: 'Announcement status toggled', announcement: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error while toggling announcement status' });
+  }
+}
+
+// DELETE /api/admin/announcements/:id
+async function deleteAnnouncement(req, res) {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('DELETE FROM announcements WHERE id = $1 RETURNING id', [id]);
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Announcement not found' });
+    res.json({ message: 'Announcement deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error while deleting announcement' });
+  }
+}
+
 module.exports = {
   listUsers,
   approveUser,
@@ -446,5 +523,9 @@ module.exports = {
   createNews,
   toggleNewsStatus,
   deleteNews,
-  deleteFeedback
+  deleteFeedback,
+  listAnnouncements,
+  createAnnouncement,
+  toggleAnnouncementStatus,
+  deleteAnnouncement
 };

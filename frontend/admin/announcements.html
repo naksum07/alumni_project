@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Announcements | AlumniConnect</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="../scripts/data-store.js"></script>
+<script src="../scripts/admin-common.js"></script>
+</head>
+<body class="bg-slate-100 text-slate-800">
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-10">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">Announcements</h1>
+        <button onclick="document.getElementById('addAnnouncementModal').classList.remove('hidden')" class="bg-[#c4161c] hover:bg-[#a01217] text-white px-5 py-2.5 rounded-xl shadow-sm flex items-center gap-2 font-semibold transition">
+            <i class="fa-solid fa-plus"></i> New Announcement
+        </button>
+    </div>
+
+    <!-- FILTERS CARD -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            
+            <!-- SEARCH -->
+            <div class="md:col-span-2 relative">
+                <span class="absolute left-4 top-3 text-slate-400"><i class="fa-solid fa-magnifying-glass"></i></span>
+                <input type="text" id="searchInput" placeholder="Search title or content..." class="w-full border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm transition">
+            </div>
+
+            <!-- STATUS -->
+            <div class="relative">
+                <select id="statusSelect" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 text-sm bg-white appearance-none transition">
+                    <option value="">All Statuses</option>
+                    <option value="Published">Published</option>
+                    <option value="Draft">Draft</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+        <table class="admin-table" id="mainAnnouncementsTable">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</main>
+
+<!-- Add Announcement Modal -->
+<div id="addAnnouncementModal" class="modal-overlay hidden">
+    <div class="modal-content max-w-lg">
+        <h2 class="text-xl font-bold mb-4">Create New Announcement</h2>
+        <form id="addAnnouncementForm">
+            <div class="mb-3">
+                <label class="block text-sm font-semibold mb-1">Title</label>
+                <input type="text" id="annTitle" required class="w-full border rounded px-3 py-2">
+            </div>
+            <div class="mb-3">
+                <label class="block text-sm font-semibold mb-1">Content</label>
+                <textarea id="annContent" required class="w-full border rounded px-3 py-2 h-24"></textarea>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-semibold mb-1">Priority</label>
+                <select id="annPriority" class="w-full border rounded px-3 py-2">
+                    <option value="normal">Normal</option>
+                    <option value="urgent">Urgent</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+            <div class="flex justify-end gap-3 mt-6">
+                <button type="button" onclick="document.getElementById('addAnnouncementModal').classList.add('hidden')" class="px-4 py-2 text-gray-600 bg-gray-100 rounded hover:bg-gray-200">Cancel</button>
+                <button type="button" onclick="saveAnnouncement('Draft')" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Save Draft</button>
+                <button type="button" onclick="saveAnnouncement('Published')" class="px-4 py-2 bg-[#012970] text-white rounded hover:bg-[#011a47]">Publish Now</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function getToken() {
+    return typeof getAdminToken === 'function' ? getAdminToken() : (localStorage.getItem('adminToken') || localStorage.getItem('token'));
+}
+
+let searchTimeout;
+
+async function loadAnnouncements() {
+    const search = document.getElementById('searchInput')?.value;
+    const status = document.getElementById('statusSelect')?.value;
+
+    const params = new URLSearchParams();
+    if (search) params.append('search', search);
+    if (status) params.append('status', status);
+
+    const res = await fetch('/api/admin/announcements?' + params.toString(), { headers: { 'Authorization': 'Bearer ' + getToken() } });
+    if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+            if (typeof clearAdminTokens === 'function') clearAdminTokens();
+            return window.location.href = 'login.html';
+        }
+        console.error('Failed to load announcements:', res.status);
+        const tbody = document.querySelector('#mainAnnouncementsTable tbody');
+        if (tbody) tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-red-500">Failed to load announcements (Error ${res.status}).</td></tr>`;
+        return;
+    }
+    const data = await res.json();
+    const announcements = Array.isArray(data) ? data : [];
+    const tbody = document.querySelector('#mainAnnouncementsTable tbody');
+    if (!tbody) return;
+    tbody.innerHTML = announcements.length ? '' : '<tr><td colspan="5" class="text-center py-4 text-gray-500">No announcements found.</td></tr>';
+    announcements.forEach(a => {
+        const statusBadge = a.status === 'Published' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-800';
+        const toggleIcon = a.status === 'Published' ? 'fa-toggle-on text-green-600' : 'fa-toggle-off text-gray-400';
+        const priorityBadge = a.priority === 'urgent' ? 'bg-red-100 text-red-700' : a.priority === 'low' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700';
+        const dateStr = a.created_at ? new Date(a.created_at).toLocaleDateString() : 'N/A';
+        tbody.innerHTML += `
+            <tr>
+                <td class="font-medium">${a.title || 'Untitled'}</td>
+                <td><span class="px-2 py-1 rounded text-xs font-semibold capitalize ${priorityBadge}">${a.priority || 'normal'}</span></td>
+                <td><span class="px-2 py-1 rounded text-xs font-semibold ${statusBadge}">${a.status || 'Draft'}</span></td>
+                <td>${dateStr}</td>
+                <td>
+                    <button onclick="toggleAnnouncement(${a.id})" class="text-xl mr-3" title="Toggle Status"><i class="fa-solid ${toggleIcon}"></i></button>
+                    <button onclick="deleteAnnouncement(${a.id})" class="text-red-600 hover:text-red-800" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            </tr>
+        `;
+    });
+}
+
+window.saveAnnouncement = async (status) => {
+    const title = document.getElementById('annTitle').value;
+    const content = document.getElementById('annContent').value;
+    if (!title || !content) return alert("Title and content are required");
+    const newAnn = {
+        title: title,
+        content: content,
+        priority: document.getElementById('annPriority').value,
+        status: status
+    };
+    try {
+        const res = await fetch('/api/admin/announcements', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + getToken(), 'Content-Type': 'application/json' },
+            body: JSON.stringify(newAnn)
+        });
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            alert(err.message || 'Failed to save announcement');
+            return;
+        }
+        document.getElementById('addAnnouncementModal').classList.add('hidden');
+        document.getElementById('addAnnouncementForm').reset();
+        loadAnnouncements();
+    } catch (e) {
+        console.error(e);
+        alert('Network error while saving announcement.');
+    }
+};
+
+window.toggleAnnouncement = async (id) => {
+    try {
+        const res = await fetch('/api/admin/announcements/' + id + '/toggle', {
+            method: 'PATCH',
+            headers: { 'Authorization': 'Bearer ' + getToken() }
+        });
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            alert(err.message || 'Failed to toggle status');
+            return;
+        }
+        loadAnnouncements();
+    } catch (e) {
+        console.error(e);
+        alert('Network error while toggling announcement');
+    }
+};
+
+window.deleteAnnouncement = async (id) => {
+    if (confirm('Are you sure you want to delete this announcement?')) {
+        try {
+            const res = await fetch('/api/admin/announcements/' + id, {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + getToken() }
+            });
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                alert(err.message || 'Failed to delete announcement');
+                return;
+            }
+            loadAnnouncements();
+        } catch (e) {
+            console.error(e);
+            alert('Network error while deleting announcement');
+        }
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    const url = new URL(window.location);
+    if (url.searchParams.get('search')) document.getElementById('searchInput').value = url.searchParams.get('search');
+    if (url.searchParams.get('status')) document.getElementById('statusSelect').value = url.searchParams.get('status');
+
+    loadAnnouncements();
+
+    const updateUrlAndReload = () => {
+        const currentUrl = new URL(window.location);
+        const search = document.getElementById('searchInput').value;
+        const status = document.getElementById('statusSelect').value;
+
+        if (search) currentUrl.searchParams.set('search', search);
+        else currentUrl.searchParams.delete('search');
+
+        if (status) currentUrl.searchParams.set('status', status);
+        else currentUrl.searchParams.delete('status');
+
+        window.history.replaceState({}, '', currentUrl);
+        loadAnnouncements();
+    };
+
+    document.getElementById('searchInput').addEventListener('input', () => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(updateUrlAndReload, 300);
+    });
+
+    document.getElementById('statusSelect').addEventListener('change', updateUrlAndReload);
+});
+</script>
+
+</body>
+</html>

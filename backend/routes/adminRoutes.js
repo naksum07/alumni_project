@@ -17,6 +17,10 @@ const {
   toggleNewsStatus,
   deleteNews,
   deleteFeedback,
+  listAnnouncements,
+  createAnnouncement,
+  toggleAnnouncementStatus,
+  deleteAnnouncement,
 } = require('../controllers/adminController');
 const { verifyToken, requireAdmin } = require('../middleware/auth');
 
@@ -51,6 +55,12 @@ router.get('/news', listNews);
 router.post('/news', createNews);
 router.patch('/news/:id/toggle', toggleNewsStatus);
 router.delete('/news/:id', deleteNews);
+
+// Announcements
+router.get('/announcements', listAnnouncements);
+router.post('/announcements', createAnnouncement);
+router.patch('/announcements/:id/toggle', toggleAnnouncementStatus);
+router.delete('/announcements/:id', deleteAnnouncement);
 
 // Feedback
 router.delete('/feedback/:id', deleteFeedback);

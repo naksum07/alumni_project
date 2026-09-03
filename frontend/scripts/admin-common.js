@@ -141,6 +141,10 @@ function renderSidebar() {
                         <i class="fa-solid fa-bullhorn"></i>
                         <span>News</span>
                     </a>
+                    <a href="/admin/announcements.html" class="${navLinkClasses} ${currentPath.includes('announcements') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-yellow-300'}">
+                        <i class="fa-solid fa-bell"></i>
+                        <span>Announcements</span>
+                    </a>
                     <a href="/admin/members.html" class="${navLinkClasses} ${currentPath.includes('members') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-yellow-300'}">
                         <i class="fa-solid fa-users"></i>
                         <span>Members</span>

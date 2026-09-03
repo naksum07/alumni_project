@@ -7,11 +7,47 @@ const modalTitle = document.getElementById("modalTitle");
 const modalDate = document.getElementById("modalDate");
 const modalDescription = document.getElementById("modalDescription");
 
-function openNews(title, description, date) {
+function openNews(itemOrTitle, description, date) {
     if (!newsModal || !modalTitle || !modalDate || !modalDescription) return;
+
+    let title = itemOrTitle;
+    let desc = description || '';
+    let dt = date || '';
+    let extraHtml = '';
+
+    if (typeof itemOrTitle === 'object' && itemOrTitle !== null) {
+        const item = itemOrTitle;
+        title = item.title;
+        desc = item.content || item.description || '';
+        const isEvent = (item.category || '').toLowerCase().includes('event');
+        if (isEvent && item.event_date) {
+            const d = new Date(item.event_date);
+            dt = 'Event Date: ' + d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+        } else {
+            const d = new Date(item.publish_date || item.created_at || new Date());
+            dt = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        if (isEvent) {
+            extraHtml = `
+                <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-4 text-sm text-slate-700 space-y-1.5">
+                    ${item.event_date ? `<p><i class="fa-solid fa-calendar text-blue-600 w-5"></i> <strong>Date:</strong> ${new Date(item.event_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p>` : ''}
+                    ${item.event_time ? `<p><i class="fa-solid fa-clock text-blue-600 w-5"></i> <strong>Time:</strong> ${item.event_time}</p>` : ''}
+                    ${item.venue ? `<p><i class="fa-solid fa-location-dot text-red-500 w-5"></i> <strong>Venue:</strong> ${item.venue}</p>` : ''}
+                    ${item.host ? `<p><i class="fa-solid fa-user-tie text-slate-600 w-5"></i> <strong>Host:</strong> ${item.host}</p>` : ''}
+                </div>
+                <div class="mt-4 mb-2">
+                    <a href="events.html" class="inline-flex items-center gap-2 bg-[#012970] hover:bg-[#011a47] text-white px-5 py-2.5 rounded-xl font-semibold text-sm transition">
+                        <i class="fa-solid fa-ticket"></i> View in Events / Register
+                    </a>
+                </div>
+            `;
+        }
+    }
+
     modalTitle.textContent = title;
-    modalDate.textContent = date;
-    modalDescription.innerHTML = description;
+    modalDate.textContent = dt;
+    modalDescription.innerHTML = extraHtml ? extraHtml + '<div class="mt-4">' + desc + '</div>' : desc;
 
     newsModal.classList.remove("hidden");
     newsModal.classList.add("flex");
@@ -100,41 +136,69 @@ function renderNewsPage() {
 
     newsGrid.innerHTML = '';
     pageData.forEach(item => {
-        const dateObj = new Date(item.publish_date || item.created_at || new Date());
-        const dateStr = dateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
-        
         const cat = item.category || 'Announcement';
+        const isEvent = cat.toLowerCase().includes('event');
+        const isAnnouncement = cat.toLowerCase().includes('announcement');
+
+        let dateStr = '';
+        if (isEvent && item.event_date) {
+            dateStr = 'Event: ' + new Date(item.event_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        } else {
+            const dateObj = new Date(item.publish_date || item.created_at || new Date());
+            dateStr = dateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+        
         let categoryIcon = 'fa-newspaper';
         let categoryBg = 'bg-blue-100 text-blue-700';
         
-        if (cat.toLowerCase().includes('announcement')) { categoryIcon = 'fa-bullhorn'; categoryBg = 'bg-red-100 text-red-700'; }
-        else if (cat.toLowerCase().includes('event')) { categoryIcon = 'fa-calendar'; categoryBg = 'bg-green-100 text-green-700'; }
+        if (isAnnouncement) { categoryIcon = 'fa-bullhorn'; categoryBg = 'bg-red-100 text-red-700'; }
+        else if (isEvent) { categoryIcon = 'fa-calendar'; categoryBg = 'bg-green-100 text-green-700'; }
         else if (cat.toLowerCase().includes('newsletter')) { categoryIcon = 'fa-envelope'; categoryBg = 'bg-purple-100 text-purple-700'; }
 
-        const article = document.createElement('div');
-        article.className = 'bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300';
-        article.innerHTML = `
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 rounded-xl ${categoryBg} flex items-center justify-center text-xl">
-                    <i class="fa-solid ${categoryIcon}"></i>
+        const priorityBadge = (isAnnouncement && item.priority === 'urgent')
+            ? '<span class="bg-red-600 text-white text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ml-1">Urgent</span>'
+            : '';
+
+        let eventPills = '';
+        if (isEvent && (item.venue || item.event_time)) {
+            eventPills = `
+                <div class="flex flex-wrap gap-2 text-xs text-slate-500 mt-2">
+                    ${item.venue ? `<span class="inline-flex items-center gap-1 bg-slate-100 px-2 py-0.5 rounded"><i class="fa-solid fa-location-dot text-red-500 text-[10px]"></i> ${item.venue}</span>` : ''}
+                    ${item.event_time ? `<span class="inline-flex items-center gap-1 bg-slate-100 px-2 py-0.5 rounded"><i class="fa-solid fa-clock text-blue-500 text-[10px]"></i> ${item.event_time}</span>` : ''}
                 </div>
-                <span class="${categoryBg} px-3 py-1 rounded-full text-xs font-semibold">${cat}</span>
+            `;
+        }
+
+        const article = document.createElement('div');
+        article.className = 'bg-white rounded-2xl border border-slate-200 p-6 hover:shadow-xl hover:-translate-y-1 transition duration-300 flex flex-col justify-between';
+        article.innerHTML = `
+            <div>
+                <div class="flex justify-between items-start mb-4">
+                    <div class="w-12 h-12 rounded-xl ${categoryBg} flex items-center justify-center text-xl">
+                        <i class="fa-solid ${categoryIcon}"></i>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <span class="${categoryBg} px-3 py-1 rounded-full text-xs font-semibold">${cat}</span>
+                        ${priorityBadge}
+                    </div>
+                </div>
+                <h3 class="text-xl font-bold mt-2 text-slate-900">${item.title}</h3>
+                <p class="text-sm text-gray-500 mt-2">
+                    <i class="fa-regular fa-calendar mr-1"></i> ${dateStr}
+                </p>
+                ${eventPills}
+                <p class="text-gray-600 leading-7 mt-3 line-clamp-3 text-sm">
+                    ${item.content || item.description || ''}
+                </p>
             </div>
-            <h3 class="text-xl font-bold mt-2">${item.title}</h3>
-            <p class="text-sm text-gray-500 mt-2">
-                <i class="fa-regular fa-calendar mr-1"></i> ${dateStr}
-            </p>
-            <p class="text-gray-600 leading-7 mt-4 line-clamp-3 text-sm">
-                ${item.content || item.description || ''}
-            </p>
-            <button class="read-more-btn w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl mt-5 font-semibold transition">
+            <button class="read-more-btn w-full bg-[#012970] hover:bg-[#011a47] text-white py-3 rounded-xl mt-5 font-semibold transition">
                 Read More
             </button>
         `;
 
         const readBtn = article.querySelector('.read-more-btn');
         if (readBtn) {
-            readBtn.addEventListener('click', () => openNews(item.title, item.content || item.description || '', dateStr));
+            readBtn.addEventListener('click', () => openNews(item));
         }
         newsGrid.appendChild(article);
     });
@@ -151,13 +215,15 @@ function applyFilters() {
         const titleMatch = (item.title || '').toLowerCase().includes(search);
         const descMatch = (item.content || item.description || '').toLowerCase().includes(search);
         const searchMatch = search === '' || titleMatch || descMatch;
-        const catMatch = cat === 'All' || (item.category || '') === cat;
+        const itemCat = (item.category || '').toLowerCase();
+        const selectedCat = cat.toLowerCase();
+        const catMatch = cat === 'All' || itemCat === selectedCat || itemCat.includes(selectedCat) || selectedCat.includes(itemCat);
         return searchMatch && catMatch;
     });
 
     filteredNews.sort((a, b) => {
-        const dateA = new Date(a.publish_date || a.created_at || 0);
-        const dateB = new Date(b.publish_date || b.created_at || 0);
+        const dateA = new Date(a.publish_date || a.event_date || a.created_at || 0);
+        const dateB = new Date(b.publish_date || b.event_date || b.created_at || 0);
         return sort === 'Newest' ? dateB - dateA : dateA - dateB;
     });
 

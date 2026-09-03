@@ -159,8 +159,12 @@ async function loadEvents() {
 
     const res = await fetch('/api/admin/events?' + params.toString(), { headers: { 'Authorization': 'Bearer ' + getToken() } });
     if (!res.ok) {
-        if (typeof clearAdminTokens === 'function') clearAdminTokens();
-        return window.location.href = 'login.html';
+        if (res.status === 401 || res.status === 403) {
+            if (typeof clearAdminTokens === 'function') clearAdminTokens();
+            return window.location.href = 'login.html';
+        }
+        console.error('Failed to load events:', res.status);
+        return;
     }
     const data = await res.json();
     const events = Array.isArray(data) ? data : [];

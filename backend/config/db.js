@@ -21,6 +21,16 @@ async function ensureDatabaseSchema() {
         ADD COLUMN IF NOT EXISTS capacity INT,
         ADD COLUMN IF NOT EXISTS image_url TEXT,
         ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'upcoming';
+
+      CREATE TABLE IF NOT EXISTS announcements (
+        id           SERIAL PRIMARY KEY,
+        title        VARCHAR(255) NOT NULL,
+        content      TEXT NOT NULL,
+        priority     VARCHAR(20) NOT NULL DEFAULT 'normal',
+        status       VARCHAR(20) NOT NULL DEFAULT 'Published',
+        created_by   INT REFERENCES users(id) ON DELETE SET NULL,
+        created_at   TIMESTAMP NOT NULL DEFAULT NOW()
+      );
     `);
     console.log('✅ Database schema verified');
   } catch (err) {

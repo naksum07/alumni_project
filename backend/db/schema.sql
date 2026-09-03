@@ -120,3 +120,13 @@ CREATE TABLE IF NOT EXISTS news (
     created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
 ALTER TABLE users ADD COLUMN IF NOT EXISTS gender VARCHAR(50);
+
+CREATE TABLE IF NOT EXISTS announcements (
+    id           SERIAL PRIMARY KEY,
+    title        VARCHAR(255) NOT NULL,
+    content      TEXT NOT NULL,
+    priority     VARCHAR(20) NOT NULL DEFAULT 'normal',
+    status       VARCHAR(20) NOT NULL DEFAULT 'Published',
+    created_by   INT REFERENCES users(id) ON DELETE SET NULL,
+    created_at   TIMESTAMP NOT NULL DEFAULT NOW()
+);
