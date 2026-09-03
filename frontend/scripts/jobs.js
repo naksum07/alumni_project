@@ -379,7 +379,7 @@ function closeModal(id) {
 }
 
 // Close any modal on backdrop click
-['detailsModal', 'applyModal', 'postModal'].forEach(id => {
+['detailsModal', 'applyModal', 'postModal', 'extDetailsModal'].forEach(id => {
   const el = document.getElementById(id);
   if (el) el.addEventListener('click', e => { if (e.target === el) closeModal(id); });
 });
@@ -390,6 +390,227 @@ setPostOpportunityButtonsVisibility();
 searchInput.addEventListener('input', displayJobs);
 filterType.addEventListener('change', displayJobs);
 filterLocation.addEventListener('change', displayJobs);
+
+// ============================================================
+//  EXTERNAL JOBS (Adzuna API)
+// ============================================================
+
+let extCurrentPage = 1;
+let extTotalCount  = 0;
+const EXT_PER_PAGE = 20;
+
+/** Switch between Alumni and External job tabs */
+function switchJobTab(tab) {
+  const alumniPanel   = document.getElementById('alumniJobsPanel');
+  const externalPanel = document.getElementById('externalJobsPanel');
+  const tabAlumni     = document.getElementById('tabAlumniJobs');
+  const tabExternal   = document.getElementById('tabExternalJobs');
+
+  // Also toggle the top search/filter bar visibility
+  const topFilters = document.querySelector('section.max-w-6xl');
+
+  if (tab === 'external') {
+    alumniPanel.classList.add('hidden');
+    externalPanel.classList.remove('hidden');
+    if (topFilters) topFilters.classList.add('hidden');
+
+    tabAlumni.className   = 'px-5 py-2.5 rounded-t-xl font-semibold text-sm transition border-b-2 border-transparent text-slate-500 hover:text-slate-700';
+    tabExternal.className = 'px-5 py-2.5 rounded-t-xl font-semibold text-sm transition border-b-2 border-blue-600 text-blue-700 bg-blue-50';
+
+    // Load external jobs on first switch if container is empty
+    const container = document.getElementById('externalJobContainer');
+    if (container && container.children.length === 0) {
+      loadExternalJobs(1);
+    }
+  } else {
+    alumniPanel.classList.remove('hidden');
+    externalPanel.classList.add('hidden');
+    if (topFilters) topFilters.classList.remove('hidden');
+
+    tabAlumni.className   = 'px-5 py-2.5 rounded-t-xl font-semibold text-sm transition border-b-2 border-blue-600 text-blue-700 bg-blue-50';
+    tabExternal.className = 'px-5 py-2.5 rounded-t-xl font-semibold text-sm transition border-b-2 border-transparent text-slate-500 hover:text-slate-700';
+  }
+}
+
+/** Fetch external jobs from /api/external-jobs (Adzuna) */
+async function loadExternalJobs(page = 1) {
+  const container   = document.getElementById('externalJobContainer');
+  const countEl     = document.getElementById('extResultCount');
+  const pagination  = document.getElementById('extPagination');
+
+  if (page < 1) return;
+  extCurrentPage = page;
+
+  countEl.textContent = 'Searching jobs from LinkedIn, Indeed, Glassdoor…';
+  container.innerHTML = `
+    <div class="col-span-3 text-center py-16 text-gray-400">
+      <i class="fa-solid fa-spinner fa-spin text-4xl mb-4 block"></i>
+      Fetching external opportunities…
+    </div>`;
+  pagination.classList.add('hidden');
+
+  const what  = (document.getElementById('extSearchInput')?.value || '').trim();
+  const where = (document.getElementById('extLocationInput')?.value || '').trim();
+
+  const params = new URLSearchParams({
+    page:     page,
+    per_page: EXT_PER_PAGE,
+    country:  'in',
+  });
+  if (what)  params.set('what', what);
+  if (where) params.set('where', where);
+
+  try {
+    const res = await fetch(`/api/external-jobs?${params}`);
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.message || `Server returned ${res.status}`);
+    }
+
+    const data = await res.json();
+    extTotalCount = data.count || 0;
+
+    if (!data.jobs || data.jobs.length === 0) {
+      countEl.textContent = '0 external jobs found';
+      container.innerHTML = `
+        <div class="col-span-3 text-center py-16 text-slate-400">
+          <div class="text-5xl mb-4">🔍</div>
+          <h3 class="text-lg font-bold text-slate-600">No external jobs found</h3>
+          <p class="mt-1">Try different keywords or location.</p>
+        </div>`;
+      return;
+    }
+
+    countEl.textContent = `${extTotalCount.toLocaleString()} external jobs found`;
+    container.innerHTML = '';
+
+    data.jobs.forEach((job, idx) => {
+      const card = document.createElement('div');
+      card.className =
+        'bg-white rounded-2xl border border-slate-200 p-6 ' +
+        'hover:shadow-xl hover:-translate-y-1 transition duration-300';
+
+      const postedDate = job.postedDate
+        ? new Date(job.postedDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+        : '';
+
+      const salaryText = (job.salary_min || job.salary_max)
+        ? `💰 ${job.salary_min ? '₹' + Number(job.salary_min).toLocaleString() : ''} ${job.salary_min && job.salary_max ? '–' : ''} ${job.salary_max ? '₹' + Number(job.salary_max).toLocaleString() : ''}`
+        : '';
+
+      card.innerHTML = `
+        <div class="flex justify-between items-start">
+          <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center font-bold text-lg">
+            ${(job.company || '?').charAt(0).toUpperCase()}
+          </div>
+          <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold">External</span>
+        </div>
+        <h3 class="text-xl font-bold mt-5">${job.title}</h3>
+        <p class="text-blue-600 font-semibold mt-1">${job.company}</p>
+        <div class="mt-5 space-y-2 text-sm text-slate-500">
+          ${job.location ? `<p>📍 ${job.location}</p>` : ''}
+          ${salaryText ? `<p>${salaryText}</p>` : ''}
+          ${postedDate ? `<p>📅 ${postedDate}</p>` : ''}
+          ${job.category ? `<p>📂 ${job.category}</p>` : ''}
+        </div>
+        <p class="text-slate-500 text-sm mt-4 line-clamp-3">${job.description || ''}</p>
+        <div class="flex gap-3 mt-5">
+          <button
+            onclick='showExtDetails(${JSON.stringify(job).replace(/'/g, "\\'")})'
+            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition">
+            View Details
+          </button>
+          <a href="${job.jobUrl}" target="_blank" rel="noopener"
+            class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl font-semibold transition text-center">
+            Apply ↗
+          </a>
+        </div>`;
+
+      container.appendChild(card);
+    });
+
+    // Update pagination
+    const totalPages = Math.ceil(extTotalCount / EXT_PER_PAGE);
+    if (totalPages > 1) {
+      pagination.classList.remove('hidden');
+      document.getElementById('extPageInfo').textContent = `Page ${extCurrentPage} of ${totalPages}`;
+      document.getElementById('extPrevBtn').disabled = (extCurrentPage <= 1);
+      document.getElementById('extNextBtn').disabled = (extCurrentPage >= totalPages);
+    } else {
+      pagination.classList.add('hidden');
+    }
+
+  } catch (err) {
+    console.error('External jobs error:', err);
+    countEl.textContent = 'Could not load external jobs.';
+    container.innerHTML = `
+      <div class="col-span-3 text-center py-16 text-red-500">
+        <i class="fa-solid fa-circle-exclamation text-4xl mb-4 block"></i>
+        ${err.message || 'Could not load external jobs. Please try again.'}
+      </div>`;
+  }
+}
+
+/** Show external job details in a modal */
+function showExtDetails(job) {
+  let modal = document.getElementById('extDetailsModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'extDetailsModal';
+    modal.className = 'hidden fixed inset-0 z-[60] bg-slate-900/70 backdrop-blur-sm items-center justify-center p-5';
+    modal.innerHTML = `
+      <div class="bg-white rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-8 relative">
+          <button onclick="closeModal('extDetailsModal')" class="absolute right-5 top-4 text-3xl text-slate-400 hover:text-slate-700">&times;</button>
+          <div id="extDetailsContent"></div>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e => { if (e.target === modal) closeModal('extDetailsModal'); });
+  }
+
+  const postedDate = job.postedDate
+    ? new Date(job.postedDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+    : '';
+
+  const salaryText = (job.salary_min || job.salary_max)
+    ? `₹${job.salary_min ? Number(job.salary_min).toLocaleString() : '?'} – ₹${job.salary_max ? Number(job.salary_max).toLocaleString() : '?'}`
+    : '';
+
+  document.getElementById('extDetailsContent').innerHTML = `
+    <div class="w-16 h-16 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center font-bold text-2xl">
+      ${(job.company || '?').charAt(0).toUpperCase()}
+    </div>
+    <span class="bg-emerald-100 text-emerald-700 inline-block px-3 py-1 rounded-full text-xs font-semibold mt-5">External · ${job.source || 'Adzuna'}</span>
+    <h2 class="text-3xl font-extrabold mt-4">${job.title}</h2>
+    <p class="text-blue-600 font-semibold mt-1">${job.company}</p>
+    <div class="mt-6 space-y-3 text-slate-600">
+      ${job.location ? `<p>📍 ${job.location}</p>` : ''}
+      ${salaryText ? `<p>💰 ${salaryText}</p>` : ''}
+      ${postedDate ? `<p>📅 Posted: ${postedDate}</p>` : ''}
+      ${job.category ? `<p>📂 ${job.category}</p>` : ''}
+    </div>
+    ${job.description ? `
+    <div class="mt-7">
+      <h4 class="font-bold mb-2">About the Opportunity</h4>
+      <p class="text-slate-600 leading-relaxed">${job.description}</p>
+    </div>` : ''}
+    <a href="${job.jobUrl}" target="_blank" rel="noopener"
+      class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl mt-8 font-semibold block text-center transition">
+      Apply on Original Site ↗
+    </a>
+    <p class="text-xs text-slate-400 text-center mt-3">You will be redirected to the original job listing</p>`;
+
+  openModal('extDetailsModal');
+}
+
+// Allow Enter key to trigger external search
+document.getElementById('extSearchInput')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') loadExternalJobs(1);
+});
+document.getElementById('extLocationInput')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') loadExternalJobs(1);
+});
 
 // Scroll to Top
 const topButton = document.getElementById('topButton');

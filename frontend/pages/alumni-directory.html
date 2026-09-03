@@ -226,11 +226,19 @@
             <div
                 id="alumniGrid"
                 class="grid
-                       sm:grid-cols-2
+                       grid-cols-1
+                       md:grid-cols-2
                        lg:grid-cols-4
                        gap-6"
             >
             </div>
+  <!-- PAGINATION CONTROLS -->
+  <div id="paginationControls" class="hidden flex justify-center items-center gap-4 mt-12 mb-8">
+    <button id="prevPageBtn" class="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-50 transition disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
+    <span id="pageIndicator" class="text-slate-600 font-medium">Page 1 of 1</span>
+    <button id="nextPageBtn" class="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-50 transition disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+  </div>
+
  
  
             <!--  EMPTY STATE (no alumni registered yet)-->
