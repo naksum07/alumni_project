@@ -434,8 +434,9 @@
 //Contact
         function contactMessage() {
 
-            alert(
-                "Thank you for contacting Alumni Connect. Our Alumni Office will get back to you soon."
+            showPopup(
+                "Thank you for contacting Alumni Connect. Our Alumni Office will get back to you soon.",
+                "success"
             );
 
         }
@@ -447,6 +448,7 @@
         window.addEventListener(
             "scroll",
             function () {
+                if (!scrollTopBtn) return;
                 if (
                     window.scrollY > 300
                 ) {

@@ -45,8 +45,8 @@ async function approveUser(req, res) {
 
   try {
     const result = await pool.query(
-      `UPDATE users SET is_approved = TRUE WHERE id = $1
-       RETURNING id, full_name, email, is_approved`,
+      `UPDATE users SET is_approved = TRUE, status = 'active' WHERE id = $1
+       RETURNING id, full_name, email, is_approved, status`,
       [id]
     );
 
@@ -282,7 +282,7 @@ async function listEventRegistrations(req, res) {
 // GET /api/admin/dashboard
 async function getDashboardStats(req, res) {
   try {
-    const userStats = await pool.query(`
+    const userStatsPromise = pool.query(`
       SELECT 
         COUNT(CASE WHEN role != 'admin' THEN 1 END) as total_users,
         COUNT(CASE WHEN role = 'alumni' THEN 1 END) as total_alumni,
@@ -290,15 +290,15 @@ async function getDashboardStats(req, res) {
       FROM users
     `);
 
-    const eventStats = await pool.query(`
+    const eventStatsPromise = pool.query(`
       SELECT COUNT(*) as total_events FROM events
     `);
 
-    const participantStats = await pool.query(`
+    const participantStatsPromise = pool.query(`
       SELECT COUNT(*) as total_participants FROM event_registrations
     `);
 
-    const eventsWithParticipants = await pool.query(`
+    const eventsWithParticipantsPromise = pool.query(`
       SELECT e.id, e.name as title, e.host, e.event_date as date, e.status, COUNT(er.id) as participant_count
       FROM events e
       LEFT JOIN event_registrations er ON e.id = er.event_id
@@ -306,6 +306,13 @@ async function getDashboardStats(req, res) {
       ORDER BY e.event_date DESC
       LIMIT 10
     `);
+
+    const [userStats, eventStats, participantStats, eventsWithParticipants] = await Promise.all([
+      userStatsPromise,
+      eventStatsPromise,
+      participantStatsPromise,
+      eventsWithParticipantsPromise
+    ]);
 
     res.json({
       userStats: {

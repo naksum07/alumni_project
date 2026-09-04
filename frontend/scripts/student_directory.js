@@ -1,73 +1,4 @@
-(function () {
-  const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user') || 'null');
-  const navAuth = document.getElementById('navAuth');
-  const mobileNavAuth = document.getElementById('mobileNavAuth');
-
-  if (token && user) {
-    const firstName = (user.fullName || user.full_name || 'You').split(' ')[0];
-    if (navAuth) {
-      navAuth.innerHTML = `
-        <span class="text-slate-700 font-medium text-sm">Hi, <strong class="text-[#012970]">${firstName}</strong></span>
-        <a href="my-profile.html" class="border border-slate-300 text-slate-700 px-4 py-2 rounded-lg hover:border-[#012970] hover:text-[#012970] transition text-sm">👤 My Profile</a>
-        <button id="logoutBtn" class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-4 py-2 rounded-lg transition text-sm shadow-sm">Logout</button>`;
-    }
-    if (mobileNavAuth) {
-      mobileNavAuth.innerHTML = `
-        <p class="text-slate-700 text-sm py-1">Logged in as <strong class="text-[#012970]">${firstName}</strong></p>
-        <a href="my-profile.html" class="block text-center border border-slate-300 text-slate-700 py-2 rounded-lg hover:border-[#012970] hover:text-[#012970] transition text-sm">👤 My Profile</a>
-        <button id="mobileLogoutBtn" class="w-full text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">Logout</button>`;
-    }
-
-    function doLogout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.reload();
-    }
-    const logoutBtn = document.getElementById('logoutBtn');
-    const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
-    if (logoutBtn) logoutBtn.addEventListener('click', doLogout);
-    if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', doLogout);
-  } else {
-    if (navAuth) {
-      navAuth.innerHTML = `
-        <a href="../admin/login.html" class="text-slate-500 font-medium hover:text-[#012970] transition text-sm px-2 border-r border-gray-200 pr-4">Admin Login</a>
-        <a href="login.html" class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-5 py-2 rounded-lg transition text-sm shadow-sm">Login / Register</a>`;
-    }
-    if (mobileNavAuth) {
-      mobileNavAuth.innerHTML = `
-        <a href="../admin/login.html" class="block text-center text-slate-500 py-2 rounded-lg font-medium hover:bg-gray-100 transition text-sm border-b border-gray-200 pb-3 mb-3">Admin Login</a>
-        <div class="space-y-2"><a href="login.html" class="block text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">Login / Register</a></div>`;
-    }
-    sessionStorage.setItem('returnTo', 'student-directory.html');
-  }
-
-  const menuBtn = document.getElementById('menuBtn');
-  const mobileMenu = document.getElementById('mobileMenu');
-  if (menuBtn && mobileMenu) {
-    menuBtn.addEventListener('click', () => {
-      mobileMenu.classList.toggle('hidden');
-      const isOpen = !mobileMenu.classList.contains('hidden');
-      menuBtn.setAttribute('aria-expanded', isOpen);
-      menuBtn.innerHTML = isOpen ? '✕' : '☰';
-    });
-    mobileMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        mobileMenu.classList.add('hidden');
-        menuBtn.setAttribute('aria-expanded', 'false');
-        menuBtn.innerHTML = '☰';
-      });
-    });
-    window.addEventListener('resize', () => {
-      if (window.innerWidth >= 768) {
-        mobileMenu.classList.add('hidden');
-        menuBtn.setAttribute('aria-expanded', 'false');
-        menuBtn.innerHTML = '☰';
-      }
-    });
-  }
-
-  // --- Search and Pagination ---
+// --- Search and Pagination ---
   const searchInput = document.getElementById("searchInput");
   const filterDepartment = document.getElementById("filterDepartment");
   const filterYear = document.getElementById("filterYear");
@@ -81,7 +12,7 @@
   let allStudents = [];
   let filteredStudents = [];
   let currentPage = 1;
-  const itemsPerPage = 40;
+  const itemsPerPage = 21;
 
   function updatePaginationControls() {
     const totalPages = Math.ceil(filteredStudents.length / itemsPerPage) || 1;

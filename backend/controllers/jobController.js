@@ -6,7 +6,7 @@ async function listJobs(req, res) {
   const { location, type, search } = req.query;
 
   let query = `SELECT j.id, j.title, j.company, j.location, j.job_type, j.salary,
-                      j.skills, j.description, j.status, j.created_at,
+                      j.skills, j.description, j.status, j.created_at, j.posted_by,
                       u.full_name AS posted_by_name
                FROM jobs j
                LEFT JOIN users u ON u.id = j.posted_by

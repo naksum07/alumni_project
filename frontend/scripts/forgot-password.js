@@ -6,6 +6,9 @@ function showMsg(el, text, isError) {
   el.textContent = text;
   el.classList.remove('hidden', 'text-red-600', 'text-green-600');
   el.classList.add(isError ? 'text-red-600' : 'text-green-600');
+  if (typeof showPopup === 'function') {
+    showPopup(text, isError ? 'error' : 'success');
+  }
 }
 
 async function requestResetLink(email) {

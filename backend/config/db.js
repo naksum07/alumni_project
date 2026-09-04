@@ -1,11 +1,13 @@
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT, 10),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: process.env.DB_HOST || 'localhost',
+  port: parseInt(process.env.DB_PORT || '5432', 10),
+  user: process.env.DB_USER || 'postgres',
+  password: String(process.env.DB_PASSWORD || 'alumni'),
+  database: process.env.DB_NAME || 'alumni_portal',
 });
 
 async function ensureDatabaseSchema() {
@@ -14,13 +16,23 @@ async function ensureDatabaseSchema() {
       ALTER TABLE users
         ADD COLUMN IF NOT EXISTS is_approved BOOLEAN DEFAULT TRUE,
         ADD COLUMN IF NOT EXISTS status VARCHAR(20) NOT NULL DEFAULT 'active',
-        ADD COLUMN IF NOT EXISTS show_phone_publicly BOOLEAN DEFAULT FALSE;
+        ADD COLUMN IF NOT EXISTS show_phone_publicly BOOLEAN DEFAULT FALSE,
+        ADD COLUMN IF NOT EXISTS enrollment_number VARCHAR(50),
+        ADD COLUMN IF NOT EXISTS city VARCHAR(150),
+        ADD COLUMN IF NOT EXISTS linkedin_url TEXT,
+        ADD COLUMN IF NOT EXISTS bio TEXT,
+        ADD COLUMN IF NOT EXISTS gender VARCHAR(50);
 
       ALTER TABLE events
         ADD COLUMN IF NOT EXISTS host VARCHAR(150),
         ADD COLUMN IF NOT EXISTS capacity INT,
         ADD COLUMN IF NOT EXISTS image_url TEXT,
-        ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'upcoming';
+        ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'upcoming',
+        ADD COLUMN IF NOT EXISTS event_date_end DATE;
+
+      ALTER TABLE event_registrations
+        ADD COLUMN IF NOT EXISTS attendee_type VARCHAR(50),
+        ADD COLUMN IF NOT EXISTS designation_or_org VARCHAR(150);
 
       CREATE TABLE IF NOT EXISTS announcements (
         id           SERIAL PRIMARY KEY,
@@ -34,10 +46,10 @@ async function ensureDatabaseSchema() {
     `);
     console.log('✅ Database schema verified');
     
-    // Auto-seed 20 announcements and events if database is fresh or incomplete
+    // Auto-seed announcements and events if the database is fresh (both tables are sparse)
     const annCount = await pool.query('SELECT COUNT(*) FROM announcements');
     const evCount = await pool.query('SELECT COUNT(*) FROM events');
-    if (parseInt(annCount.rows[0].count) < 20 || parseInt(evCount.rows[0].count) < 20) {
+    if (parseInt(annCount.rows[0].count) < 20 && parseInt(evCount.rows[0].count) < 20) {
       console.log('🌱 Auto-seeding missing announcements and events...');
       const seedData = require('../seed');
       await seedData();

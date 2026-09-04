@@ -128,19 +128,27 @@ function showRegMessage(text, isError) {
   }
 }
 
-// --- Pagination ---
+// --- Search, Filtering & Pagination ---
 let allEvents = [];
+let filteredEvents = [];
 let currentPage = 1;
-const itemsPerPage = 9;
+const itemsPerPage = 21;
+
+const searchInput   = document.getElementById('searchInput');
+const filterStatus  = document.getElementById('filterStatus');
+const filterCategory = document.getElementById('filterCategory');
+const resultCount   = document.getElementById('resultCount');
+const noResults     = document.getElementById('noResults');
+const clearSearch   = document.getElementById('clearSearch');
 
 function updatePaginationControls() {
-    const totalPages = Math.ceil(allEvents.length / itemsPerPage) || 1;
+    const totalPages = Math.ceil(filteredEvents.length / itemsPerPage) || 1;
     const prevBtn = document.getElementById('prevPageBtn');
     const nextBtn = document.getElementById('nextPageBtn');
     const pageIndicator = document.getElementById('pageIndicator');
     const paginationControls = document.getElementById('paginationControls');
 
-    if (allEvents.length <= itemsPerPage) {
+    if (filteredEvents.length <= itemsPerPage) {
         if (paginationControls) {
             paginationControls.classList.add('hidden');
             paginationControls.classList.remove('flex');
@@ -160,39 +168,43 @@ function updatePaginationControls() {
 function renderCurrentPage() {
   if (!eventsContainer) return;
   eventsContainer.innerHTML = '';
-  
-  if (allEvents.length === 0) {
-    eventsContainer.innerHTML = `
-      <div class="col-span-3 text-center py-16 text-gray-500">
-        <i class="fa-solid fa-calendar-xmark text-5xl mb-4 block"></i>
-        No upcoming events at the moment. Check back soon!
-      </div>`;
+
+  if (filteredEvents.length === 0) {
+    if (noResults) noResults.classList.remove('hidden');
+    if (resultCount) resultCount.textContent = 'Showing 0 events';
     updatePaginationControls();
     return;
   }
-  
+
+  if (noResults) noResults.classList.add('hidden');
+  if (resultCount) resultCount.textContent = `Showing ${filteredEvents.length} event${filteredEvents.length === 1 ? '' : 's'}`;
+
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const pageData = allEvents.slice(startIndex, startIndex + itemsPerPage);
+  const pageData = filteredEvents.slice(startIndex, startIndex + itemsPerPage);
 
   pageData.forEach((event, index) => {
     const palette = PALETTES[index % PALETTES.length];
     const card = document.createElement('div');
-    card.className = 'bg-white rounded-2xl shadow-md overflow-hidden hover:-translate-y-2 hover:shadow-xl transition-all duration-300 border border-slate-100';
+    card.className = 'bg-white rounded-2xl shadow-md overflow-hidden hover:-translate-y-2 hover:shadow-xl transition-all duration-300 border border-slate-100 flex flex-col justify-between';
 
     let dateDisplay = formatDate(event.event_date);
     if (event.event_date_end) dateDisplay += ' – ' + formatDate(event.event_date_end);
 
     card.innerHTML = `
-      <div class="${palette.bg} text-white p-6">
-        <i class="fa-solid ${palette.icon} text-4xl"></i>
-        <p class="mt-4 font-semibold">${dateDisplay}</p>
-        ${event.event_time ? `<p class="text-sm opacity-80 mt-1">${event.event_time}</p>` : ''}
+      <div>
+        <div class="${palette.bg} text-white p-6">
+          <i class="fa-solid ${palette.icon} text-4xl"></i>
+          <p class="mt-4 font-semibold">${dateDisplay}</p>
+          ${event.event_time ? `<p class="text-sm opacity-80 mt-1">${event.event_time}</p>` : ''}
+        </div>
+        <div class="p-6">
+          <h2 class="text-2xl font-bold text-slate-800">${event.name}</h2>
+          <p class="text-gray-600 mt-3 text-sm leading-relaxed">${event.description || ''}</p>
+          ${event.venue ? `<p class="text-gray-500 mt-4 text-sm flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#c4161c]"></i>${event.venue}</p>` : ''}
+        </div>
       </div>
-      <div class="p-6">
-        <h2 class="text-2xl font-bold text-slate-800">${event.name}</h2>
-        <p class="text-gray-600 mt-3 text-sm leading-relaxed">${event.description || ''}</p>
-        ${event.venue ? `<p class="text-gray-500 mt-4 text-sm flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#c4161c]"></i>${event.venue}</p>` : ''}
-        <button class="reg-btn w-full bg-[#c4161c] hover:bg-[#a01217] text-white py-3 rounded-xl mt-6 transition font-semibold shadow-md">Register Now</button>
+      <div class="px-6 pb-6">
+        <button class="reg-btn w-full bg-[#c4161c] hover:bg-[#a01217] text-white py-3 rounded-xl transition font-semibold shadow-md">Register Now</button>
       </div>`;
 
     const regBtn = card.querySelector('.reg-btn');
@@ -201,6 +213,53 @@ function renderCurrentPage() {
   });
   updatePaginationControls();
 }
+
+function applyFilters() {
+  const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
+  const selectedStatus = filterStatus ? filterStatus.value.toLowerCase() : '';
+  const selectedCategory = filterCategory ? filterCategory.value.toLowerCase() : '';
+
+  const today = new Date().toISOString().split('T')[0];
+
+  filteredEvents = allEvents.filter(e => {
+    const text = `${e.name || ''} ${e.venue || ''} ${e.host || ''} ${e.description || ''}`.toLowerCase();
+    const matchesSearch = !searchTerm || text.includes(searchTerm);
+
+    let matchesStatus = true;
+    if (selectedStatus === 'upcoming') {
+      matchesStatus = !e.event_date || e.event_date >= today || e.status === 'upcoming';
+    } else if (selectedStatus === 'past') {
+      matchesStatus = (e.event_date && e.event_date < today) || e.status === 'past' || e.status === 'completed';
+    }
+
+    let matchesCategory = true;
+    if (selectedCategory) {
+      matchesCategory = text.includes(selectedCategory);
+    }
+
+    return matchesSearch && matchesStatus && matchesCategory;
+  });
+
+  const isFiltered = searchTerm.length > 0 || selectedStatus !== '' || selectedCategory !== '';
+  if (clearSearch) clearSearch.classList.toggle('hidden', !isFiltered);
+
+  currentPage = 1;
+  renderCurrentPage();
+}
+
+if (searchInput) searchInput.addEventListener('input', applyFilters);
+if (filterStatus) filterStatus.addEventListener('change', applyFilters);
+if (filterCategory) filterCategory.addEventListener('change', applyFilters);
+
+function clearSearchBox() {
+  if (searchInput) searchInput.value = '';
+  if (filterStatus) filterStatus.value = '';
+  if (filterCategory) filterCategory.value = '';
+  applyFilters();
+  if (searchInput) searchInput.focus();
+}
+
+if (clearSearch) clearSearch.addEventListener('click', clearSearchBox);
 
 async function loadEvents() {
   if (eventsContainer) {
@@ -215,7 +274,7 @@ async function loadEvents() {
     if (!res.ok) throw new Error(`Server returned ${res.status}`);
     const events = await res.json();
     if (Array.isArray(events)) allEvents = events;
-    renderCurrentPage();
+    applyFilters();
   } catch (err) {
     console.error('Failed to load events:', err);
     if (eventsContainer) {
@@ -232,7 +291,7 @@ const prevBtn = document.getElementById('prevPageBtn');
 const nextBtn = document.getElementById('nextPageBtn');
 if (prevBtn) prevBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderCurrentPage(); } });
 if (nextBtn) nextBtn.addEventListener('click', () => { 
-    const totalPages = Math.ceil(allEvents.length / itemsPerPage) || 1;
+    const totalPages = Math.ceil(filteredEvents.length / itemsPerPage) || 1;
     if (currentPage < totalPages) { currentPage++; renderCurrentPage(); } 
 });
 

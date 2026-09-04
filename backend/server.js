@@ -43,6 +43,16 @@ app.get('/api/test', (req, res) => {
   res.send('Backend is connected!');
 });
 
+// Global error handler — catches any unhandled errors passed via next(err)
+// Must have 4 parameters for Express to recognize it as an error handler.
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(err.status || 500).json({
+    message: err.message || 'An unexpected server error occurred'
+  });
+});
+
 const PORT = process.env.PORT || 5001;
 if (require.main === module) {
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

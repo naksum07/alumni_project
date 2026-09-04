@@ -8,10 +8,26 @@
 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135755.png">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="../scripts/popup.js"></script>
 
 <style>
-    html{ 
+    html { 
         scroll-behavior: smooth; 
+    }
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-7px); }
+        40%, 80% { transform: translateX(7px); }
+    }
+    .shake-card {
+        animation: shake 0.4s ease-in-out;
+    }
+    .input-error {
+        border-color: #ef4444 !important;
+        background-color: #fef2f2 !important;
+    }
+    .input-error:focus {
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
     }
 </style>
 </head>
@@ -21,7 +37,7 @@
 <main class="min-h-screen flex items-center justify-center py-12 px-4">
 
 <!-- LOGIN CONTAINER -->
-<div class="w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-100 p-8 sm:p-10 mx-4">
+<div id="loginCard" class="w-full max-w-md bg-white rounded-3xl shadow-xl border border-slate-100 p-8 sm:p-10 mx-4 transition-all">
 
 <!-- LOGO -->
 <div class="text-center mb-8">
@@ -34,27 +50,44 @@
     <p class="text-slate-500 mt-1 text-sm">Login to your ICFAI University Sikkim portal</p>
 </div>
 
+<!-- ENHANCED ALERT BANNER -->
+<div id="formAlert" class="hidden mb-6 rounded-2xl p-4 text-sm transition-all duration-300 border shadow-sm flex items-start gap-3">
+    <div id="alertIconContainer" class="p-2.5 rounded-xl shrink-0 flex items-center justify-center">
+        <i id="alertIcon" class="fa-solid fa-circle-exclamation text-lg"></i>
+    </div>
+    <div class="flex-1 pt-0.5">
+        <h4 id="alertTitle" class="font-bold text-xs uppercase tracking-wider mb-0.5"></h4>
+        <p id="alertMessage" class="text-sm leading-snug"></p>
+        <div id="alertAction" class="mt-2 text-xs hidden"></div>
+    </div>
+</div>
+
 <!-- FORM -->
-<p id="formMessage" class="text-center text-sm font-medium mb-4 hidden"></p>
-<form id="loginForm">
+<form id="loginForm" novalidate>
 
 <!-- EMAIL -->
 <div class="mb-5">
-    <label class="block text-slate-700 font-semibold mb-1.5 text-xs uppercase tracking-wide">Email Address</label>
+    <div class="flex justify-between items-center mb-1.5">
+        <label class="block text-slate-700 font-semibold text-xs uppercase tracking-wide">Email Address</label>
+        <span id="emailError" class="text-xs font-medium text-red-600 hidden"></span>
+    </div>
     <input type="email"
         id="email"
         placeholder="Enter your email address" required
-        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]">
+        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] transition-colors">
 </div>
 
 <!-- PASSWORD -->
 <div class="mb-5">
-    <label class="block text-slate-700 font-semibold mb-1.5 text-xs uppercase tracking-wide">Password</label>
+    <div class="flex justify-between items-center mb-1.5">
+        <label class="block text-slate-700 font-semibold text-xs uppercase tracking-wide">Password</label>
+        <span id="passwordError" class="text-xs font-medium text-red-600 hidden"></span>
+    </div>
     <div class="relative">
         <input type="password"
             id="password"
             placeholder="Enter password" required
-            class="w-full border border-gray-300 rounded-xl px-4 py-3 pr-11 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970]">
+            class="w-full border border-gray-300 rounded-xl px-4 py-3 pr-11 text-sm focus:outline-none focus:ring-2 focus:ring-[#012970]/30 focus:border-[#012970] transition-colors">
         <button type="button"
             id="toggleButton"
             onclick="togglePasswordVisibility('password', this)"
@@ -67,16 +100,17 @@
 
 <!-- OPTIONS -->
 <div class="flex justify-between items-center mb-6 text-sm">
-    <label class="flex items-center gap-2 text-slate-600 cursor-pointer">
+    <label class="flex items-center gap-2 text-slate-600 cursor-pointer select-none">
         <input type="checkbox" class="rounded text-[#c4161c] focus:ring-[#c4161c]">Remember me
     </label>
-    <a href="forgot-password.html" class="text-[#012970] hover:text-[#c4161c] hover:underline font-medium">Forgot Password?</a>
+    <a href="forgot-password.html" class="text-[#012970] hover:text-[#c4161c] hover:underline font-semibold">Forgot Password?</a>
 </div>
 
 <!-- LOGIN BUTTON -->
 <button type="submit"
-    class="w-full bg-[#c4161c] hover:bg-[#a01217] text-white py-3.5 rounded-xl font-semibold transition shadow-md">
-    Login
+    id="loginSubmitBtn"
+    class="w-full bg-[#c4161c] hover:bg-[#a01217] text-white py-3.5 rounded-xl font-semibold transition-all duration-200 shadow-md flex items-center justify-center gap-2">
+    <span>Login</span>
 </button>
 </form>
 
@@ -114,34 +148,82 @@ function togglePasswordVisibility(inputId, btn) {
     }
 }
 
+const loginCard = document.getElementById("loginCard");
 const loginForm = document.getElementById("loginForm");
-const formMessage = document.getElementById("formMessage");
-const loginBtn = loginForm.querySelector("button[type=submit]");
+const formAlert = document.getElementById("formAlert");
+const alertIconContainer = document.getElementById("alertIconContainer");
+const alertIcon = document.getElementById("alertIcon");
+const alertTitle = document.getElementById("alertTitle");
+const alertMessage = document.getElementById("alertMessage");
+const alertAction = document.getElementById("alertAction");
+const loginBtn = document.getElementById("loginSubmitBtn");
 
-function showMessage(text, isError) {
-    formMessage.textContent = text;
-    formMessage.classList.remove("hidden", "text-red-600", "text-green-600");
-    formMessage.classList.add(isError ? "text-red-600" : "text-green-600");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const emailError = document.getElementById("emailError");
+const passwordError = document.getElementById("passwordError");
+
+// Clear field errors on user input
+[emailInput, passwordInput].forEach(input => {
+    input.addEventListener('input', () => {
+        input.classList.remove('input-error');
+        if (input.id === 'email') emailError.classList.add('hidden');
+        if (input.id === 'password') passwordError.classList.add('hidden');
+    });
+});
+
+function showAlert(text, type = 'error', actionHtml = '') {
+    showPopup(text, type, null, actionHtml);
+}
+
+function triggerShake() {
+    loginCard.classList.remove("shake-card");
+    void loginCard.offsetWidth; // Force reflow
+    loginCard.classList.add("shake-card");
+}
+
+function getApiUrl(endpoint) {
+    const origin = window.location.origin;
+    if (window.location.protocol === 'file:' || (origin && !origin.endsWith(':5001'))) {
+        return `http://localhost:5001${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
+    }
+    return endpoint;
 }
 
 // LOGIN — CALLS THE BACKEND API
 loginForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
 
-    if (email === "" || password === "") {
-        showMessage("Please fill all fields", true);
+    let hasValidationError = false;
+
+    if (!email) {
+        emailInput.classList.add('input-error');
+        emailError.textContent = "Email is required";
+        emailError.classList.remove('hidden');
+        hasValidationError = true;
+    }
+
+    if (!password) {
+        passwordInput.classList.add('input-error');
+        passwordError.textContent = "Password is required";
+        passwordError.classList.remove('hidden');
+        hasValidationError = true;
+    }
+
+    if (hasValidationError) {
+        triggerShake();
+        showAlert("Please fill in both your email address and password.", 'error');
         return;
     }
 
     loginBtn.disabled = true;
-    const originalBtnText = loginBtn.textContent;
-    loginBtn.textContent = "Logging in...";
+    loginBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Logging in...</span>`;
 
     try {
-        const response = await fetch("/api/auth/login", {
+        const response = await fetch(getApiUrl("/api/auth/login"), {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password }),
@@ -150,14 +232,30 @@ loginForm.addEventListener("submit", async function (event) {
         const data = await response.json();
 
         if (!response.ok) {
-            showMessage(data.message || "Login failed. Please try again.", true);
+            triggerShake();
+            emailInput.classList.add('input-error');
+            passwordInput.classList.add('input-error');
+
+            const msg = data.message || "Login failed. Please check your credentials.";
+            
+            if (response.status === 401) {
+                showAlert(msg, 'error', `Forgot password? <a href="forgot-password.html" class="underline font-bold hover:text-red-700">Reset it here</a>`);
+            } else if (response.status === 403) {
+                showAlert(msg, 'warning', `Need help? Contact support or <a href="feedback.html" class="underline font-bold hover:text-amber-800">send feedback</a>.`);
+            } else {
+                showAlert(msg, 'error');
+            }
             return;
         }
+
+        // Clear error states on success
+        emailInput.classList.remove('input-error');
+        passwordInput.classList.remove('input-error');
 
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
 
-        showMessage("Login successful! Redirecting…", false);
+        showAlert("Login successful! Redirecting to your dashboard...", 'success');
         setTimeout(() => {
             const returnTo = sessionStorage.getItem('returnTo') || 'index.html';
             sessionStorage.removeItem('returnTo');
@@ -165,10 +263,11 @@ loginForm.addEventListener("submit", async function (event) {
         }, 800);
     } catch (err) {
         console.error(err);
-        showMessage("Could not reach the server. Please try again later.", true);
+        triggerShake();
+        showAlert("Could not connect to the backend server. Please verify your connection or try again shortly.", 'network');
     } finally {
         loginBtn.disabled = false;
-        loginBtn.textContent = originalBtnText;
+        loginBtn.innerHTML = `<span>Login</span>`;
     }
 });
 </script>

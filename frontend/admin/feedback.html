@@ -7,6 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="../scripts/data-store.js"></script>
+<script src="../scripts/popup.js"></script>
 <script src="../scripts/admin-common.js"></script>
 </head>
 <body class="bg-slate-50 font-sans">
@@ -91,19 +92,19 @@ async function loadFeedback() {
 }
 
 window.deleteFeedbackItem = async (id) => {
-    if (confirm('Are you sure you want to delete this feedback?')) {
+    showConfirmPopup('Are you sure you want to delete this feedback item?', 'Delete Feedback', async () => {
         try {
             const res = await fetch('/api/admin/feedback/' + id, {
                 method: 'DELETE',
                 headers: { 'Authorization': 'Bearer ' + getToken() }
             });
             if (!res.ok) throw new Error('Failed to delete feedback');
-            // Remove from UI without full page refresh (reload the list)
+            showPopup('Feedback deleted successfully.', 'success');
             loadFeedback();
         } catch (err) {
-            alert(err.message);
+            showPopup(err.message || 'Error deleting feedback', 'error');
         }
-    }
+    }, null, 'Delete', 'Cancel');
 };
 
 document.addEventListener('DOMContentLoaded', loadFeedback);

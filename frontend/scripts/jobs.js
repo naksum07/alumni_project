@@ -4,7 +4,7 @@ let selectedJob  = null; // job currently open in the details modal
 let appliedJobIds = [];  // IDs of jobs the logged-in user applied for
 
 let currentPage = 1;
-const itemsPerPage = 40;
+const itemsPerPage = 21;
 
 //Element References
 const jobContainer   = document.getElementById('jobContainer');
@@ -53,21 +53,18 @@ async function loadJobs() {
     </div>`;
   try {
     const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        const appRes = await fetch('/api/jobs/my-applications', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (appRes.ok) {
-          const appData = await appRes.json();
-          if (appData.appliedJobIds) appliedJobIds = appData.appliedJobIds;
-        }
-      } catch (e) {
-        console.warn('Could not fetch user applications:', e);
-      }
+    const jobsPromise = fetch('/api/jobs');
+    const appsPromise = token 
+      ? fetch('/api/jobs/my-applications', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null)
+      : Promise.resolve(null);
+
+    const [res, appRes] = await Promise.all([jobsPromise, appsPromise]);
+
+    if (appRes && appRes.ok) {
+      const appData = await appRes.json();
+      if (appData.appliedJobIds) appliedJobIds = appData.appliedJobIds;
     }
 
-    const res = await fetch('/api/jobs');
     if (!res.ok) throw new Error(`Server returned ${res.status}`);
     allJobs = await res.json();
     currentPage = 1;
@@ -125,36 +122,76 @@ function displayJobs() {
       : 'bg-amber-100 text-amber-700';
     const label  = isJob ? 'Job' : 'Internship';
     const isApplied = appliedJobIds.includes(job.id);
+    const currentUser = getCurrentUser();
+    const isOwnerOrAdmin = Boolean(
+      currentUser &&
+      job.posted_by &&
+      (Number(job.posted_by) === Number(currentUser.id) || String(currentUser.role || '').toLowerCase() === 'admin')
+    );
 
     const card = document.createElement('div');
     card.className =
       'bg-white rounded-2xl border border-slate-200 p-6 ' +
       'hover:shadow-xl hover:-translate-y-1 transition duration-300 relative flex flex-col justify-between';
 
+    // Build inner HTML using safe text nodes to prevent XSS
+    const companyInitial = (job.company || '?').charAt(0).toUpperCase();
     card.innerHTML = `
       <div>
         <div class="flex justify-between items-start">
           <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg">
-            ${(job.company || '?').charAt(0).toUpperCase()}
+            ${companyInitial}
           </div>
           <div class="flex flex-col items-end gap-1.5">
             <span class="${badge} px-3 py-1 rounded-full text-xs font-semibold">${label}</span>
             ${isApplied ? `<span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full text-[11px] font-bold inline-flex items-center gap-1"><i class="fa-solid fa-circle-check text-[10px]"></i> Applied</span>` : ''}
           </div>
         </div>
-        <h3 class="text-xl font-bold mt-5">${job.title}</h3>
-        <p class="text-blue-600 font-semibold mt-1">${job.company}</p>
+        <h3 class="text-xl font-bold mt-5 job-title-el"></h3>
+        <p class="text-blue-600 font-semibold mt-1 job-company-el"></p>
         <div class="mt-5 space-y-2 text-sm text-slate-500">
-          ${job.location ? `<p>📍 ${job.location}</p>` : ''}
-          ${job.salary   ? `<p>💰 ${job.salary}</p>`   : ''}
+          ${job.location ? `<p class="job-location-el">📍 </p>` : ''}
+          ${job.salary   ? `<p class="job-salary-el">💰 </p>` : ''}
         </div>
-        ${job.skills ? `<div class="bg-slate-50 border border-slate-100 rounded-lg p-3 mt-5 text-xs text-slate-600">${job.skills}</div>` : ''}
+        ${job.skills ? `<div class="bg-slate-50 border border-slate-100 rounded-lg p-3 mt-5 text-xs text-slate-600 job-skills-el"></div>` : ''}
       </div>
-      <button
-        onclick="showDetails(${job.id})"
-        class="w-full ${isApplied ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-blue-600 hover:bg-blue-700'} text-white py-3 rounded-xl mt-5 font-semibold transition flex items-center justify-center gap-2">
-        ${isApplied ? '<i class="fa-solid fa-check-circle"></i> Applied' : 'View Opportunity'}
-      </button>`;
+      <div class="flex gap-2 mt-5">
+        <button
+          class="view-details-btn flex-1 ${isApplied ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-blue-700 hover:bg-blue-800'} text-white py-2.5 rounded-xl font-semibold transition flex items-center justify-center gap-2 shadow-sm">
+          ${isApplied ? '<i class="fa-solid fa-check-circle"></i> Applied' : 'View Details'}
+        </button>
+        ${isOwnerOrAdmin ? `
+          <button
+            class="delete-job-card-btn bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-3.5 py-2.5 rounded-xl font-semibold transition flex items-center justify-center gap-1 text-sm shadow-sm cursor-pointer"
+            title="Delete Opportunity">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        ` : ''}
+      </div>`;
+
+    // Set text content safely (prevents XSS)
+    const titleEl = card.querySelector('.job-title-el');
+    if (titleEl) titleEl.textContent = job.title || '';
+    const companyEl = card.querySelector('.job-company-el');
+    if (companyEl) companyEl.textContent = job.company || '';
+    const locationEl = card.querySelector('.job-location-el');
+    if (locationEl) locationEl.textContent = '📍 ' + (job.location || '');
+    const salaryEl = card.querySelector('.job-salary-el');
+    if (salaryEl) salaryEl.textContent = '💰 ' + (job.salary || '');
+    const skillsEl = card.querySelector('.job-skills-el');
+    if (skillsEl) skillsEl.textContent = job.skills || '';
+
+    // Attach click safely via addEventListener
+    const detailsBtn = card.querySelector('.view-details-btn');
+    if (detailsBtn) detailsBtn.addEventListener('click', () => showDetails(job.id));
+
+    const deleteBtn = card.querySelector('.delete-job-card-btn');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteJobHandler(job.id);
+      });
+    }
 
     jobContainer.appendChild(card);
   });
@@ -172,13 +209,15 @@ function getCurrentUser() {
 
 function canPostOpportunity() {
   const user = getCurrentUser();
-  return Boolean(user && String(user.role || '').toLowerCase() === 'alumni');
+  if (!user) return true;
+  const role = String(user.role || '').toLowerCase();
+  return role === 'alumni' || role === 'admin';
 }
 
 function setPostOpportunityButtonsVisibility() {
   const buttons = document.querySelectorAll('[onclick="openPostModal()"]');
   buttons.forEach((btn) => {
-    btn.style.display = canPostOpportunity() ? '' : 'none';
+    btn.style.display = '';
   });
 }
 
@@ -204,30 +243,38 @@ function showDetails(id) {
   const badge = isJob ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700';
   const label = isJob ? 'Job' : 'Internship';
   const isApplied = appliedJobIds.includes(selectedJob.id);
+  const currentUser = getCurrentUser();
+  const isOwnerOrAdmin = Boolean(
+    currentUser &&
+    selectedJob.posted_by &&
+    (Number(selectedJob.posted_by) === Number(currentUser.id) || String(currentUser.role || '').toLowerCase() === 'admin')
+  );
 
-  document.getElementById('detailsContent').innerHTML = `
-    <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-2xl">
-      ${(selectedJob.company || '?').charAt(0).toUpperCase()}
-    </div>
+  const detailsEl = document.getElementById('detailsContent');
+  if (!detailsEl) return;
+
+  detailsEl.innerHTML = `
+    <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-2xl company-initial-el"></div>
     <div class="flex items-center gap-2 mt-5">
       <span class="${badge} inline-block px-3 py-1 rounded-full text-xs font-semibold">${label}</span>
       ${isApplied ? `<span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Applied</span>` : ''}
     </div>
-    <h2 class="text-3xl font-extrabold mt-4">${selectedJob.title}</h2>
-    <p class="text-blue-600 font-semibold mt-1">${selectedJob.company}</p>
+    <h2 class="text-3xl font-extrabold mt-4 detail-title-el"></h2>
+    <p class="text-blue-600 font-semibold mt-1 detail-company-el"></p>
+    ${selectedJob.posted_by_name ? `<p class="text-xs text-slate-500 mt-1">Shared by <strong class="text-slate-700">${escapeHTML(selectedJob.posted_by_name)}</strong></p>` : ''}
     <div class="mt-6 space-y-3 text-slate-600">
-      ${selectedJob.location ? `<p>📍 ${selectedJob.location}</p>` : ''}
-      ${selectedJob.salary   ? `<p>💰 ${selectedJob.salary}</p>`   : ''}
+      ${selectedJob.location ? `<p class="detail-location-el">📍 </p>` : ''}
+      ${selectedJob.salary   ? `<p class="detail-salary-el">💰 </p>`   : ''}
     </div>
     ${selectedJob.skills ? `
     <div class="border-t mt-7 pt-6">
       <h4 class="font-bold mb-2">Required Skills</h4>
-      <p class="text-slate-600">${selectedJob.skills}</p>
+      <p class="text-slate-600 detail-skills-el"></p>
     </div>` : ''}
     ${selectedJob.description ? `
     <div class="mt-7">
       <h4 class="font-bold mb-2">About the Opportunity</h4>
-      <p class="text-slate-600 leading-relaxed">${selectedJob.description}</p>
+      <p class="text-slate-600 leading-relaxed detail-desc-el"></p>
     </div>` : ''}
     ${isApplied ? `
       <button disabled class="w-full bg-emerald-600 text-white py-3.5 rounded-xl mt-8 font-semibold cursor-not-allowed flex items-center justify-center gap-2 shadow">
@@ -235,11 +282,41 @@ function showDetails(id) {
       </button>
     ` : `
       <button
-        onclick="openApply()"
+        id="openApplyBtn"
         class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl mt-8 font-semibold shadow transition">
         Apply Now
       </button>
-    `}`;
+    `}
+    ${isOwnerOrAdmin ? `
+      <button
+        id="deleteOpportunityModalBtn"
+        class="w-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 py-3 rounded-xl mt-3 font-semibold transition flex items-center justify-center gap-2 text-sm shadow-sm cursor-pointer">
+        <i class="fa-solid fa-trash"></i> Delete Opportunity
+      </button>
+    ` : ''}`;
+
+  // Set text content safely (prevents XSS)
+  const companyInitialEl = detailsEl.querySelector('.company-initial-el');
+  if (companyInitialEl) companyInitialEl.textContent = (selectedJob.company || '?').charAt(0).toUpperCase();
+  const detailTitleEl = detailsEl.querySelector('.detail-title-el');
+  if (detailTitleEl) detailTitleEl.textContent = selectedJob.title || '';
+  const detailCompanyEl = detailsEl.querySelector('.detail-company-el');
+  if (detailCompanyEl) detailCompanyEl.textContent = selectedJob.company || '';
+  const detailLocationEl = detailsEl.querySelector('.detail-location-el');
+  if (detailLocationEl) detailLocationEl.textContent = '📍 ' + (selectedJob.location || '');
+  const detailSalaryEl = detailsEl.querySelector('.detail-salary-el');
+  if (detailSalaryEl) detailSalaryEl.textContent = '💰 ' + (selectedJob.salary || '');
+  const detailSkillsEl = detailsEl.querySelector('.detail-skills-el');
+  if (detailSkillsEl) detailSkillsEl.textContent = selectedJob.skills || '';
+  const detailDescEl = detailsEl.querySelector('.detail-desc-el');
+  if (detailDescEl) detailDescEl.textContent = selectedJob.description || '';
+  const openApplyBtn = detailsEl.querySelector('#openApplyBtn');
+  if (openApplyBtn) openApplyBtn.addEventListener('click', openApply);
+
+  const deleteModalBtn = detailsEl.querySelector('#deleteOpportunityModalBtn');
+  if (deleteModalBtn) {
+    deleteModalBtn.addEventListener('click', () => deleteJobHandler(selectedJob.id));
+  }
 
   openModal('detailsModal');
 }
@@ -369,10 +446,35 @@ function showApplyMessage(text, isError) {
 
 //Post Job Modal
 function openPostModal() {
-  if (!canPostOpportunity()) {
-    showPostStatus('Only alumni can post opportunities.', true);
+  const token = localStorage.getItem('token');
+  const user = getCurrentUser();
+
+  if (!token || !user) {
+    if (typeof showConfirmPopup === 'function') {
+      showConfirmPopup(
+        'You need to be logged in as an Alumni to post job opportunities.',
+        'Login Required',
+        () => { window.location.href = 'login.html'; },
+        null,
+        'Go to Login',
+        'Cancel'
+      );
+    } else {
+      window.location.href = 'login.html';
+    }
     return;
   }
+
+  const role = String(user.role || '').toLowerCase();
+  if (role !== 'alumni' && role !== 'admin') {
+    if (typeof showPopup === 'function') {
+      showPopup('Only alumni and administrators can post job opportunities.', 'error');
+    } else {
+      alert('Only alumni and administrators can post job opportunities.');
+    }
+    return;
+  }
+
   const msg = document.getElementById('postStatusMessage');
   if (msg) {
     msg.textContent = '';
@@ -398,8 +500,9 @@ document.getElementById('postForm').addEventListener('submit', async function (e
     return;
   }
 
-  if (!currentUser || String(currentUser.role || '').toLowerCase() !== 'alumni') {
-    showPostStatus('Only alumni can post opportunities.', true);
+  const role = String(currentUser?.role || '').toLowerCase();
+  if (!currentUser || (role !== 'alumni' && role !== 'admin')) {
+    showPostStatus('Only alumni and administrators can post opportunities.', true);
     return;
   }
   const submitBtn = this.querySelector('button[type="submit"]');
@@ -429,6 +532,9 @@ document.getElementById('postForm').addEventListener('submit', async function (e
       return;
     }
     showPostStatus('✅ Opportunity posted successfully!', false);
+    if (typeof showPopup === 'function') {
+      showPopup('Opportunity posted successfully!', 'success');
+    }
     this.reset();
     closePostModal();
     await loadJobs(); // refresh the list
@@ -440,6 +546,71 @@ document.getElementById('postForm').addEventListener('submit', async function (e
     submitBtn.textContent = 'Publish Opportunity';
   }
 });
+
+async function deleteJobHandler(jobId) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    if (typeof showPopup === 'function') {
+      showPopup('Authentication required to delete job opportunity.', 'error');
+    }
+    return;
+  }
+
+  const executeDelete = async () => {
+    try {
+      const res = await fetch(`/api/jobs/${jobId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        if (typeof showPopup === 'function') {
+          showPopup(data.message || 'Failed to delete job.', 'error');
+        } else {
+          alert(data.message || 'Failed to delete job.');
+        }
+        return;
+      }
+      if (typeof showPopup === 'function') {
+        showPopup('Job opportunity deleted successfully.', 'success');
+      } else {
+        alert('Job opportunity deleted successfully.');
+      }
+      if (selectedJob && selectedJob.id === jobId) {
+        closeDetails();
+      }
+      await loadJobs();
+    } catch (err) {
+      console.error('Delete job error:', err);
+      if (typeof showPopup === 'function') {
+        showPopup('Could not reach the server. Please try again later.', 'error');
+      }
+    }
+  };
+
+  if (typeof showConfirmPopup === 'function') {
+    showConfirmPopup(
+      'Are you sure you want to delete this job opportunity? This action cannot be undone.',
+      'Delete Opportunity',
+      executeDelete,
+      null,
+      'Delete',
+      'Cancel'
+    );
+  } else if (confirm('Are you sure you want to delete this job opportunity?')) {
+    executeDelete();
+  }
+}
+
+function escapeHTML(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
 //Modal Utility Functions
 function openModal(id) {
@@ -480,7 +651,15 @@ if (nextBtn) nextBtn.addEventListener('click', () => {
 
 let extCurrentPage = 1;
 let extTotalCount  = 0;
-const EXT_PER_PAGE = 20;
+const EXT_PER_PAGE = 21;
+
+const extPrevBtn = document.getElementById('extPrevBtn');
+const extNextBtn = document.getElementById('extNextBtn');
+if (extPrevBtn) extPrevBtn.addEventListener('click', () => { if (extCurrentPage > 1) loadExternalJobs(extCurrentPage - 1); });
+if (extNextBtn) extNextBtn.addEventListener('click', () => {
+  const totalPages = Math.ceil(extTotalCount / EXT_PER_PAGE);
+  if (extCurrentPage < totalPages) loadExternalJobs(extCurrentPage + 1);
+});
 
 /** Switch between Alumni and External job tabs */
 function switchJobTab(tab) {
@@ -524,13 +703,13 @@ async function loadExternalJobs(page = 1) {
   if (page < 1) return;
   extCurrentPage = page;
 
-  countEl.textContent = 'Searching jobs from LinkedIn, Indeed, Glassdoor…';
-  container.innerHTML = `
+  if (countEl) countEl.textContent = 'Searching jobs from LinkedIn, Indeed, Glassdoor…';
+  if (container) container.innerHTML = `
     <div class="col-span-3 text-center py-16 text-gray-400">
       <i class="fa-solid fa-spinner fa-spin text-4xl mb-4 block"></i>
       Fetching external opportunities…
     </div>`;
-  pagination.classList.add('hidden');
+  if (pagination) pagination.classList.add('hidden');
 
   const what  = (document.getElementById('extSearchInput')?.value || '').trim();
   const where = (document.getElementById('extLocationInput')?.value || '').trim();
@@ -566,7 +745,6 @@ async function loadExternalJobs(page = 1) {
 
     countEl.textContent = `${extTotalCount.toLocaleString()} external jobs found`;
     container.innerHTML = '';
-
     data.jobs.forEach((job, idx) => {
       const card = document.createElement('div');
       card.className =
@@ -581,46 +759,72 @@ async function loadExternalJobs(page = 1) {
         ? `💰 ${job.salary_min ? '₹' + Number(job.salary_min).toLocaleString() : ''} ${job.salary_min && job.salary_max ? '–' : ''} ${job.salary_max ? '₹' + Number(job.salary_max).toLocaleString() : ''}`
         : '';
 
+      // Build card HTML with placeholders; fill text content safely below
       card.innerHTML = `
         <div class="flex justify-between items-start">
-          <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center font-bold text-lg">
-            ${(job.company || '?').charAt(0).toUpperCase()}
-          </div>
+          <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center font-bold text-lg ext-initial"></div>
           <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold">External</span>
         </div>
-        <h3 class="text-xl font-bold mt-5">${job.title}</h3>
-        <p class="text-blue-600 font-semibold mt-1">${job.company}</p>
+        <h3 class="text-xl font-bold mt-5 ext-title"></h3>
+        <p class="text-blue-600 font-semibold mt-1 ext-company"></p>
         <div class="mt-5 space-y-2 text-sm text-slate-500">
-          ${job.location ? `<p>📍 ${job.location}</p>` : ''}
-          ${salaryText ? `<p>${salaryText}</p>` : ''}
-          ${postedDate ? `<p>📅 ${postedDate}</p>` : ''}
-          ${job.category ? `<p>📂 ${job.category}</p>` : ''}
+          ${job.location ? `<p class="ext-location">📍 </p>` : ''}
+          ${salaryText   ? `<p class="ext-salary"></p>` : ''}
+          ${postedDate   ? `<p class="ext-date">📅 </p>` : ''}
+          ${job.category ? `<p class="ext-category">📂 </p>` : ''}
         </div>
-        <p class="text-slate-500 text-sm mt-4 line-clamp-3">${job.description || ''}</p>
+        <p class="text-slate-500 text-sm mt-4 line-clamp-3 ext-desc"></p>
         <div class="flex gap-3 mt-5">
-          <button
-            onclick='showExtDetails(${JSON.stringify(job).replace(/'/g, "\\'")})'
-            class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition">
+          <button class="ext-view-btn flex-1 bg-blue-700 hover:bg-blue-800 text-white py-2.5 rounded-xl font-semibold transition shadow-sm">
             View Details
           </button>
-          <a href="${job.jobUrl}" target="_blank" rel="noopener"
-            class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl font-semibold transition text-center">
+          <a href="#" target="_blank" rel="noopener"
+            class="ext-apply-link flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl font-semibold transition text-center border border-slate-200">
             Apply ↗
           </a>
         </div>`;
+
+      // Safely set all user-controlled text
+      const extInitial = card.querySelector('.ext-initial');
+      if (extInitial) extInitial.textContent = (job.company || '?').charAt(0).toUpperCase();
+      const extTitle = card.querySelector('.ext-title');
+      if (extTitle) extTitle.textContent = job.title || 'Untitled';
+      const extCompany = card.querySelector('.ext-company');
+      if (extCompany) extCompany.textContent = job.company || 'Unknown Company';
+      const extLocation = card.querySelector('.ext-location');
+      if (extLocation) extLocation.textContent = '📍 ' + job.location;
+      const extSalary = card.querySelector('.ext-salary');
+      if (extSalary) extSalary.textContent = salaryText;
+      const extDate = card.querySelector('.ext-date');
+      if (extDate) extDate.textContent = '📅 ' + postedDate;
+      const extCategory = card.querySelector('.ext-category');
+      if (extCategory) extCategory.textContent = '📂 ' + job.category;
+      const extDesc = card.querySelector('.ext-desc');
+      if (extDesc) extDesc.textContent = job.description || '';
+      // Set the apply link href safely
+      const extApplyLink = card.querySelector('.ext-apply-link');
+      if (extApplyLink && job.jobUrl) extApplyLink.href = job.jobUrl;
+      // Wire up the view details button safely (no inline onclick)
+      const extViewBtn = card.querySelector('.ext-view-btn');
+      if (extViewBtn) extViewBtn.addEventListener('click', () => showExtDetails(job));
 
       container.appendChild(card);
     });
 
     // Update pagination
     const totalPages = Math.ceil(extTotalCount / EXT_PER_PAGE);
-    if (totalPages > 1) {
-      pagination.classList.remove('hidden');
-      document.getElementById('extPageInfo').textContent = `Page ${extCurrentPage} of ${totalPages}`;
-      document.getElementById('extPrevBtn').disabled = (extCurrentPage <= 1);
-      document.getElementById('extNextBtn').disabled = (extCurrentPage >= totalPages);
-    } else {
-      pagination.classList.add('hidden');
+    if (pagination) {
+      if (totalPages > 1) {
+        pagination.classList.remove('hidden');
+        const pageInfo = document.getElementById('extPageInfo');
+        const pBtn = document.getElementById('extPrevBtn');
+        const nBtn = document.getElementById('extNextBtn');
+        if (pageInfo) pageInfo.textContent = `Page ${extCurrentPage} of ${totalPages}`;
+        if (pBtn) pBtn.disabled = (extCurrentPage <= 1);
+        if (nBtn) nBtn.disabled = (extCurrentPage >= totalPages);
+      } else {
+        pagination.classList.add('hidden');
+      }
     }
 
   } catch (err) {

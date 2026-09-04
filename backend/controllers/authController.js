@@ -38,7 +38,8 @@ async function register(req, res) {
   }
 
   try {
-    const existing = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+    const cleanEmail = email.trim().toLowerCase();
+    const existing = await pool.query('SELECT id FROM users WHERE LOWER(email) = $1', [cleanEmail]);
     if (existing.rows.length > 0) {
       return res.status(409).json({ message: 'An account with this email already exists' });
     }
@@ -49,7 +50,7 @@ async function register(req, res) {
       `INSERT INTO users (full_name, email, phone, password_hash, role, department, graduation_year, gender, company, job_title, enrollment_number, city, linkedin_url, is_approved)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, TRUE)
        RETURNING id, full_name, email, role, enrollment_number, city, linkedin_url`,
-      [fullName, email, phone, passwordHash, safeRole, department, finalGradYear, gender || null, company || null, jobTitle || null, enrollmentNumber || null, city || null, linkedinUrl || null]
+      [fullName, cleanEmail, phone, passwordHash, safeRole, department, finalGradYear, gender || null, company || null, jobTitle || null, enrollmentNumber || null, city || null, linkedinUrl || null]
     );
 
     res.status(201).json({ success: true, message: 'Registration successful', user: result.rows[0] });
@@ -63,12 +64,14 @@ async function register(req, res) {
 async function login(req, res) {
   const { email, password } = req.body;
 
-  if (!email || !password) {
+  if (!email || typeof email !== 'string' || !email.trim() || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
 
+  const cleanEmail = email.trim().toLowerCase();
+
   try {
-    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    const result = await pool.query('SELECT * FROM users WHERE LOWER(email) = $1', [cleanEmail]);
     const user = result.rows[0];
 
     if (!user) {
@@ -81,13 +84,16 @@ async function login(req, res) {
     }
 
     if (user.status === 'rejected') {
-      return res.status(403).json({ message: 'Your account registration was rejected' });
+      return res.status(403).json({ message: 'Your account registration was rejected by an administrator.' });
     }
     if (user.status === 'suspended') {
       return res.status(403).json({ message: 'Your account has been suspended. Contact an administrator.' });
     }
     if (user.status === 'banned') {
-      return res.status(403).json({ message: 'Your account has been banned' });
+      return res.status(403).json({ message: 'Your account has been banned due to terms violation.' });
+    }
+    if (user.is_approved === false || user.status === 'pending') {
+      return res.status(403).json({ message: 'Your account is pending approval by an administrator.' });
     }
 
     const token = jwt.sign(
@@ -122,8 +128,12 @@ async function login(req, res) {
 async function forgotPassword(req, res) {
   const { email } = req.body;
 
+  if (!email || typeof email !== 'string' || !email.trim()) {
+    return res.status(400).json({ message: 'Email is required' });
+  }
+
   try {
-    const result = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+    const result = await pool.query('SELECT id FROM users WHERE email = $1', [email.trim().toLowerCase()]);
     const user = result.rows[0];
 
     if (!user) {
@@ -190,26 +200,27 @@ async function resetPassword(req, res) {
 // POST /api/admin/login (handled in authController but mounted in adminRoutes)
 async function adminLogin(req, res) {
   const { username, passcode } = req.body;
-  if (!username || !passcode) {
+  if (!username || typeof username !== 'string' || !username.trim() || !passcode) {
     return res.status(400).json({ message: 'Username and passcode are required' });
   }
 
-  try {
-    const result = await pool.query(
-      `SELECT * FROM users WHERE (email = $1 OR email = 'admin@alumni.com' OR full_name = $1) AND role = 'admin'`,
-      [username]
-    );
-    let user = result.rows[0];
+  const cleanUsername = username.trim().toLowerCase();
 
-    let passwordMatches = false;
-    if (user) {
-      passwordMatches = (passcode === 'admin123') || (await bcrypt.compare(passcode, user.password_hash));
-    } else if ((username === 'admin' || username === 'admin@alumni.com') && (passcode === 'admin123' || passcode === 'AdminPass123!')) {
-      user = { id: 1, email: 'admin@alumni.com', full_name: 'System Administrator', role: 'admin' };
-      passwordMatches = true;
+  try {
+    // Look up the admin user by email or full name (case-insensitive)
+    const result = await pool.query(
+      `SELECT * FROM users WHERE (LOWER(email) = $1 OR LOWER(full_name) = $1) AND role = 'admin'`,
+      [cleanUsername]
+    );
+    const user = result.rows[0];
+
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid admin credentials' });
     }
 
-    if (!user || !passwordMatches) {
+    // Only allow bcrypt-verified passwords — no hardcoded fallbacks
+    const passwordMatches = await bcrypt.compare(passcode, user.password_hash);
+    if (!passwordMatches) {
       return res.status(401).json({ message: 'Invalid admin credentials' });
     }
 
@@ -224,26 +235,13 @@ async function adminLogin(req, res) {
       token,
       user: {
         id: user.id,
-        fullName: user.full_name || user.fullName,
+        fullName: user.full_name,
         email: user.email,
         role: user.role
       },
     });
   } catch (err) {
     console.error(err);
-    // Fallback if DB connection is unavailable
-    if ((username === 'admin' || username === 'admin@alumni.com') && (passcode === 'admin123' || passcode === 'AdminPass123!')) {
-      const token = jwt.sign(
-        { id: 1, email: 'admin@alumni.com', role: 'admin' },
-        process.env.JWT_SECRET || 'secret-key-fallback',
-        { expiresIn: '2h' }
-      );
-      return res.json({
-        message: 'Admin login successful',
-        token,
-        user: { id: 1, fullName: 'System Administrator', email: 'admin@alumni.com', role: 'admin' }
-      });
-    }
     res.status(500).json({ message: 'Server error during admin login' });
   }
 }

@@ -30,6 +30,9 @@ function togglePasswordVisibility(inputId, btn) {
   const params = new URLSearchParams(window.location.search);
   const viewedUserId = params.get('id') || params.get('userId');
 
+  // currentProfileData must be declared before renderProfile (which assigns to it)
+  let currentProfileData = {};
+
   // If no specific user ID in URL and user is not logged in, redirect to login
   if (!viewedUserId && (!token || !loggedInUser)) {
     sessionStorage.setItem('returnTo', 'my-profile.html');
@@ -51,76 +54,8 @@ function togglePasswordVisibility(inputId, btn) {
     el.classList.toggle('hidden', !visible);
   }
 
-  // Auth navbar handler
-  function setupNavbar() {
-    const navAuth = document.getElementById('navAuth');
-    const mobileNavAuth = document.getElementById('mobileNavAuth');
-
-    if (token && loggedInUser) {
-      const firstName = (loggedInUser.fullName || loggedInUser.full_name || 'You').split(' ')[0];
-
-      if (navAuth) {
-        navAuth.innerHTML = `
-          <span class="text-slate-700 font-medium text-sm">Hi, <strong class="text-[#012970]">${firstName}</strong></span>
-          <a href="my-profile.html"
-             class="border border-slate-300 text-slate-700 px-4 py-2 rounded-lg hover:border-[#012970] hover:text-[#012970] transition text-sm ${isOwnProfile ? 'border-[#012970] text-[#012970] font-semibold' : ''}">
-            👤 My Profile
-          </a>
-          <button data-logout
-             class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-4 py-2 rounded-lg transition text-sm shadow-sm">
-            Logout
-          </button>`;
-      }
-
-      if (mobileNavAuth) {
-        mobileNavAuth.innerHTML = `
-          <p class="text-slate-700 text-sm py-1">Logged in as <strong class="text-[#012970]">${firstName}</strong></p>
-          <a href="my-profile.html"
-             class="block text-center border border-slate-300 text-slate-700 py-2 rounded-lg hover:border-[#012970] hover:text-[#012970] transition text-sm ${isOwnProfile ? 'border-[#012970] text-[#012970] font-semibold' : ''}">
-            👤 My Profile
-          </a>
-          <button data-logout
-             class="w-full text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">
-            Logout
-          </button>`;
-      }
-    } else {
-      if (navAuth) {
-        navAuth.innerHTML = `
-          <a href="../admin/login.html"
-             class="text-slate-500 font-medium hover:text-[#012970] transition text-sm px-2 border-r border-gray-200 pr-4">
-            Admin Login
-          </a>
-          <a href="login.html"
-             class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-5 py-2 rounded-lg transition text-sm shadow-sm">
-            Login / Register
-          </a>`;
-      }
- 
-      if (mobileNavAuth) {
-        mobileNavAuth.innerHTML = `
-          <a href="../admin/login.html"
-             class="block text-center text-slate-500 py-2 rounded-lg font-medium hover:bg-gray-100 transition text-sm border-b border-gray-200 pb-3 mb-3">
-            Admin Login
-          </a>
-          <div class="space-y-2">
-            <a href="login.html"
-               class="block text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">
-              Login / Register
-            </a>
-          </div>`;
-      }
-    }
-
-    // Logout actions
-    document.querySelectorAll('[data-logout]').forEach(btn => {
-      btn.addEventListener('click', function () {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = 'login.html';
-      });
-    });
-  }
+  // Auth navbar handler (handled centrally by navbar.js)
+  function setupNavbar() {}
 
   // Render profile to DOM
   function renderProfile(profileUser) {
@@ -250,6 +185,7 @@ function togglePasswordVisibility(inputId, btn) {
 
   loadProfile();
 
+
   // Edit Profile Modal Handler
   const editProfileBtn = document.getElementById('editProfileBtn');
   const editProfileModal = document.getElementById('editProfileModal');
@@ -263,14 +199,13 @@ function togglePasswordVisibility(inputId, btn) {
   const editLinkedinUrlInput = document.getElementById('editLinkedinUrl');
   const editBioInput = document.getElementById('editBio');
 
-  let currentProfileData = {};
-
   function setEditProfileMessage(text, isError) {
     if (!editProfileMessage) return;
     editProfileMessage.textContent = text;
     editProfileMessage.classList.remove('hidden', 'text-red-600', 'text-green-600');
     editProfileMessage.classList.add(isError ? 'text-red-600' : 'text-green-600');
   }
+
 
   function openEditProfileModal() {
     if (!editProfileModal) return;
@@ -438,7 +373,7 @@ function togglePasswordVisibility(inputId, btn) {
         exitEditMode();
       } catch (err) {
         console.error('Could not save profession details:', err);
-        alert(err.message || 'Could not save your changes. Please try again.');
+        showPopup(err.message || 'Could not save your changes. Please try again.', 'error');
       }
     });
   }

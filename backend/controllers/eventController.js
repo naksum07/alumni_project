@@ -21,6 +21,12 @@ async function registerForEvent(req, res) {
   }
 
   try {
+    // Confirm the event exists before registering
+    const eventCheck = await pool.query('SELECT id FROM events WHERE id = $1', [id]);
+    if (eventCheck.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Event not found' });
+    }
+
     const existing = await pool.query(
       'SELECT id FROM event_registrations WHERE event_id = $1 AND email = $2',
       [id, email]

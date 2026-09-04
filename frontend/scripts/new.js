@@ -99,7 +99,7 @@ function scrollToTop() {
 let allNews = [];
 let filteredNews = [];
 let currentPage = 1;
-const itemsPerPage = 9;
+const itemsPerPage = 21;
 
 const searchInput = document.getElementById('searchInput');
 const filterCategory = document.getElementById('filterCategory');

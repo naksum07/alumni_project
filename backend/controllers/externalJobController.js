@@ -2,23 +2,56 @@ const https = require('https');
 
 const ADZUNA_BASE = 'https://api.adzuna.com/v1/api/jobs';
 
+// In-memory cache for Adzuna API responses (10 minutes TTL)
+const jobCache = new Map();
+const CACHE_TTL_MS = 10 * 60 * 1000;
+const MAX_CACHE_ENTRIES = 100;
+
+function getFromCache(key) {
+  const cached = jobCache.get(key);
+  if (!cached) return null;
+  if (Date.now() - cached.timestamp > CACHE_TTL_MS) {
+    jobCache.delete(key);
+    return null;
+  }
+  return cached.data;
+}
+
+function setInCache(key, data) {
+  if (jobCache.size >= MAX_CACHE_ENTRIES) {
+    const firstKey = jobCache.keys().next().value;
+    if (firstKey) jobCache.delete(firstKey);
+  }
+  jobCache.set(key, { timestamp: Date.now(), data });
+}
+
 /**
  * Helper: make an HTTPS GET request and return the parsed JSON body.
- * Uses the built-in `https` module so no extra dependency is needed.
+ * Includes a configurable timeout to prevent hanging requests.
  */
-function fetchJSON(url) {
+function fetchJSON(url, timeoutMs = 7000) {
   return new Promise((resolve, reject) => {
-    https.get(url, (res) => {
+    const req = https.get(url, (res) => {
       let data = '';
       res.on('data', (chunk) => { data += chunk; });
       res.on('end', () => {
+        if (res.statusCode < 200 || res.statusCode >= 300) {
+          return reject(new Error(`Adzuna API returned HTTP status ${res.statusCode}`));
+        }
         try {
           resolve(JSON.parse(data));
         } catch (err) {
-          reject(new Error('Invalid JSON from Adzuna API'));
+          reject(new Error('Invalid JSON response from Adzuna API'));
         }
       });
-    }).on('error', reject);
+    });
+
+    req.setTimeout(timeoutMs, () => {
+      req.destroy();
+      reject(new Error(`Adzuna API request timed out after ${timeoutMs}ms`));
+    });
+
+    req.on('error', reject);
   });
 }
 
@@ -57,6 +90,16 @@ async function searchExternalJobs(req, res) {
   const perPage = Math.min(Number(per_page) || 20, 50);
   const pageNum = Math.max(Number(page) || 1, 1);
 
+  // Build a unique cache key based on search parameters
+  const cacheKey = `${country}:${pageNum}:${perPage}:${what.trim().toLowerCase()}:${where.trim().toLowerCase()}`;
+
+  // Serve from cache if available
+  const cachedResponse = getFromCache(cacheKey);
+  if (cachedResponse) {
+    res.setHeader('Cache-Control', 'public, max-age=600');
+    return res.json({ ...cachedResponse, cached: true });
+  }
+
   // Build the Adzuna search URL
   const params = new URLSearchParams({
     app_id:           appId,
@@ -70,7 +113,7 @@ async function searchExternalJobs(req, res) {
   const url = `${ADZUNA_BASE}/${encodeURIComponent(country)}/search/${pageNum}?${params}`;
 
   try {
-    const data = await fetchJSON(url);
+    const data = await fetchJSON(url, 7000);
 
     if (!data || !Array.isArray(data.results)) {
       return res.status(502).json({
@@ -89,21 +132,33 @@ async function searchExternalJobs(req, res) {
       salary_min:  item.salary_min   ?? null,
       salary_max:  item.salary_max   ?? null,
       category:    item.category?.label || '',
-      source:      'Adzuna',          // aggregates LinkedIn, Indeed, Glassdoor, etc.
+      source:      'Adzuna',
     }));
 
-    res.json({
+    const responseData = {
       count:   data.count   ?? jobs.length,
       page:    pageNum,
       perPage,
       jobs,
-    });
+    };
+
+    // Store successful response in cache
+    setInCache(cacheKey, responseData);
+
+    res.setHeader('Cache-Control', 'public, max-age=600');
+    res.json(responseData);
   } catch (err) {
-    console.error('Adzuna API error:', err);
-    res.status(502).json({
-      message: 'Failed to fetch jobs from Adzuna. Please try again later.',
+    console.error('Adzuna API error:', err.message);
+    res.status(200).json({
+      count: 0,
+      page: pageNum,
+      perPage,
+      jobs: [],
+      error: true,
+      message: 'Adzuna API is currently rate-limited or unavailable. ' + err.message,
     });
   }
 }
 
 module.exports = { searchExternalJobs };
+

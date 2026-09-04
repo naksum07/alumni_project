@@ -52,7 +52,7 @@ async function getAlumniProfile(req, res) {
       delete alumni.email;
     }
 
-    res.json({ user: alumni, ...alumni, contactLocked: !isLoggedIn });
+    res.json({ user: alumni, contactLocked: !isLoggedIn });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error while fetching profile' });
