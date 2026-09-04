@@ -17,7 +17,22 @@ const PALETTES = [
 
 function formatDate(dateStr) {
   if (!dateStr) return '';
-  const d = new Date(dateStr + 'T00:00:00');
+  let str = String(dateStr).trim();
+  if (str.includes('T')) {
+    str = str.split('T')[0];
+  }
+  const parts = str.split('-');
+  if (parts.length === 3 && parts[0].length === 4) {
+    const year = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const day = parseInt(parts[2], 10);
+    const d = new Date(year, month, day);
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+  }
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return '';
   return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
@@ -35,6 +50,19 @@ function openRegistrationModal(eventId, eventName) {
   if (countrySelect && phoneInput) {
     countrySelect.value = '+91';
     phoneInput.placeholder = '98765 43210';
+  }
+
+  const attendeeTypeSelect = document.getElementById('regAttendeeType');
+  const designationOrgGroup = document.getElementById('regDesignationOrgGroup');
+  const designationOrgInput = document.getElementById('regDesignationOrg');
+
+  if (attendeeTypeSelect && designationOrgGroup) {
+    attendeeTypeSelect.addEventListener('change', function () {
+      const val = attendeeTypeSelect.value;
+      const isOtherOrFaculty = val === 'Faculty / Staff' || val === 'Other';
+      designationOrgGroup.classList.toggle('hidden', !isOtherOrFaculty);
+      if (designationOrgInput) designationOrgInput.required = isOtherOrFaculty;
+    });
   }
 
   const user = JSON.parse(localStorage.getItem('user') || 'null');
@@ -60,6 +88,12 @@ function openRegistrationModal(eventId, eventName) {
       } else if (phoneInput) {
         phoneInput.value = user.phone;
       }
+    }
+    if (user.role && attendeeTypeSelect) {
+      const roleLower = String(user.role).toLowerCase();
+      if (roleLower === 'alumni') attendeeTypeSelect.value = 'Alumni';
+      else if (roleLower === 'student') attendeeTypeSelect.value = 'Student';
+      if (designationOrgGroup) designationOrgGroup.classList.add('hidden');
     }
   }
 
@@ -97,7 +131,7 @@ function showRegMessage(text, isError) {
 // --- Pagination ---
 let allEvents = [];
 let currentPage = 1;
-const itemsPerPage = 40;
+const itemsPerPage = 9;
 
 function updatePaginationControls() {
     const totalPages = Math.ceil(allEvents.length / itemsPerPage) || 1;
@@ -215,6 +249,14 @@ if (regForm) {
       const countryCode = document.getElementById('regCountryCode')?.value || '+91';
       const rawPhone  = (document.getElementById('regPhone')?.value || '').trim();
       const phone     = rawPhone ? `${countryCode} ${rawPhone}` : '';
+      const attendeeType = document.getElementById('regAttendeeType')?.value || 'Student';
+      const designationOrOrg = (document.getElementById('regDesignationOrg')?.value || '').trim();
+
+      if ((attendeeType === 'Faculty / Staff' || attendeeType === 'Other') && !designationOrOrg) {
+        showRegMessage('Please specify your designation, department, or organization.', true);
+        return;
+      }
+
       const message   = document.getElementById('regMsgText').value.trim();
 
       const submitBtn = regForm.querySelector('button[type="submit"]');
@@ -226,7 +268,7 @@ if (regForm) {
         const res = await fetch(`/api/events/${eventId}/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fullName, email, phone, message }),
+          body: JSON.stringify({ fullName, email, phone, message, attendeeType, designationOrOrg }),
         });
         const data = await res.json();
         if (!res.ok) {

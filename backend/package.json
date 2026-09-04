@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Tests will be added soon\" && exit 0",
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "seed": "node seed.js"
   },
   "repository": {
     "type": "git",

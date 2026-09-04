@@ -3,7 +3,7 @@ const pool = require('../config/db');
 async function searchAlumni(req, res) {
   const { department, year, search } = req.query;
 
-  let query = `SELECT id, full_name, department, graduation_year, job_title, company
+  let query = `SELECT id, full_name, department, graduation_year, job_title, company, city, linkedin_url
                FROM users WHERE role = 'alumni' AND is_approved = TRUE AND status = 'active'`;
   const params = [];
 
@@ -17,8 +17,10 @@ async function searchAlumni(req, res) {
   }
   if (search) {
     params.push(`%${search}%`);
-    query += ` AND (full_name ILIKE $${params.length} OR job_title ILIKE $${params.length} OR company ILIKE $${params.length} OR department ILIKE $${params.length})`;
+    query += ` AND (full_name ILIKE $${params.length} OR job_title ILIKE $${params.length} OR company ILIKE $${params.length} OR department ILIKE $${params.length} OR city ILIKE $${params.length})`;
   }
+
+  query += ` ORDER BY full_name ASC`;
 
   try {
     const result = await pool.query(query, params);
@@ -34,7 +36,7 @@ async function getAlumniProfile(req, res) {
 
   try {
     const result = await pool.query(
-      `SELECT id, full_name, email, department, graduation_year, job_title, company
+      `SELECT id, full_name, email, department, graduation_year, job_title, company, city, linkedin_url, bio
        FROM users WHERE id = $1 AND role = 'alumni'`,
       [id]
     );

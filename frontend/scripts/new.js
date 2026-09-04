@@ -7,6 +7,23 @@ const modalTitle = document.getElementById("modalTitle");
 const modalDate = document.getElementById("modalDate");
 const modalDescription = document.getElementById("modalDescription");
 
+function formatDateSafe(dateStr, options = { day: 'numeric', month: 'long', year: 'numeric' }) {
+    if (!dateStr) return '';
+    let str = String(dateStr).trim();
+    if (str.includes('T')) str = str.split('T')[0];
+    const parts = str.split('-');
+    if (parts.length === 3 && parts[0].length === 4) {
+        const year = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const day = parseInt(parts[2], 10);
+        const d = new Date(year, month, day);
+        if (!isNaN(d.getTime())) return d.toLocaleDateString('en-IN', options);
+    }
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    return d.toLocaleDateString('en-IN', options);
+}
+
 function openNews(itemOrTitle, description, date) {
     if (!newsModal || !modalTitle || !modalDate || !modalDescription) return;
 
@@ -21,17 +38,15 @@ function openNews(itemOrTitle, description, date) {
         desc = item.content || item.description || '';
         const isEvent = (item.category || '').toLowerCase().includes('event');
         if (isEvent && item.event_date) {
-            const d = new Date(item.event_date);
-            dt = 'Event Date: ' + d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+            dt = 'Event Date: ' + formatDateSafe(item.event_date, { day: 'numeric', month: 'long', year: 'numeric' });
         } else {
-            const d = new Date(item.publish_date || item.created_at || new Date());
-            dt = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+            dt = formatDateSafe(item.publish_date || item.created_at || new Date(), { day: 'numeric', month: 'long', year: 'numeric' });
         }
 
         if (isEvent) {
             extraHtml = `
                 <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-4 text-sm text-slate-700 space-y-1.5">
-                    ${item.event_date ? `<p><i class="fa-solid fa-calendar text-blue-600 w-5"></i> <strong>Date:</strong> ${new Date(item.event_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p>` : ''}
+                    ${item.event_date ? `<p><i class="fa-solid fa-calendar text-blue-600 w-5"></i> <strong>Date:</strong> ${formatDateSafe(item.event_date, { day: 'numeric', month: 'long', year: 'numeric' })}</p>` : ''}
                     ${item.event_time ? `<p><i class="fa-solid fa-clock text-blue-600 w-5"></i> <strong>Time:</strong> ${item.event_time}</p>` : ''}
                     ${item.venue ? `<p><i class="fa-solid fa-location-dot text-red-500 w-5"></i> <strong>Venue:</strong> ${item.venue}</p>` : ''}
                     ${item.host ? `<p><i class="fa-solid fa-user-tie text-slate-600 w-5"></i> <strong>Host:</strong> ${item.host}</p>` : ''}
@@ -84,7 +99,7 @@ function scrollToTop() {
 let allNews = [];
 let filteredNews = [];
 let currentPage = 1;
-const itemsPerPage = 40;
+const itemsPerPage = 9;
 
 const searchInput = document.getElementById('searchInput');
 const filterCategory = document.getElementById('filterCategory');
@@ -142,10 +157,9 @@ function renderNewsPage() {
 
         let dateStr = '';
         if (isEvent && item.event_date) {
-            dateStr = 'Event: ' + new Date(item.event_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+            dateStr = 'Event: ' + formatDateSafe(item.event_date, { day: 'numeric', month: 'short', year: 'numeric' });
         } else {
-            const dateObj = new Date(item.publish_date || item.created_at || new Date());
-            dateStr = dateObj.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+            dateStr = formatDateSafe(item.publish_date || item.created_at || new Date(), { day: 'numeric', month: 'short', year: 'numeric' });
         }
         
         let categoryIcon = 'fa-newspaper';

@@ -3,7 +3,7 @@ const pool = require('../config/db');
 async function searchStudents(req, res) {
   const { department, year, search } = req.query;
 
-  let query = `SELECT id, full_name, department, graduation_year, job_title, company
+  let query = `SELECT id, full_name, department, graduation_year, job_title, company, city, linkedin_url, enrollment_number
                FROM users WHERE role = 'student' AND is_approved = TRUE AND status = 'active'`;
   const params = [];
 
@@ -17,7 +17,7 @@ async function searchStudents(req, res) {
   }
   if (search) {
     params.push(`%${search}%`);
-    query += ` AND (full_name ILIKE $${params.length} OR department ILIKE $${params.length})`;
+    query += ` AND (full_name ILIKE $${params.length} OR department ILIKE $${params.length} OR city ILIKE $${params.length} OR enrollment_number ILIKE $${params.length})`;
   }
 
   query += ` ORDER BY full_name ASC`;
@@ -37,7 +37,7 @@ async function getStudentProfile(req, res) {
   try {
     const result = await pool.query(
       `SELECT id, full_name, email, phone, role, department, graduation_year,
-              job_title, company, show_phone_publicly
+              job_title, company, city, linkedin_url, bio, enrollment_number, show_phone_publicly
        FROM users WHERE id = $1 AND role = 'student'`,
       [id]
     );

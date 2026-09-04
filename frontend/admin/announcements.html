@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-4">
         <table class="admin-table" id="mainAnnouncementsTable">
             <thead>
                 <tr>
@@ -56,6 +56,20 @@
             </thead>
             <tbody></tbody>
         </table>
+    </div>
+
+    <!-- PAGINATION CONTROLS -->
+    <div id="annPagination" class="flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-xl border border-slate-200 gap-4 mb-8 text-sm">
+        <div class="text-slate-600 font-medium" id="annPaginationInfo">Showing 0 of 0 announcements</div>
+        <div class="flex items-center gap-2">
+            <button id="annPrevBtn" onclick="changeAnnPage(-1)" class="px-3 py-1.5 border rounded-lg hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed font-medium text-slate-700 transition">
+                <i class="fa-solid fa-chevron-left text-xs mr-1"></i> Prev
+            </button>
+            <span id="annPageNumber" class="px-3 py-1.5 bg-slate-100 rounded-lg font-semibold text-slate-800">Page 1</span>
+            <button id="annNextBtn" onclick="changeAnnPage(1)" class="px-3 py-1.5 border rounded-lg hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed font-medium text-slate-700 transition">
+                Next <i class="fa-solid fa-chevron-right text-xs ml-1"></i>
+            </button>
+        </div>
     </div>
 </main>
 
@@ -95,6 +109,64 @@ function getToken() {
 }
 
 let searchTimeout;
+let allAnnouncementsList = [];
+let annCurrentPage = 1;
+const annPerPage = 10;
+
+function changeAnnPage(delta) {
+    const totalPages = Math.ceil(allAnnouncementsList.length / annPerPage) || 1;
+    const newPage = annCurrentPage + delta;
+    if (newPage >= 1 && newPage <= totalPages) {
+        annCurrentPage = newPage;
+        renderAnnouncementsTable();
+    }
+}
+
+function renderAnnouncementsTable() {
+    const tbody = document.querySelector('#mainAnnouncementsTable tbody');
+    if (!tbody) return;
+
+    if (!allAnnouncementsList.length) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center py-6 text-gray-500">No announcements found.</td></tr>';
+        document.getElementById('annPaginationInfo').textContent = 'Showing 0 of 0 announcements';
+        document.getElementById('annPageNumber').textContent = 'Page 1 of 1';
+        document.getElementById('annPrevBtn').disabled = true;
+        document.getElementById('annNextBtn').disabled = true;
+        return;
+    }
+
+    const totalPages = Math.ceil(allAnnouncementsList.length / annPerPage) || 1;
+    if (annCurrentPage > totalPages) annCurrentPage = totalPages;
+
+    const startIdx = (annCurrentPage - 1) * annPerPage;
+    const endIdx = Math.min(startIdx + annPerPage, allAnnouncementsList.length);
+    const pageItems = allAnnouncementsList.slice(startIdx, endIdx);
+
+    tbody.innerHTML = '';
+    pageItems.forEach(a => {
+        const statusBadge = a.status === 'Published' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-800';
+        const toggleIcon = a.status === 'Published' ? 'fa-toggle-on text-green-600' : 'fa-toggle-off text-gray-400';
+        const priorityBadge = a.priority === 'urgent' ? 'bg-red-100 text-red-700' : a.priority === 'low' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700';
+        const dateStr = a.created_at ? new Date(a.created_at).toLocaleDateString() : 'N/A';
+        tbody.innerHTML += `
+            <tr>
+                <td class="font-medium">${a.title || 'Untitled'}</td>
+                <td><span class="px-2 py-1 rounded text-xs font-semibold capitalize ${priorityBadge}">${a.priority || 'normal'}</span></td>
+                <td><span class="px-2 py-1 rounded text-xs font-semibold ${statusBadge}">${a.status || 'Draft'}</span></td>
+                <td>${dateStr}</td>
+                <td>
+                    <button onclick="toggleAnnouncement(${a.id})" class="text-xl mr-3" title="Toggle Status"><i class="fa-solid ${toggleIcon}"></i></button>
+                    <button onclick="deleteAnnouncement(${a.id})" class="text-red-600 hover:text-red-800" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            </tr>
+        `;
+    });
+
+    document.getElementById('annPaginationInfo').textContent = `Showing ${startIdx + 1}–${endIdx} of ${allAnnouncementsList.length} announcements`;
+    document.getElementById('annPageNumber').textContent = `Page ${annCurrentPage} of ${totalPages}`;
+    document.getElementById('annPrevBtn').disabled = annCurrentPage === 1;
+    document.getElementById('annNextBtn').disabled = annCurrentPage === totalPages;
+}
 
 async function loadAnnouncements() {
     const search = document.getElementById('searchInput')?.value;
@@ -116,28 +188,9 @@ async function loadAnnouncements() {
         return;
     }
     const data = await res.json();
-    const announcements = Array.isArray(data) ? data : [];
-    const tbody = document.querySelector('#mainAnnouncementsTable tbody');
-    if (!tbody) return;
-    tbody.innerHTML = announcements.length ? '' : '<tr><td colspan="5" class="text-center py-4 text-gray-500">No announcements found.</td></tr>';
-    announcements.forEach(a => {
-        const statusBadge = a.status === 'Published' ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-800';
-        const toggleIcon = a.status === 'Published' ? 'fa-toggle-on text-green-600' : 'fa-toggle-off text-gray-400';
-        const priorityBadge = a.priority === 'urgent' ? 'bg-red-100 text-red-700' : a.priority === 'low' ? 'bg-blue-100 text-blue-700' : 'bg-yellow-100 text-yellow-700';
-        const dateStr = a.created_at ? new Date(a.created_at).toLocaleDateString() : 'N/A';
-        tbody.innerHTML += `
-            <tr>
-                <td class="font-medium">${a.title || 'Untitled'}</td>
-                <td><span class="px-2 py-1 rounded text-xs font-semibold capitalize ${priorityBadge}">${a.priority || 'normal'}</span></td>
-                <td><span class="px-2 py-1 rounded text-xs font-semibold ${statusBadge}">${a.status || 'Draft'}</span></td>
-                <td>${dateStr}</td>
-                <td>
-                    <button onclick="toggleAnnouncement(${a.id})" class="text-xl mr-3" title="Toggle Status"><i class="fa-solid ${toggleIcon}"></i></button>
-                    <button onclick="deleteAnnouncement(${a.id})" class="text-red-600 hover:text-red-800" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                </td>
-            </tr>
-        `;
-    });
+    allAnnouncementsList = Array.isArray(data) ? data : [];
+    annCurrentPage = 1;
+    renderAnnouncementsTable();
 }
 
 window.saveAnnouncement = async (status) => {

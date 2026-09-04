@@ -119,26 +119,27 @@
             <p class="mt-2 text-gray-600">Stay updated with the latest announcements from the administration.</p>
         </div>
 
-        <div class="relative">
-            <!-- Scroll container -->
-            <div id="announcements-carousel" class="flex overflow-x-auto gap-6 pb-4 snap-x snap-mandatory scroll-smooth" style="-ms-overflow-style: none; scrollbar-width: none;">
-                <!-- Filled dynamically -->
+        <div class="relative max-w-6xl mx-auto" id="announcements-carousel-wrapper">
+            <!-- Carousel viewport container -->
+            <div class="overflow-hidden py-2" id="announcements-viewport">
+                <div id="announcements-carousel" class="flex transition-transform duration-500 ease-in-out gap-6">
+                    <!-- Filled dynamically -->
+                </div>
             </div>
 
             <!-- Controls -->
-            <button onclick="document.getElementById('announcements-carousel').scrollBy({left: -340, behavior: 'smooth'})" class="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 bg-white shadow-lg rounded-full w-10 h-10 flex items-center justify-center text-blue-900 hover:bg-blue-50 transition z-10" aria-label="Previous announcement">
+            <button id="announcements-prev-btn" class="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 md:-ml-6 bg-white shadow-lg rounded-full w-10 h-10 flex items-center justify-center text-blue-900 hover:bg-blue-50 transition z-10 focus:outline-none" aria-label="Previous announcement">
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
-            <button onclick="document.getElementById('announcements-carousel').scrollBy({left: 340, behavior: 'smooth'})" class="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 bg-white shadow-lg rounded-full w-10 h-10 flex items-center justify-center text-blue-900 hover:bg-blue-50 transition z-10" aria-label="Next announcement">
+            <button id="announcements-next-btn" class="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 md:-mr-6 bg-white shadow-lg rounded-full w-10 h-10 flex items-center justify-center text-blue-900 hover:bg-blue-50 transition z-10 focus:outline-none" aria-label="Next announcement">
                 <i class="fa-solid fa-chevron-right"></i>
             </button>
+
+            <!-- Dot Indicators -->
+            <div id="announcements-dots" class="flex justify-center items-center gap-2 mt-6"></div>
         </div>
     </div>
 </section>
-
-<style>
-#announcements-carousel::-webkit-scrollbar { display: none; }
-</style>
 
 <!-- FEATURES SECTION -->
 <section data-aos="fade-up" class="py-20 bg-gray-100">
@@ -616,7 +617,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (annRes.ok) {
             const announcements = await annRes.json();
             if (announcements && announcements.length > 0) {
+                // Priority ranking: urgent (1) -> normal (2) -> low (3), then newest date
+                const priorityRank = { urgent: 1, normal: 2, low: 3 };
+                announcements.sort((a, b) => {
+                    const rankA = priorityRank[(a.priority || 'normal').toLowerCase()] || 2;
+                    const rankB = priorityRank[(b.priority || 'normal').toLowerCase()] || 2;
+                    if (rankA !== rankB) return rankA - rankB;
+                    return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+                });
+
                 const annCarousel = document.getElementById('announcements-carousel');
+                const dotsContainer = document.getElementById('announcements-dots');
+                const prevBtn = document.getElementById('announcements-prev-btn');
+                const nextBtn = document.getElementById('announcements-next-btn');
+                const wrapper = document.getElementById('announcements-carousel-wrapper');
+
                 annCarousel.innerHTML = announcements.map(a => {
                     const priorityClass = a.priority === 'urgent' 
                         ? 'bg-red-100 text-red-700 border-red-200' 
@@ -626,7 +641,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         : (a.priority === 'low' ? 'fa-circle-info' : 'fa-bullhorn');
                     const dateStr = a.created_at ? new Date(a.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '';
                     return `
-                    <div class="snap-center shrink-0 w-80 md:w-96 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col justify-between">
+                    <div class="shrink-0 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between mb-3">
                                 <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${priorityClass}">
@@ -641,6 +656,107 @@ document.addEventListener('DOMContentLoaded', async () => {
                     </div>`;
                 }).join('');
                 document.getElementById('announcements-section').style.display = 'block';
+
+                let currentIndex = 0;
+                let autoPlayTimer = null;
+
+                function getVisibleCards() {
+                    if (window.innerWidth >= 1024) return 3;
+                    if (window.innerWidth >= 768) return 2;
+                    return 1;
+                }
+
+                function getMaxIndex() {
+                    const visible = getVisibleCards();
+                    return Math.max(0, announcements.length - visible);
+                }
+
+                function updateCarousel() {
+                    const maxIndex = getMaxIndex();
+                    if (currentIndex > maxIndex) currentIndex = maxIndex;
+                    if (currentIndex < 0) currentIndex = 0;
+
+                    const card = annCarousel.children[0];
+                    if (card) {
+                        const gap = 24; // gap-6
+                        const cardWidth = card.getBoundingClientRect().width;
+                        const shift = currentIndex * (cardWidth + gap);
+                        annCarousel.style.transform = `translateX(-${shift}px)`;
+                    }
+
+                    renderDots();
+                }
+
+                function renderDots() {
+                    const maxIndex = getMaxIndex();
+                    if (!dotsContainer) return;
+                    if (maxIndex <= 0) {
+                        dotsContainer.innerHTML = '';
+                        return;
+                    }
+                    dotsContainer.innerHTML = Array.from({ length: maxIndex + 1 }, (_, i) => `
+                        <button class="h-2.5 rounded-full transition-all duration-300 ${i === currentIndex ? 'bg-[#c4161c] w-6' : 'bg-slate-300 hover:bg-slate-400 w-2.5'}"
+                            aria-label="Go to slide ${i + 1}" data-index="${i}"></button>
+                    `).join('');
+
+                    dotsContainer.querySelectorAll('button').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            currentIndex = parseInt(btn.getAttribute('data-index'), 10);
+                            updateCarousel();
+                            resetTimer();
+                        });
+                    });
+                }
+
+                function nextSlide() {
+                    const maxIndex = getMaxIndex();
+                    if (maxIndex <= 0) return;
+                    if (currentIndex >= maxIndex) {
+                        currentIndex = 0;
+                    } else {
+                        currentIndex++;
+                    }
+                    updateCarousel();
+                }
+
+                function prevSlide() {
+                    const maxIndex = getMaxIndex();
+                    if (maxIndex <= 0) return;
+                    if (currentIndex <= 0) {
+                        currentIndex = maxIndex;
+                    } else {
+                        currentIndex--;
+                    }
+                    updateCarousel();
+                }
+
+                if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); resetTimer(); });
+                if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); resetTimer(); });
+
+                function startTimer() {
+                    stopTimer();
+                    autoPlayTimer = setInterval(nextSlide, 5500);
+                }
+
+                function stopTimer() {
+                    if (autoPlayTimer) clearInterval(autoPlayTimer);
+                }
+
+                function resetTimer() {
+                    stopTimer();
+                    startTimer();
+                }
+
+                if (wrapper) {
+                    wrapper.addEventListener('mouseenter', stopTimer);
+                    wrapper.addEventListener('mouseleave', startTimer);
+                    wrapper.addEventListener('touchstart', stopTimer, { passive: true });
+                    wrapper.addEventListener('touchend', startTimer, { passive: true });
+                }
+
+                window.addEventListener('resize', updateCarousel);
+                updateCarousel();
+                startTimer();
             }
         }
     } catch(err) { console.error('Failed to load announcements', err); }

@@ -33,6 +33,15 @@ async function ensureDatabaseSchema() {
       );
     `);
     console.log('✅ Database schema verified');
+    
+    // Auto-seed 20 announcements and events if database is fresh or incomplete
+    const annCount = await pool.query('SELECT COUNT(*) FROM announcements');
+    const evCount = await pool.query('SELECT COUNT(*) FROM events');
+    if (parseInt(annCount.rows[0].count) < 20 || parseInt(evCount.rows[0].count) < 20) {
+      console.log('🌱 Auto-seeding missing announcements and events...');
+      const seedData = require('../seed');
+      await seedData();
+    }
   } catch (err) {
     console.error('❌ Failed to verify database schema:', err.message);
     throw err;

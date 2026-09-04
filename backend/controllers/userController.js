@@ -25,7 +25,7 @@ async function getUserProfile(req, res) {
   try {
     const result = await pool.query(
       `SELECT id, full_name, email, phone, role, department, graduation_year,
-              job_title, company, show_phone_publicly
+              job_title, company, city, linkedin_url, bio, enrollment_number, show_phone_publicly
        FROM users WHERE id = $1`,
       [id]
     );
@@ -57,7 +57,7 @@ async function updateUserProfile(req, res) {
     return res.status(403).json({ message: 'You can only update your own profile' });
   }
 
-  const { job_title, current_role, company, department, graduation_year, phone, showPhonePublicly, full_name, currentPassword, newPassword } = req.body;
+  const { job_title, current_role, company, department, graduation_year, phone, city, linkedin_url, linkedinUrl, bio, showPhonePublicly, full_name, currentPassword, newPassword } = req.body;
 
   const allowedUpdates = [];
   const values = [];
@@ -89,6 +89,19 @@ async function updateUserProfile(req, res) {
 
   if (phone !== undefined) {
     pushUpdate('phone', typeof phone === 'string' ? phone.trim() || null : phone);
+  }
+
+  if (city !== undefined) {
+    pushUpdate('city', typeof city === 'string' ? city.trim() || null : city);
+  }
+
+  const targetLinkedin = linkedinUrl !== undefined ? linkedinUrl : linkedin_url;
+  if (targetLinkedin !== undefined) {
+    pushUpdate('linkedin_url', typeof targetLinkedin === 'string' ? targetLinkedin.trim() || null : targetLinkedin);
+  }
+
+  if (bio !== undefined) {
+    pushUpdate('bio', typeof bio === 'string' ? bio.trim() || null : bio);
   }
 
   if (full_name !== undefined) {
@@ -143,6 +156,44 @@ async function updateUserProfile(req, res) {
   }
 }
 
+async function updateMyProfile(req, res) {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ success: false, message: 'Authentication required' });
+  }
+
+  const id = req.user.id;
+  const { phone, city, linkedinUrl, linkedin_url, bio } = req.body;
+  const targetLinkedin = linkedinUrl !== undefined ? linkedinUrl : linkedin_url;
+
+  try {
+    const result = await pool.query(
+      `UPDATE users SET
+         phone = COALESCE($1, phone),
+         city = COALESCE($2, city),
+         linkedin_url = COALESCE($3, linkedin_url),
+         bio = COALESCE($4, bio)
+       WHERE id = $5
+       RETURNING id, full_name, email, phone, role, department, graduation_year, job_title, company, city, linkedin_url, bio, enrollment_number`,
+      [
+        phone !== undefined ? (typeof phone === 'string' ? phone.trim() || null : phone) : null,
+        city !== undefined ? (typeof city === 'string' ? city.trim() || null : city) : null,
+        targetLinkedin !== undefined ? (typeof targetLinkedin === 'string' ? targetLinkedin.trim() || null : targetLinkedin) : null,
+        bio !== undefined ? (typeof bio === 'string' ? bio.trim() || null : bio) : null,
+        id
+      ]
+    );
+
+    return res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      user: result.rows[0]
+    });
+  } catch (err) {
+    console.error('Error updating profile:', err);
+    return res.status(500).json({ success: false, message: 'Server error while updating profile' });
+  }
+}
+
 async function updateUserSettings(req, res) {
   const { id } = req.params;
 
@@ -170,4 +221,4 @@ async function updateUserSettings(req, res) {
   }
 }
 
-module.exports = { getUserProfile, updateUserProfile, updateUserSettings };
+module.exports = { getUserProfile, updateUserProfile, updateMyProfile, updateUserSettings };

@@ -18,7 +18,13 @@ async function getPublicAnnouncements(req, res) {
     );
 
     const combined = [...annResult.rows, ...newsAnnResult.rows];
-    combined.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    const priorityRank = { urgent: 1, normal: 2, low: 3 };
+    combined.sort((a, b) => {
+      const rankA = priorityRank[(a.priority || 'normal').toLowerCase()] || 2;
+      const rankB = priorityRank[(b.priority || 'normal').toLowerCase()] || 2;
+      if (rankA !== rankB) return rankA - rankB;
+      return new Date(b.created_at) - new Date(a.created_at);
+    });
 
     res.json(combined);
   } catch (err) {

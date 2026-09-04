@@ -48,7 +48,7 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-4">
         <table class="admin-table" id="mainEventsTable">
             <thead>
                 <tr>
@@ -62,6 +62,20 @@
             </thead>
             <tbody></tbody>
         </table>
+    </div>
+
+    <!-- PAGINATION CONTROLS -->
+    <div id="evPagination" class="flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-xl border border-slate-200 gap-4 mb-8 text-sm">
+        <div class="text-slate-600 font-medium" id="evPaginationInfo">Showing 0 of 0 events</div>
+        <div class="flex items-center gap-2">
+            <button id="evPrevBtn" onclick="changeEvPage(-1)" class="px-3 py-1.5 border rounded-lg hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed font-medium text-slate-700 transition">
+                <i class="fa-solid fa-chevron-left text-xs mr-1"></i> Prev
+            </button>
+            <span id="evPageNumber" class="px-3 py-1.5 bg-slate-100 rounded-lg font-semibold text-slate-800">Page 1</span>
+            <button id="evNextBtn" onclick="changeEvPage(1)" class="px-3 py-1.5 border rounded-lg hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed font-medium text-slate-700 transition">
+                Next <i class="fa-solid fa-chevron-right text-xs ml-1"></i>
+            </button>
+        </div>
     </div>
 </div>
 
@@ -144,6 +158,84 @@ function getToken() {
 }
 
 let searchTimeout;
+let allEventsList = [];
+let evCurrentPage = 1;
+const evPerPage = 10;
+
+function changeEvPage(delta) {
+    const totalPages = Math.ceil(allEventsList.length / evPerPage) || 1;
+    const newPage = evCurrentPage + delta;
+    if (newPage >= 1 && newPage <= totalPages) {
+        evCurrentPage = newPage;
+        renderEventsTable();
+    }
+}
+
+function formatAdminDate(dateStr) {
+    if (!dateStr) return '';
+    let str = String(dateStr).trim();
+    if (str.includes('T')) str = str.split('T')[0];
+    const parts = str.split('-');
+    if (parts.length === 3 && parts[0].length === 4) {
+        const year = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const day = parseInt(parts[2], 10);
+        const d = new Date(year, month, day);
+        if (!isNaN(d.getTime())) return d.toLocaleDateString();
+    }
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return '';
+    return d.toLocaleDateString();
+}
+
+function renderEventsTable() {
+    const tbody = document.querySelector('#mainEventsTable tbody');
+    if (!tbody) return;
+
+    if (!allEventsList.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-gray-500">No events found.</td></tr>';
+        document.getElementById('evPaginationInfo').textContent = 'Showing 0 of 0 events';
+        document.getElementById('evPageNumber').textContent = 'Page 1 of 1';
+        document.getElementById('evPrevBtn').disabled = true;
+        document.getElementById('evNextBtn').disabled = true;
+        return;
+    }
+
+    const totalPages = Math.ceil(allEventsList.length / evPerPage) || 1;
+    if (evCurrentPage > totalPages) evCurrentPage = totalPages;
+
+    const startIdx = (evCurrentPage - 1) * evPerPage;
+    const endIdx = Math.min(startIdx + evPerPage, allEventsList.length);
+    const pageItems = allEventsList.slice(startIdx, endIdx);
+
+    tbody.innerHTML = '';
+    pageItems.forEach(e => {
+        const title = e.title || e.name || 'Untitled';
+        let dateStr = e.date ? formatAdminDate(e.date) : '';
+        if (e.event_date_end) {
+             dateStr += ' - ' + formatAdminDate(e.event_date_end);
+        }
+        const badgeColor = e.status === 'completed' ? 'bg-green-100 text-green-800' : e.status === 'ongoing' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800';
+        tbody.innerHTML += `
+            <tr>
+                <td class="font-medium">${title}</td>
+                <td>${e.host || 'Admin'}</td>
+                <td>${dateStr}</td>
+                <td><span class="px-2 py-1 rounded text-xs font-semibold uppercase ${badgeColor}">${e.status || 'upcoming'}</span></td>
+                <td>${e.participantCount || 0}</td>
+                <td>
+                    <button onclick="viewParticipants(${e.id})" class="text-blue-600 hover:text-blue-800 mr-3" title="View Participants"><i class="fa-solid fa-users"></i></button>
+                    <button onclick="deleteEvent(${e.id})" class="text-red-600 hover:text-red-800" title="Delete"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            </tr>
+        `;
+    });
+
+    document.getElementById('evPaginationInfo').textContent = `Showing ${startIdx + 1}–${endIdx} of ${allEventsList.length} events`;
+    document.getElementById('evPageNumber').textContent = `Page ${evCurrentPage} of ${totalPages}`;
+    document.getElementById('evPrevBtn').disabled = evCurrentPage === 1;
+    document.getElementById('evNextBtn').disabled = evCurrentPage === totalPages;
+}
 
 async function loadEvents() {
     const search = document.getElementById('searchInput')?.value;
@@ -167,31 +259,9 @@ async function loadEvents() {
         return;
     }
     const data = await res.json();
-    const events = Array.isArray(data) ? data : [];
-    const tbody = document.querySelector('#mainEventsTable tbody');
-    if (!tbody) return;
-    tbody.innerHTML = events.length ? '' : '<tr><td colspan="6" class="text-center py-4 text-gray-500">No events found.</td></tr>';
-    events.forEach(e => {
-        const title = e.title || e.name || 'Untitled';
-        let dateStr = e.date ? new Date(e.date).toLocaleDateString() : '';
-        if (e.event_date_end) {
-             dateStr += ' - ' + new Date(e.event_date_end).toLocaleDateString();
-        }
-        const badgeColor = e.status === 'completed' ? 'bg-green-100 text-green-800' : e.status === 'ongoing' ? 'bg-yellow-100 text-yellow-800' : 'bg-blue-100 text-blue-800';
-        tbody.innerHTML += `
-            <tr>
-                <td class="font-medium">${title}</td>
-                <td>${e.host || 'Admin'}</td>
-                <td>${dateStr}</td>
-                <td><span class="px-2 py-1 rounded text-xs font-semibold uppercase ${badgeColor}">${e.status || 'upcoming'}</span></td>
-                <td>${e.participantCount || 0}</td>
-                <td>
-                    <button onclick="viewParticipants(${e.id})" class="text-blue-600 hover:text-blue-800 mr-3" title="View Participants"><i class="fa-solid fa-users"></i></button>
-                    <button onclick="deleteEvent(${e.id})" class="text-red-600 hover:text-red-800" title="Delete"><i class="fa-solid fa-trash"></i></button>
-                </td>
-            </tr>
-        `;
-    });
+    allEventsList = Array.isArray(data) ? data : [];
+    evCurrentPage = 1;
+    renderEventsTable();
 }
 
 document.getElementById('addEventForm').addEventListener('submit', async (e) => {

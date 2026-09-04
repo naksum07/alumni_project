@@ -124,12 +124,32 @@ function togglePasswordVisibility(inputId, btn) {
 
   // Render profile to DOM
   function renderProfile(profileUser) {
+    currentProfileData = profileUser;
     const name = profileUser.fullName || profileUser.full_name || 'Member';
     fill('[data-user-name]', name);
     fill('[data-user-email]', profileUser.email || (token ? '—' : 'Sign in to view email'));
     fill('[data-user-role]', profileUser.role);
     fill('[data-user-dept]', profileUser.department, '—');
     fill('[data-user-year]', profileUser.graduation_year ? String(profileUser.graduation_year) : '—');
+    fill('[data-user-city]', profileUser.city, '—');
+    fill('[data-user-bio]', profileUser.bio, '—');
+
+    const enrollmentNo = profileUser.enrollment_number || profileUser.enrollmentNumber || '';
+    fill('[data-user-enrollment]', enrollmentNo, '—');
+    const enrollmentWrap = document.getElementById('enrollmentWrap');
+    if (enrollmentWrap) {
+      show(enrollmentWrap, !!(enrollmentNo || (profileUser.role || '').toLowerCase() === 'student'));
+    }
+
+    const linkedinWrap = document.querySelector('[data-user-linkedin-wrap]');
+    const linkedinUrl = profileUser.linkedinUrl || profileUser.linkedin_url;
+    if (linkedinWrap) {
+      if (linkedinUrl) {
+        linkedinWrap.innerHTML = `<a href="${linkedinUrl}" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-800 font-medium text-sm"><i class="fa-brands fa-linkedin text-base"></i> View LinkedIn Profile ↗</a>`;
+      } else {
+        linkedinWrap.innerHTML = `<p class="text-gray-800 font-medium text-base">—</p>`;
+      }
+    }
 
     const avatar = document.getElementById('profileAvatarInitial');
     if (avatar) avatar.textContent = name.charAt(0).toUpperCase();
@@ -205,10 +225,6 @@ function togglePasswordVisibility(inputId, btn) {
   async function loadProfile() {
     setupNavbar();
 
-    // Removed the early return here so that we always fetch the full profile
-    // from the server, even for the logged-in user. This ensures fields like
-    // department, graduation_year, job_title, etc. are loaded correctly.
-
     try {
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       const targetId = viewedUserId || (loggedInUser ? loggedInUser.id : null);
@@ -233,6 +249,102 @@ function togglePasswordVisibility(inputId, btn) {
   }
 
   loadProfile();
+
+  // Edit Profile Modal Handler
+  const editProfileBtn = document.getElementById('editProfileBtn');
+  const editProfileModal = document.getElementById('editProfileModal');
+  const closeProfileModal = document.getElementById('closeProfileModal');
+  const cancelProfileEdit = document.getElementById('cancelProfileEdit');
+  const editProfileForm = document.getElementById('editProfileForm');
+  const editProfileMessage = document.getElementById('editProfileMessage');
+
+  const editPhoneInput = document.getElementById('editPhone');
+  const editCityInput = document.getElementById('editCity');
+  const editLinkedinUrlInput = document.getElementById('editLinkedinUrl');
+  const editBioInput = document.getElementById('editBio');
+
+  let currentProfileData = {};
+
+  function setEditProfileMessage(text, isError) {
+    if (!editProfileMessage) return;
+    editProfileMessage.textContent = text;
+    editProfileMessage.classList.remove('hidden', 'text-red-600', 'text-green-600');
+    editProfileMessage.classList.add(isError ? 'text-red-600' : 'text-green-600');
+  }
+
+  function openEditProfileModal() {
+    if (!editProfileModal) return;
+    if (editPhoneInput) editPhoneInput.value = currentProfileData.phone || '';
+    if (editCityInput) editCityInput.value = currentProfileData.city || '';
+    if (editLinkedinUrlInput) editLinkedinUrlInput.value = currentProfileData.linkedin_url || currentProfileData.linkedinUrl || '';
+    if (editBioInput) editBioInput.value = currentProfileData.bio || '';
+    if (editProfileMessage) editProfileMessage.classList.add('hidden');
+    editProfileModal.classList.remove('hidden');
+  }
+
+  function closeEditProfileModal() {
+    if (!editProfileModal) return;
+    editProfileModal.classList.add('hidden');
+  }
+
+  if (editProfileBtn) editProfileBtn.addEventListener('click', openEditProfileModal);
+  if (closeProfileModal) closeProfileModal.addEventListener('click', closeEditProfileModal);
+  if (cancelProfileEdit) cancelProfileEdit.addEventListener('click', closeEditProfileModal);
+  if (editProfileModal) {
+    editProfileModal.addEventListener('click', function(e) {
+      if (e.target === editProfileModal) closeEditProfileModal();
+    });
+  }
+
+  if (editProfileForm && isOwnProfile && loggedInUser) {
+    editProfileForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const phone = editPhoneInput ? editPhoneInput.value.trim() : '';
+      const city = editCityInput ? editCityInput.value.trim() : '';
+      const linkedinUrl = editLinkedinUrlInput ? editLinkedinUrlInput.value.trim() : '';
+      const bio = editBioInput ? editBioInput.value.trim() : '';
+
+      const submitBtn = editProfileForm.querySelector('button[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Saving...';
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/users/profile`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ phone, city, linkedinUrl, bio })
+        });
+
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.message || 'Failed to update profile');
+
+        setEditProfileMessage('✅ Profile updated successfully!', false);
+
+        if (data.user) {
+          currentProfileData = { ...currentProfileData, ...data.user };
+          localStorage.setItem('user', JSON.stringify({ ...loggedInUser, ...data.user }));
+          renderProfile(currentProfileData);
+        }
+
+        setTimeout(() => {
+          closeEditProfileModal();
+        }, 1200);
+      } catch (err) {
+        console.error('Edit profile error:', err);
+        setEditProfileMessage(err.message || 'Error updating profile', true);
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Save Changes';
+        }
+      }
+    });
+  }
 
   // Phone privacy toggle
   const phoneToggle = document.getElementById('phonePublicToggle');

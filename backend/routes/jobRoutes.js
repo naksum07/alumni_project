@@ -9,11 +9,13 @@ const {
   deleteJob,
   applyToJob,
   listApplications,
+  getMyApplications,
 } = require('../controllers/jobController');
 const { verifyToken, optionalAuth } = require('../middleware/auth');
 
 // Public browsing
 router.get('/', listJobs);
+router.get('/my-applications', verifyToken, getMyApplications);
 router.get('/:id', getJobById);
 
 // Public application (optionalAuth: works logged-in or as a guest)

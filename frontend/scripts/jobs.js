@@ -1,5 +1,10 @@
-let allJobs    = [];   // raw list from API
-let selectedJob = null; // job currently open in the details modal
+let allJobs      = [];   // raw list from API
+let filteredJobs = [];   // filtered list
+let selectedJob  = null; // job currently open in the details modal
+let appliedJobIds = [];  // IDs of jobs the logged-in user applied for
+
+let currentPage = 1;
+const itemsPerPage = 40;
 
 //Element References
 const jobContainer   = document.getElementById('jobContainer');
@@ -8,6 +13,35 @@ const resultCount    = document.getElementById('resultCount');
 const searchInput    = document.getElementById('searchInput');
 const filterType     = document.getElementById('filterType');
 const filterLocation = document.getElementById('filterLocation');
+
+function updatePaginationControls() {
+  const totalPages = Math.ceil(filteredJobs.length / itemsPerPage) || 1;
+  const prevBtn = document.getElementById('prevPageBtn');
+  const nextBtn = document.getElementById('nextPageBtn');
+  const pageIndicator = document.getElementById('pageIndicator');
+  const paginationControls = document.getElementById('paginationControls');
+
+  if (filteredJobs.length <= itemsPerPage) {
+    if (paginationControls) {
+      paginationControls.classList.add('hidden');
+      paginationControls.classList.remove('flex');
+    }
+  } else {
+    if (paginationControls) {
+      paginationControls.classList.remove('hidden');
+      paginationControls.classList.add('flex');
+    }
+  }
+
+  if (prevBtn) prevBtn.disabled = currentPage === 1;
+  if (nextBtn) nextBtn.disabled = currentPage === totalPages;
+  if (pageIndicator) pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
+}
+
+function getPaginatedData() {
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  return filteredJobs.slice(startIndex, startIndex + itemsPerPage);
+}
 
 //Fetch jobs from the API and display them
 async function loadJobs() {
@@ -18,9 +52,25 @@ async function loadJobs() {
       Loading opportunities…
     </div>`;
   try {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const appRes = await fetch('/api/jobs/my-applications', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (appRes.ok) {
+          const appData = await appRes.json();
+          if (appData.appliedJobIds) appliedJobIds = appData.appliedJobIds;
+        }
+      } catch (e) {
+        console.warn('Could not fetch user applications:', e);
+      }
+    }
+
     const res = await fetch('/api/jobs');
     if (!res.ok) throw new Error(`Server returned ${res.status}`);
     allJobs = await res.json();
+    currentPage = 1;
     displayJobs();
   } catch (err) {
     console.error('Failed to load jobs:', err);
@@ -39,7 +89,7 @@ function displayJobs() {
   const type     = filterType.value;
   const location = filterLocation.value;
 
-  const filtered = allJobs.filter(job => {
+  filteredJobs = allJobs.filter(job => {
     const searchMatch =
       (job.title    || '').toLowerCase().includes(search) ||
       (job.company  || '').toLowerCase().includes(search) ||
@@ -56,49 +106,60 @@ function displayJobs() {
     return searchMatch && typeMatch && locationMatch;
   });
 
-  resultCount.textContent = `${filtered.length} opportunit${filtered.length === 1 ? 'y' : 'ies'} available`;
+  resultCount.textContent = `${filteredJobs.length} opportunit${filteredJobs.length === 1 ? 'y' : 'ies'} available`;
   jobContainer.innerHTML  = '';
 
-  if (filtered.length === 0) {
+  if (filteredJobs.length === 0) {
     noResults.classList.remove('hidden');
+    updatePaginationControls();
     return;
   }
   noResults.classList.add('hidden');
 
-  filtered.forEach(job => {
+  const pageData = getPaginatedData();
+
+  pageData.forEach(job => {
     const isJob  = (job.job_type || '').toLowerCase() === 'job';
     const badge  = isJob
       ? 'bg-green-100 text-green-700'
       : 'bg-amber-100 text-amber-700';
     const label  = isJob ? 'Job' : 'Internship';
+    const isApplied = appliedJobIds.includes(job.id);
 
     const card = document.createElement('div');
     card.className =
       'bg-white rounded-2xl border border-slate-200 p-6 ' +
-      'hover:shadow-xl hover:-translate-y-1 transition duration-300';
+      'hover:shadow-xl hover:-translate-y-1 transition duration-300 relative flex flex-col justify-between';
 
     card.innerHTML = `
-      <div class="flex justify-between items-start">
-        <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg">
-          ${(job.company || '?').charAt(0).toUpperCase()}
+      <div>
+        <div class="flex justify-between items-start">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg">
+            ${(job.company || '?').charAt(0).toUpperCase()}
+          </div>
+          <div class="flex flex-col items-end gap-1.5">
+            <span class="${badge} px-3 py-1 rounded-full text-xs font-semibold">${label}</span>
+            ${isApplied ? `<span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full text-[11px] font-bold inline-flex items-center gap-1"><i class="fa-solid fa-circle-check text-[10px]"></i> Applied</span>` : ''}
+          </div>
         </div>
-        <span class="${badge} px-3 py-1 rounded-full text-xs font-semibold">${label}</span>
+        <h3 class="text-xl font-bold mt-5">${job.title}</h3>
+        <p class="text-blue-600 font-semibold mt-1">${job.company}</p>
+        <div class="mt-5 space-y-2 text-sm text-slate-500">
+          ${job.location ? `<p>📍 ${job.location}</p>` : ''}
+          ${job.salary   ? `<p>💰 ${job.salary}</p>`   : ''}
+        </div>
+        ${job.skills ? `<div class="bg-slate-50 border border-slate-100 rounded-lg p-3 mt-5 text-xs text-slate-600">${job.skills}</div>` : ''}
       </div>
-      <h3 class="text-xl font-bold mt-5">${job.title}</h3>
-      <p class="text-blue-600 font-semibold mt-1">${job.company}</p>
-      <div class="mt-5 space-y-2 text-sm text-slate-500">
-        ${job.location ? `<p>📍 ${job.location}</p>` : ''}
-        ${job.salary   ? `<p>💰 ${job.salary}</p>`   : ''}
-      </div>
-      ${job.skills ? `<div class="bg-slate-50 border border-slate-100 rounded-lg p-3 mt-5 text-xs text-slate-600">${job.skills}</div>` : ''}
       <button
         onclick="showDetails(${job.id})"
-        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl mt-5 font-semibold transition">
-        View Opportunity
+        class="w-full ${isApplied ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-blue-600 hover:bg-blue-700'} text-white py-3 rounded-xl mt-5 font-semibold transition flex items-center justify-center gap-2">
+        ${isApplied ? '<i class="fa-solid fa-check-circle"></i> Applied' : 'View Opportunity'}
       </button>`;
 
     jobContainer.appendChild(card);
   });
+
+  updatePaginationControls();
 }
 
 function getCurrentUser() {
@@ -142,12 +203,16 @@ function showDetails(id) {
   const isJob = (selectedJob.job_type || '').toLowerCase() === 'job';
   const badge = isJob ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700';
   const label = isJob ? 'Job' : 'Internship';
+  const isApplied = appliedJobIds.includes(selectedJob.id);
 
   document.getElementById('detailsContent').innerHTML = `
     <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-2xl">
       ${(selectedJob.company || '?').charAt(0).toUpperCase()}
     </div>
-    <span class="${badge} inline-block px-3 py-1 rounded-full text-xs font-semibold mt-5">${label}</span>
+    <div class="flex items-center gap-2 mt-5">
+      <span class="${badge} inline-block px-3 py-1 rounded-full text-xs font-semibold">${label}</span>
+      ${isApplied ? `<span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Applied</span>` : ''}
+    </div>
     <h2 class="text-3xl font-extrabold mt-4">${selectedJob.title}</h2>
     <p class="text-blue-600 font-semibold mt-1">${selectedJob.company}</p>
     <div class="mt-6 space-y-3 text-slate-600">
@@ -164,11 +229,17 @@ function showDetails(id) {
       <h4 class="font-bold mb-2">About the Opportunity</h4>
       <p class="text-slate-600 leading-relaxed">${selectedJob.description}</p>
     </div>` : ''}
-    <button
-      onclick="openApply()"
-      class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl mt-8 font-semibold">
-      Apply Now
-    </button>`;
+    ${isApplied ? `
+      <button disabled class="w-full bg-emerald-600 text-white py-3.5 rounded-xl mt-8 font-semibold cursor-not-allowed flex items-center justify-center gap-2 shadow">
+        <i class="fa-solid fa-circle-check"></i> Applied
+      </button>
+    ` : `
+      <button
+        onclick="openApply()"
+        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl mt-8 font-semibold shadow transition">
+        Apply Now
+      </button>
+    `}`;
 
   openModal('detailsModal');
 }
@@ -273,6 +344,10 @@ document.getElementById('applicationForm').addEventListener('submit', async func
       return;
     }
     showApplyMessage('✅ Application submitted successfully!', false);
+    if (selectedJob && selectedJob.id && !appliedJobIds.includes(selectedJob.id)) {
+      appliedJobIds.push(selectedJob.id);
+      displayJobs();
+    }
     this.reset();
     setTimeout(closeApply, 2000);
   } catch (err) {
@@ -387,9 +462,17 @@ function closeModal(id) {
 setPostOpportunityButtonsVisibility();
 
 // Search and Filter Event Listeners
-searchInput.addEventListener('input', displayJobs);
-filterType.addEventListener('change', displayJobs);
-filterLocation.addEventListener('change', displayJobs);
+searchInput.addEventListener('input', () => { currentPage = 1; displayJobs(); });
+filterType.addEventListener('change', () => { currentPage = 1; displayJobs(); });
+filterLocation.addEventListener('change', () => { currentPage = 1; displayJobs(); });
+
+const prevBtn = document.getElementById('prevPageBtn');
+const nextBtn = document.getElementById('nextPageBtn');
+if (prevBtn) prevBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; displayJobs(); } });
+if (nextBtn) nextBtn.addEventListener('click', () => {
+  const totalPages = Math.ceil(filteredJobs.length / itemsPerPage) || 1;
+  if (currentPage < totalPages) { currentPage++; displayJobs(); }
+});
 
 // ============================================================
 //  EXTERNAL JOBS (Adzuna API)

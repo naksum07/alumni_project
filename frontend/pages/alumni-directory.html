@@ -121,103 +121,57 @@
             </div>
     <!-- SEARCH BOX -->
  
-            <div
-                class="max-w-2xl
-                       mx-auto
-                       mb-10"
-            >
- 
-                <div
-                    class="relative"
-                >
- 
-                    <i
-                        class="fa-solid
-                               fa-magnifying-glass
-                               absolute
-                               left-5
-                               top-1/2
-                               -translate-y-1/2
-                               text-gray-400"
-                    ></i>
- 
- 
+            <!-- SEARCH & FILTER BOX -->
+            <div class="max-w-4xl mx-auto mb-10 space-y-4">
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"></i>
                     <input
                         id="searchInput"
                         type="text"
-                        placeholder="Search alumni by name, company, profession or department..."
-                        class="w-full
-                               pl-14
-                               pr-12
-                               py-4
-                               bg-white
-                               border border-gray-300
-                               rounded-xl
-                               shadow-sm
-                               focus:ring-2
-                               focus:ring-blue-600
-                               focus:border-blue-600
-                               outline-none
-                               transition"
+                        placeholder="Search alumni by name, company, city, profession or department..."
+                        class="w-full pl-14 pr-12 py-4 bg-white border border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition"
                     >
- 
- 
                     <button
                         id="clearSearch"
                         type="button"
-                        class="hidden
-                               absolute
-                               right-4
-                               top-1/2
-                               -translate-y-1/2
-                               text-gray-400
-                               hover:text-red-500"
+                        class="hidden absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500"
                         aria-label="Clear search"
                     >
- 
-                        <i
-                            class="fa-solid
-                                   fa-circle-xmark
-                                   text-xl"
-                        ></i>
- 
+                        <i class="fa-solid fa-circle-xmark text-xl"></i>
                     </button>
- 
                 </div>
- 
- 
-                <!-- SEARCH RESULT -->
- 
-                <div
-                    class="flex
-                           items-center
-                           justify-between
-                           mt-3"
-                >
- 
-                    <p
-                        id="resultCount"
-                        class="text-sm
-                               text-gray-500"
-                    >
-                        Showing 0 alumni
-                    </p>
- 
- 
-                    <button
-                        id="clearSearchText"
-                        type="button"
-                        class="hidden
-                               text-sm
-                               text-blue-700
-                               font-semibold
-                               hover:underline"
-                    >
-                        Clear Search
-                    </button>
- 
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <select id="filterDepartment" class="bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-600 outline-none">
+                        <option value="">All Departments</option>
+                        <option value="Management & Commerce">Faculty of Management & Commerce</option>
+                        <option value="Law">Faculty of Law</option>
+                        <option value="Science & Technology">Faculty of Science & Technology</option>
+                        <option value="Hotel & Tourism Management">Faculty of Hotel & Tourism Management</option>
+                        <option value="Liberal Arts">Faculty of Liberal Arts</option>
+                    </select>
+
+                    <select id="filterYear" class="bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-600 outline-none">
+                        <option value="">All Graduation Years</option>
+                        <option value="2026">2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                        <option value="2019">2019</option>
+                        <option value="2018">2018</option>
+                        <option value="2017">2017</option>
+                        <option value="2016">2016</option>
+                        <option value="2015">2015</option>
+                    </select>
                 </div>
- 
+
+                <div class="flex items-center justify-between mt-3">
+                    <p id="resultCount" class="text-sm text-gray-500">Showing 0 alumni</p>
+                    <button id="clearSearchText" type="button" class="hidden text-sm text-blue-700 font-semibold hover:underline">Clear Search</button>
+                </div>
             </div>
  
  
@@ -237,6 +191,13 @@
     <button id="prevPageBtn" class="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-50 transition disabled:opacity-50 disabled:cursor-not-allowed">Previous</button>
     <span id="pageIndicator" class="text-slate-600 font-medium">Page 1 of 1</span>
     <button id="nextPageBtn" class="bg-white border border-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium hover:bg-slate-50 transition disabled:opacity-50 disabled:cursor-not-allowed">Next</button>
+  </div>
+
+  <!-- BACK TO HOME BUTTON -->
+  <div class="flex justify-center mt-6 mb-8">
+    <a href="index.html" class="inline-flex items-center gap-2 bg-[#c4161c] hover:bg-[#a01217] text-white px-6 py-2.5 rounded-lg font-semibold transition text-sm shadow-sm">
+      <i class="fa-solid fa-house text-xs"></i> Back to Home
+    </a>
   </div>
 
  

@@ -218,6 +218,25 @@ async function listApplications(req, res) {
   }
 }
 
+// GET /api/jobs/my-applications (logged-in user)
+async function getMyApplications(req, res) {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ success: false, message: 'Authentication required' });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT DISTINCT job_id FROM job_applications WHERE applicant_id = $1 OR LOWER(email) = LOWER($2)`,
+      [req.user.id, req.user.email || '']
+    );
+    const appliedJobIds = result.rows.map(r => r.job_id);
+    res.json({ success: true, appliedJobIds });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error while fetching user applications' });
+  }
+}
+
 module.exports = {
   listJobs,
   getJobById,
@@ -227,4 +246,5 @@ module.exports = {
   deleteJob,
   applyToJob,
   listApplications,
+  getMyApplications,
 };
