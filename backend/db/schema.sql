@@ -25,7 +25,9 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS show_phone_publicly BOOLEAN DEFAULT F
 ALTER TABLE users ADD COLUMN IF NOT EXISTS enrollment_number VARCHAR(50);
 ALTER TABLE users ADD COLUMN IF NOT EXISTS city VARCHAR(150);
 ALTER TABLE users ADD COLUMN IF NOT EXISTS linkedin_url TEXT;
-ALTER TABLE users ADD COLUMN IF NOT EXISTS bio TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS profile_picture TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS show_picture_publicly BOOLEAN DEFAULT TRUE;
+ALTER TABLE job_applications ADD COLUMN IF NOT EXISTS resume_image_path TEXT;
 
 CREATE TABLE IF NOT EXISTS password_resets (
     id          SERIAL PRIMARY KEY,
@@ -105,7 +107,6 @@ VALUES
 ON CONFLICT DO NOTHING;
 
 -- Seed default Admin user (password: AdminPass123!)
--- NOTE: Run seed.js in the backend folder to create/update the admin user with a fresh bcrypt hash.
 -- The hash below is for 'AdminPass123!' — regenerate if needed.
 INSERT INTO users (full_name, email, phone, password_hash, role, department, graduation_year, job_title, company, is_approved, status)
 VALUES

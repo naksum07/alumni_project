@@ -18,7 +18,8 @@ const announcementRoutes = require('./routes/announcementRoutes');
 
 const app = express();
 app.use(cors({ origin: process.env.ALLOWED_ORIGIN || '*' }));
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 app.use(express.static(path.join(__dirname, '..', 'frontend', 'pages')));
 app.use('/styles', express.static(path.join(__dirname, '..', 'frontend', 'styles')));
@@ -26,6 +27,7 @@ app.use('/scripts', express.static(path.join(__dirname, '..', 'frontend', 'scrip
 app.use('/public', express.static(path.join(__dirname, '..', 'frontend', 'public')));
 app.use('/assets', express.static(path.join(__dirname, '..', 'frontend', 'assets')));
 app.use('/admin', express.static(path.join(__dirname, '..', 'frontend', 'admin')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
@@ -38,6 +40,7 @@ app.use('/api/feedback', feedbackRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/external-jobs', externalJobRoutes);
 app.use('/api/announcements', announcementRoutes);
+
 
 app.get('/api/test', (req, res) => {
   res.send('Backend is connected!');

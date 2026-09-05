@@ -236,6 +236,7 @@ window.toggleAnnouncement = async (id) => {
             showPopup(err.message || 'Failed to toggle status', 'error');
             return;
         }
+        showPopup('Announcement status updated successfully!', 'success');
         loadAnnouncements();
     } catch (e) {
         console.error(e);

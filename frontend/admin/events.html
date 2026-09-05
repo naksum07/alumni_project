@@ -279,14 +279,21 @@ document.getElementById('addEventForm').addEventListener('submit', async (e) => 
         description: document.getElementById('evDesc')?.value || null,
         status: document.getElementById('evStatus').value
     };
-    await fetch('/api/admin/events', {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + localStorage.getItem('adminToken'), 'Content-Type': 'application/json' },
-        body: JSON.stringify(newEvent)
-    });
-    document.getElementById('addEventModal').classList.add('hidden');
-    document.getElementById('addEventForm').reset();
-    loadEvents();
+    try {
+        const res = await fetch('/api/admin/events', {
+            method: 'POST',
+            headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('adminToken') || getToken()), 'Content-Type': 'application/json' },
+            body: JSON.stringify(newEvent)
+        });
+        if (!res.ok) throw new Error('Failed to create event');
+        document.getElementById('addEventModal').classList.add('hidden');
+        document.getElementById('addEventForm').reset();
+        showPopup('Event created successfully!', 'success');
+        loadEvents();
+    } catch (e) {
+        console.error(e);
+        showPopup('Could not save event. Please try again.', 'error');
+    }
 });
 
 window.deleteEvent = async (id) => {

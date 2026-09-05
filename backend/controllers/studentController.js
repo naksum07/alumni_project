@@ -3,7 +3,7 @@ const pool = require('../config/db');
 async function searchStudents(req, res) {
   const { department, year, search } = req.query;
 
-  let query = `SELECT id, full_name, department, graduation_year, job_title, company, city, linkedin_url, enrollment_number
+  let query = `SELECT id, full_name, department, graduation_year, job_title, company, city, linkedin_url, enrollment_number, profile_picture, show_picture_publicly
                FROM users WHERE role = 'student' AND is_approved = TRUE AND status = 'active'`;
   const params = [];
 
@@ -24,7 +24,11 @@ async function searchStudents(req, res) {
 
   try {
     const result = await pool.query(query, params);
-    res.json(result.rows);
+    const sanitized = result.rows.map(s => ({
+      ...s,
+      profile_picture: s.show_picture_publicly === true ? s.profile_picture : null
+    }));
+    res.json(sanitized);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error while searching students' });
@@ -37,7 +41,7 @@ async function getStudentProfile(req, res) {
   try {
     const result = await pool.query(
       `SELECT id, full_name, email, phone, role, department, graduation_year,
-              job_title, company, city, linkedin_url, bio, enrollment_number, show_phone_publicly
+              job_title, company, city, linkedin_url, bio, enrollment_number, show_phone_publicly, profile_picture, show_picture_publicly
        FROM users WHERE id = $1 AND role = 'student'`,
       [id]
     );
@@ -52,6 +56,11 @@ async function getStudentProfile(req, res) {
 
     if (!isOwner && student.show_phone_publicly !== true) {
       delete student.phone;
+    }
+
+    if (!isOwner && student.show_picture_publicly !== true) {
+      delete student.profile_picture;
+      student.profile_picture = null;
     }
 
     if (!isLoggedIn) {

@@ -37,22 +37,10 @@ document.getElementById('forgotForm').addEventListener('submit', async function 
       return;
     }
 
-    // Always show the same generic "check your email" view, regardless of
-    // whether the address exists — avoids leaking which emails are registered.
+    // Always show the same generic "check your email" view
     requestView.classList.add('hidden');
     sentView.classList.remove('hidden');
 
-    // Dev-only: server may include a devResetUrl while there's no real
-    // email backend wired up. This block should never fire in production.
-    if (data.devResetUrl) {
-      const devBox = document.getElementById('devLinkBox');
-      const anchor = document.getElementById('devLinkAnchor');
-      if (devBox) devBox.classList.remove('hidden');
-      if (anchor) {
-        anchor.href = data.devResetUrl;
-        anchor.textContent = data.devResetUrl;
-      }
-    }
 
   } catch (err) {
     console.error(err);

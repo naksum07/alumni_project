@@ -42,4 +42,14 @@ function requireAdmin(req, res, next) {
   });
 }
 
-module.exports = { verifyToken, optionalAuth, requireAdmin };
+function requireStudent(req, res, next) {
+  verifyToken(req, res, () => {
+    if (req.user && String(req.user.role || '').toLowerCase() === 'student') {
+      next();
+    } else {
+      res.status(403).json({ message: 'Forbidden: Only registered, logged-in students can apply for jobs' });
+    }
+  });
+}
+
+module.exports = { verifyToken, optionalAuth, requireAdmin, requireStudent };
