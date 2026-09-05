@@ -1,4 +1,6 @@
 const pool = require('../config/db');
+const sendEmail = require('../services/emailService');
+
 
 // GET /api/admin/users?status=pending
 // Lists all users. Optional ?status= filters by status (active/suspended/etc),
@@ -195,8 +197,46 @@ async function createEvent(req, res) {
     );
 
     const event = result.rows[0];
+
+    // Broadcast email notification to active users asynchronously
+    (async () => {
+      try {
+        const usersResult = await pool.query("SELECT email, full_name FROM users WHERE is_approved = TRUE AND role != 'admin'");
+        const frontendUrl = process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 5001}`;
+        const eventsPageUrl = `${frontendUrl}/events.html`;
+        const formattedDate = event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', { dateStyle: 'full' }) : 'TBD';
+        const eventTimeStr = event.event_time ? ` at ${event.event_time}` : '';
+
+        for (const user of usersResult.rows) {
+          if (!user.email) continue;
+          await sendEmail(
+            user.email,
+            `🎉 New Event Announcement: ${event.name}`,
+            `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
+              <h2 style="color: #012970; margin-top: 0;">New Event Announcement 🎉</h2>
+              <p style="color: #334155; font-size: 15px;">Hello <strong>${user.full_name || 'Member'}</strong>,</p>
+              <p style="color: #334155; font-size: 15px;">A new event has been posted on the Alumni Portal!</p>
+              
+              <div style="background-color: #f8fafc; border-left: 4px solid #c4161c; padding: 15px; margin: 20px 0; border-radius: 0 8px 8px 0;">
+                <h3 style="margin: 0 0 10px 0; color: #012970;">${event.name}</h3>
+                <p style="margin: 5px 0; font-size: 14px; color: #475569;"><strong>🗓️ Date:</strong> ${formattedDate}${eventTimeStr}</p>
+                <p style="margin: 5px 0; font-size: 14px; color: #475569;"><strong>📍 Venue:</strong> ${event.venue || 'To be announced'}</p>
+                ${event.description ? `<p style="margin: 10px 0 0 0; font-size: 14px; color: #334155;">${event.description}</p>` : ''}
+              </div>
+
+              <div style="margin: 25px 0;">
+                <a href="${eventsPageUrl}" style="background-color: #c4161c; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">View & Register on Portal</a>
+              </div>
+            </div>`
+          );
+        }
+      } catch (broadcastErr) {
+        console.error('Failed to send event broadcast emails:', broadcastErr.message || broadcastErr);
+      }
+    })();
+
     res.status(201).json({
-      message: 'Event created',
+      message: 'Event created and notification sent',
       event: {
         ...event,
         title: event.name,
@@ -209,6 +249,7 @@ async function createEvent(req, res) {
     res.status(500).json({ message: 'Server error while creating event' });
   }
 }
+
 
 // PUT /api/admin/events/:id
 async function updateEvent(req, res) {

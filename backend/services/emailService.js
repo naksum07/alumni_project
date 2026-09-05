@@ -1,19 +1,22 @@
 require('dotenv').config();
 const nodemailer = require('nodemailer');
 
+const gmailUser = process.env.GMAIL_USER ? process.env.GMAIL_USER.trim() : '';
+const gmailPass = process.env.GMAIL_APP_PASS ? process.env.GMAIL_APP_PASS.replace(/\s+/g, '') : '';
+
 const transporter = nodemailer.createTransport({
-  host: 'smtp.resend.com',
+  host: 'smtp.gmail.com',
   port: 465,
   secure: true,
   auth: {
-    user: 'resend',
-    pass: process.env.RESEND_API_KEY
+    user: gmailUser,
+    pass: gmailPass
   }
 });
 
 async function sendEmail(to, subject, html) {
   const mailOptions = {
-    from: 'Alumni Portal <onboarding@resend.dev>',
+    from: `"Alumni Portal" <${gmailUser}>`,
     to,
     subject,
     html
@@ -22,4 +25,4 @@ async function sendEmail(to, subject, html) {
   return transporter.sendMail(mailOptions);
 }
 
-module.exports = sendEmail;
+module.exports = sendEmail;
