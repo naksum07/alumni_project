@@ -52,4 +52,14 @@ function requireStudent(req, res, next) {
   });
 }
 
-module.exports = { verifyToken, optionalAuth, requireAdmin, requireStudent };
+function requireAlumni(req, res, next) {
+  verifyToken(req, res, () => {
+    if (req.user && String(req.user.role || '').toLowerCase() === 'alumni') {
+      next();
+    } else {
+      res.status(403).json({ message: 'Forbidden: Only registered alumni can access this feature' });
+    }
+  });
+}
+
+module.exports = { verifyToken, optionalAuth, requireAdmin, requireStudent, requireAlumni };

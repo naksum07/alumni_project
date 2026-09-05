@@ -555,6 +555,83 @@ async function deleteAnnouncement(req, res) {
   }
 }
 
+// GET /api/admin/success-stories
+async function listSuccessStoriesAdmin(req, res) {
+  const { status, search } = req.query;
+
+  let query = `
+    SELECT s.id, s.alumni_id, s.title, s.story_text, s.status, s.created_at, s.updated_at,
+           u.full_name AS author_name, u.email AS author_email, u.department, u.graduation_year,
+           u.job_title, u.company
+    FROM success_stories s
+    JOIN users u ON u.id = s.alumni_id
+    WHERE 1=1
+  `;
+  const params = [];
+
+  if (status) {
+    params.push(status);
+    query += ` AND s.status = $${params.length}`;
+  }
+  if (search) {
+    params.push(`%${search}%`);
+    query += ` AND (s.title ILIKE $${params.length} OR s.story_text ILIKE $${params.length} OR u.full_name ILIKE $${params.length})`;
+  }
+
+  query += ' ORDER BY s.created_at DESC';
+
+  try {
+    const result = await pool.query(query, params);
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching admin success stories:', err);
+    res.status(500).json({ message: 'Server error while fetching success stories' });
+  }
+}
+
+// PUT /api/admin/success-stories/:id/status
+async function updateSuccessStoryStatusAdmin(req, res) {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  const allowed = ['pending', 'approved', 'rejected'];
+  if (!status || !allowed.includes(status)) {
+    return res.status(400).json({ message: `Status must be one of: ${allowed.join(', ')}` });
+  }
+
+  try {
+    const result = await pool.query(
+      `UPDATE success_stories
+       SET status = $1, updated_at = NOW()
+       WHERE id = $2
+       RETURNING *`,
+      [status, id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Success story not found' });
+    }
+
+    res.json({ message: `Success story status updated to ${status}`, story: result.rows[0] });
+  } catch (err) {
+    console.error('Error updating success story status:', err);
+    res.status(500).json({ message: 'Server error while updating success story status' });
+  }
+}
+
+// DELETE /api/admin/success-stories/:id
+async function deleteSuccessStoryAdmin(req, res) {
+  const { id } = req.params;
+  try {
+    const result = await pool.query('DELETE FROM success_stories WHERE id = $1 RETURNING id', [id]);
+    if (result.rows.length === 0) return res.status(404).json({ message: 'Success story not found' });
+    res.json({ message: 'Success story deleted' });
+  } catch (err) {
+    console.error('Error deleting success story:', err);
+    res.status(500).json({ message: 'Server error while deleting success story' });
+  }
+}
+
 module.exports = {
   listUsers,
   approveUser,
@@ -575,5 +652,9 @@ module.exports = {
   listAnnouncements,
   createAnnouncement,
   toggleAnnouncementStatus,
-  deleteAnnouncement
+  deleteAnnouncement,
+  listSuccessStoriesAdmin,
+  updateSuccessStoryStatusAdmin,
+  deleteSuccessStoryAdmin
 };
+

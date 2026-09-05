@@ -166,6 +166,16 @@ async function ensureDatabaseSchema() {
         created_at   TIMESTAMP NOT NULL DEFAULT NOW()
       );
 
+      CREATE TABLE IF NOT EXISTS success_stories (
+        id          SERIAL PRIMARY KEY,
+        alumni_id   INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        title       VARCHAR(255) NOT NULL,
+        story_text  TEXT NOT NULL,
+        status      VARCHAR(20) NOT NULL DEFAULT 'pending',
+        created_at  TIMESTAMP NOT NULL DEFAULT NOW(),
+        updated_at  TIMESTAMP NOT NULL DEFAULT NOW()
+      );
+
       -- Seed default Admin user (password: AdminPass123!)
       INSERT INTO users (full_name, email, phone, password_hash, role, department, graduation_year, job_title, company, is_approved, status)
       VALUES
@@ -186,8 +196,12 @@ pool.connect()
     await ensureDatabaseSchema();
   })
   .catch((err) => {
-    console.error('❌ PostgreSQL connection failed:', err.message);
+    console.error('❌ PostgreSQL connection failed:', err ? (err.stack || err.message || err) : 'Unknown error');
+    if (!process.env.DATABASE_URL) {
+      console.error('⚠️ WARNING: DATABASE_URL environment variable is NOT set on Render! Please set DATABASE_URL in Render Environment settings.');
+    }
     process.exit(1);
   });
+
 
 module.exports = pool;

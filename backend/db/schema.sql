@@ -144,6 +144,17 @@ CREATE TABLE IF NOT EXISTS announcements (
     created_at   TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS success_stories (
+    id          SERIAL PRIMARY KEY,
+    alumni_id   INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    title       VARCHAR(255) NOT NULL,
+    story_text  TEXT NOT NULL,
+    status      VARCHAR(20) NOT NULL DEFAULT 'pending',
+    created_at  TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at  TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+
 -- Seed 20 Announcements
 INSERT INTO announcements (title, content, priority, status)
 VALUES

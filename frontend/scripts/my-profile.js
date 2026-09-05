@@ -265,6 +265,7 @@ function togglePasswordVisibility(inputId, btn) {
       }
     } finally {
       loadMyPostedJobs();
+      loadMySuccessStory();
     }
   }
 
@@ -859,7 +860,136 @@ function togglePasswordVisibility(inputId, btn) {
     });
   }
 
+  // --- MY SUCCESS STORY HANDLERS ---
+  async function loadMySuccessStory() {
+    const section = document.getElementById('mySuccessStorySection');
+    const form = document.getElementById('mySuccessStoryForm');
+    const statusContainer = document.getElementById('storyStatusContainer');
+    const deleteBtn = document.getElementById('deleteStoryBtn');
+    const titleInput = document.getElementById('storyTitle');
+    const textInput = document.getElementById('storyText');
+    const idInput = document.getElementById('storyId');
+
+    if (!section || !form) return;
+
+    const role = String(currentProfileData.role || loggedInUser?.role || '').toLowerCase();
+    if (!isOwnProfile || role !== 'alumni') {
+      section.classList.add('hidden');
+      return;
+    }
+
+    section.classList.remove('hidden');
+
+    try {
+      const res = await fetch('/api/success-stories/my-story', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to load success story');
+
+      const story = data.story;
+      if (story) {
+        idInput.value = story.id;
+        titleInput.value = story.title || '';
+        textInput.value = story.story_text || '';
+
+        if (deleteBtn) deleteBtn.classList.remove('hidden');
+
+        if (statusContainer) {
+          if (story.status === 'approved') {
+            statusContainer.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200"><i class="fa-solid fa-circle-check"></i> Approved &amp; Live</span>`;
+          } else if (story.status === 'rejected') {
+            statusContainer.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200"><i class="fa-solid fa-circle-xmark"></i> Rejected</span>`;
+          } else {
+            statusContainer.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200"><i class="fa-solid fa-clock"></i> Pending Approval</span>`;
+          }
+        }
+      } else {
+        idInput.value = '';
+        titleInput.value = '';
+        textInput.value = '';
+        if (deleteBtn) deleteBtn.classList.add('hidden');
+        if (statusContainer) {
+          statusContainer.innerHTML = `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600"><i class="fa-solid fa-pen-nib"></i> Not Submitted Yet</span>`;
+        }
+      }
+    } catch (err) {
+      console.error('Error loading success story:', err);
+    }
+  }
+
+  const storyForm = document.getElementById('mySuccessStoryForm');
+  if (storyForm) {
+    storyForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const storyId = document.getElementById('storyId')?.value;
+      const title = document.getElementById('storyTitle')?.value.trim();
+      const story_text = document.getElementById('storyText')?.value.trim();
+
+      if (!title || !story_text) {
+        if (typeof showPopup === 'function') showPopup('Please enter both title and story text.', 'error');
+        return;
+      }
+
+      const method = storyId ? 'PUT' : 'POST';
+      const url = storyId ? `/api/success-stories/${storyId}` : '/api/success-stories';
+
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ title, story_text })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message || 'Failed to save success story');
+
+        if (typeof showPopup === 'function') {
+          showPopup(data.message || 'Success story submitted for approval!', 'success');
+        }
+        loadMySuccessStory();
+      } catch (err) {
+        console.error(err);
+        if (typeof showPopup === 'function') showPopup(err.message || 'Error saving success story', 'error');
+      }
+    });
+  }
+
+  const deleteStoryBtn = document.getElementById('deleteStoryBtn');
+  if (deleteStoryBtn) {
+    deleteStoryBtn.addEventListener('click', function() {
+      const storyId = document.getElementById('storyId')?.value;
+      if (!storyId) return;
+
+      const doDelete = async () => {
+        try {
+          const res = await fetch(`/api/success-stories/${storyId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.message || 'Failed to delete success story');
+
+          if (typeof showPopup === 'function') showPopup('Success story deleted.', 'success');
+          loadMySuccessStory();
+        } catch (err) {
+          console.error(err);
+          if (typeof showPopup === 'function') showPopup(err.message || 'Error deleting success story', 'error');
+        }
+      };
+
+      if (typeof showConfirmPopup === 'function') {
+        showConfirmPopup('Are you sure you want to delete your success story?', 'Delete Story', doDelete, null, 'Delete', 'Cancel');
+      } else if (confirm('Are you sure you want to delete your success story?')) {
+        doDelete();
+      }
+    });
+  }
+
   // Mobile menu toggle
+
   const menuBtn = document.getElementById('menuBtn');
   const mobileMenu = document.getElementById('mobileMenu');
   if (menuBtn && mobileMenu) {
