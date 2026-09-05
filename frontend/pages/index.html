@@ -56,6 +56,9 @@
           <a href="events.html" class="hover:text-[#c4161c] transition">Events</a>
           <a href="news-announcements.html" class="hover:text-[#c4161c] transition">News</a>
           <a href="jobs.html" class="hover:text-[#c4161c] transition">Jobs</a>
+          <button type="button" onclick="openCommunityDrawer()" class="text-blue-900 hover:text-[#c4161c] font-semibold transition flex items-center gap-1.5 focus:outline-none">
+            <i class="fa-solid fa-comments text-sm text-[#c4161c]"></i> Community
+          </button>
         </div>
 
         <div class="hidden md:flex gap-3 items-center" id="navAuth">
@@ -79,6 +82,9 @@
         <a href="events.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Events</a>
         <a href="news-announcements.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">News</a>
         <a href="jobs.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Jobs</a>
+        <button type="button" onclick="openCommunityDrawer(); toggleMenu();" class="w-full text-left py-3 border-b border-gray-100 hover:text-[#c4161c] font-semibold flex items-center gap-2">
+          <i class="fa-solid fa-comments text-[#c4161c]"></i> Community Blog
+        </button>
         <div class="mt-4 space-y-3" id="mobileNavAuth">
           <a href="../admin/login.html" class="block text-center text-slate-500 py-2 rounded-lg font-medium hover:bg-gray-100 transition text-sm border-b border-gray-200 pb-3 mb-3">Admin Login</a>
           <div class="space-y-2">
@@ -91,8 +97,8 @@
 <!-- MAIN CONTENT -->
 <main id="home" class="pt-20">
 <!-- HERO SECTION -->
-<section data-aos="fade-up" class="min-h-screen flex items-center bg-gray-100">
-    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+<section data-aos="fade-up" class="min-h-[calc(100vh-80px)] flex items-center bg-gray-100 py-10 md:py-14 lg:py-0">
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-12 items-center">
     <div>
         <h2 class="text-5xl font-bold text-blue-900 leading-tight">Connect With Your Alumni Network</h2>
             <p class="mt-6 text-lg text-gray-600">
@@ -106,9 +112,90 @@
     </div>
     </div>
 
-<!-- IMAGE -->
-<div class="flex justify-center">
-    <img loading="lazy"src="https://images.unsplash.com/photo-1523240795612-9a054b0db644" alt="Students networking together" class="rounded-2xl shadow-xl w-full max-w-lg">
+<!-- HERO IMAGE SLIDER CONTAINER (RESPONSIVE) -->
+<div class="relative w-full flex items-center justify-center md:justify-end">
+    <div class="relative w-full h-[260px] sm:h-[340px] md:h-[380px] lg:h-[460px] xl:h-[500px] overflow-hidden rounded-2xl sm:rounded-3xl shadow-xl md:shadow-2xl shadow-blue-950/15 border border-slate-200/80 bg-slate-900 group">
+        <!-- Slides Track -->
+        <div id="heroSliderTrack" class="flex h-full w-full transition-transform duration-700 ease-in-out">
+            <!-- Slide 1: Networking -->
+            <div class="min-w-full h-full relative shrink-0">
+                <img loading="lazy" src="../assets/1.jpg" alt="Alumni and student networking" class="w-full h-full object-cover select-none">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-transparent"></div>
+                <div class="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 text-white">
+                    <span class="inline-block bg-blue-900/90 text-yellow-300 text-[10px] sm:text-xs px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-semibold backdrop-blur-md border border-white/10 shadow-sm">
+                        🤝 Networking &amp; Connections
+                    </span>
+                    <h3 class="text-sm sm:text-lg md:text-xl font-bold mt-1.5 sm:mt-2 text-white drop-shadow-md">Building Lifelong Professional Bonds</h3>
+                    <p class="text-[11px] sm:text-xs md:text-sm text-slate-200 mt-0.5 sm:mt-1 drop-shadow-sm line-clamp-1">Connect with 3000+ university graduates worldwide</p>
+                </div>
+            </div>
+            <!-- Slide 2: Convocation & Alumni -->
+            <div class="min-w-full h-full relative shrink-0">
+                <img loading="lazy" src="../assets/2.jpg" alt="Alumni convocation and graduation celebration" class="w-full h-full object-cover select-none">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-transparent"></div>
+                <div class="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 text-white">
+                    <span class="inline-block bg-[#c4161c]/90 text-white text-[10px] sm:text-xs px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-semibold backdrop-blur-md border border-white/10 shadow-sm">
+                        🎓 Convocation &amp; Alumni
+                    </span>
+                    <h3 class="text-sm sm:text-lg md:text-xl font-bold mt-1.5 sm:mt-2 text-white drop-shadow-md">Celebrating 3000+ Alumni Across the Globe</h3>
+                    <p class="text-[11px] sm:text-xs md:text-sm text-slate-200 mt-0.5 sm:mt-1 drop-shadow-sm line-clamp-1">Empowering leaders across diverse industries</p>
+                </div>
+            </div>
+            <!-- Slide 3: Campus & Academics -->
+            <div class="min-w-full h-full relative shrink-0">
+                <img loading="lazy" src="../assets/3.jpg" alt="Campus and academic excellence" class="w-full h-full object-cover select-none">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-transparent"></div>
+                <div class="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 text-white">
+                    <span class="inline-block bg-emerald-800/90 text-emerald-100 text-[10px] sm:text-xs px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-semibold backdrop-blur-md border border-white/10 shadow-sm">
+                        🏛️ Campus Excellence
+                    </span>
+                    <h3 class="text-sm sm:text-lg md:text-xl font-bold mt-1.5 sm:mt-2 text-white drop-shadow-md">15+ Years of Academic Excellence</h3>
+                    <p class="text-[11px] sm:text-xs md:text-sm text-slate-200 mt-0.5 sm:mt-1 drop-shadow-sm line-clamp-1">22 degree programs and world-class faculty</p>
+                </div>
+            </div>
+            <!-- Slide 4: Mentorship & Careers -->
+            <div class="min-w-full h-full relative shrink-0">
+                <img loading="lazy" src="../assets/4.jpg" alt="Alumni mentorship and career development" class="w-full h-full object-cover select-none">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-transparent"></div>
+                <div class="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 text-white">
+                    <span class="inline-block bg-purple-900/90 text-purple-100 text-[10px] sm:text-xs px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-semibold backdrop-blur-md border border-white/10 shadow-sm">
+                        💡 Mentorship &amp; Careers
+                    </span>
+                    <h3 class="text-sm sm:text-lg md:text-xl font-bold mt-1.5 sm:mt-2 text-white drop-shadow-md">Industry Mentorship &amp; Guidance</h3>
+                    <p class="text-[11px] sm:text-xs md:text-sm text-slate-200 mt-0.5 sm:mt-1 drop-shadow-sm line-clamp-1">Internships and career pathways from senior alumni</p>
+                </div>
+            </div>
+            <!-- Slide 5: Global Community & Reunions -->
+            <div class="min-w-full h-full relative shrink-0">
+                <img loading="lazy" src="../assets/5.jpg" alt="Alumni reunions and community meets" class="w-full h-full object-cover select-none">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-transparent"></div>
+                <div class="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 text-white">
+                    <span class="inline-block bg-amber-600/90 text-white text-[10px] sm:text-xs px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-semibold backdrop-blur-md border border-white/10 shadow-sm">
+                        🎉 Reunions &amp; Community
+                    </span>
+                    <h3 class="text-sm sm:text-lg md:text-xl font-bold mt-1.5 sm:mt-2 text-white drop-shadow-md">100+ Events &amp; Annual Meets</h3>
+                    <p class="text-[11px] sm:text-xs md:text-sm text-slate-200 mt-0.5 sm:mt-1 drop-shadow-sm line-clamp-1">Reunite with batchmates and expand your network</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Arrows (Left and Right Edges) -->
+        <button id="heroSliderPrevBtn" aria-label="Previous Slide" class="absolute left-2.5 sm:left-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-900/40 hover:bg-slate-900/80 text-white/90 hover:text-white backdrop-blur-md transition-all duration-200 opacity-80 sm:opacity-0 group-hover:opacity-100 focus:opacity-100 flex items-center justify-center cursor-pointer border border-white/20 shadow-md hover:scale-105 z-10">
+            <i class="fa-solid fa-chevron-left text-xs sm:text-sm"></i>
+        </button>
+        <button id="heroSliderNextBtn" aria-label="Next Slide" class="absolute right-2.5 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-900/40 hover:bg-slate-900/80 text-white/90 hover:text-white backdrop-blur-md transition-all duration-200 opacity-80 sm:opacity-0 group-hover:opacity-100 focus:opacity-100 flex items-center justify-center cursor-pointer border border-white/20 shadow-md hover:scale-105 z-10">
+            <i class="fa-solid fa-chevron-right text-xs sm:text-sm"></i>
+        </button>
+
+        <!-- Slide Indicators / Dots (Bottom Center) -->
+        <div id="heroSliderDots" class="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-black/35 backdrop-blur-md px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full border border-white/15 z-10">
+            <button class="h-1.5 sm:h-2 rounded-full bg-white transition-all duration-300 w-4 sm:w-5 cursor-pointer" data-slide="0" aria-label="Slide 1"></button>
+            <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="1" aria-label="Slide 2"></button>
+            <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="2" aria-label="Slide 3"></button>
+            <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="3" aria-label="Slide 4"></button>
+            <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="4" aria-label="Slide 5"></button>
+        </div>
+    </div>
 </div>
 </div>
 </section>
@@ -181,11 +268,13 @@
     <p class="mt-3 text-gray-600">Join reunions, workshops, webinars and networking events.</p>
 </div>
 <!-- CARD 5 -->
-
-<div data-aos="zoom-in"class="bg-white p-8 rounded-xl shadow hover:shadow-xl transition">
-<div class="text-5xl mb-5">💬</div>
-    <h3 class="text-xl font-bold text-blue-900">Community Discussion</h3>
-    <p class="mt-3 text-gray-600">Share experiences, ask questions and learn from the community.</p>
+<div data-aos="zoom-in" onclick="openCommunityDrawer()" class="bg-white p-8 rounded-xl shadow hover:shadow-xl hover:-translate-y-1 transition cursor-pointer group">
+    <div class="text-5xl mb-5 group-hover:scale-110 transition-transform">💬</div>
+    <h3 class="text-xl font-bold text-blue-900 group-hover:text-[#c4161c] transition">Community Discussion</h3>
+    <p class="mt-3 text-gray-600">Share experiences, ask questions and collaborate with alumni & students.</p>
+    <span class="inline-block mt-4 text-[#c4161c] font-semibold group-hover:underline flex items-center gap-1">
+        Open Community Blog →
+    </span>
 </div>
 
 <!-- CARD 6 -->
@@ -250,67 +339,68 @@ students and alumni support each other.
 
 
 <!-- STATISTICS -->
-<div class="grid grid-cols-2 gap-6">
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-4 md:gap-5">
 
 <!-- Alumni Counter -->
-
-<div class="bg-white p-6 rounded-xl text-center shadow-lg hover:shadow-xl transition">
-
-<h3 
-class="text-4xl font-bold bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700 text-transparent bg-clip-text counter"
-data-target="12000">
+<div class="bg-white p-5 rounded-xl text-center shadow-lg hover:shadow-xl hover:-translate-y-1 transition duration-300">
+<h3 class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700 text-transparent bg-clip-text counter" data-target="3000" data-suffix="+">
 0
 </h3>
-<p class="mt-2 text-blue-900 font-semibold">
+<p class="mt-2 text-blue-900 font-semibold text-xs sm:text-sm">
 Alumni
 </p>
-
 </div>
 
-<!-- Companies Counter -->
-<div class="bg-white p-6 rounded-xl text-center shadow-lg hover:shadow-xl transition">
-
-<h3 
-class="text-4xl font-bold bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700 text-transparent bg-clip-text counter"
-data-target="850">
+<!-- Programs Counter (Replacing Partner Companies) -->
+<div class="bg-white p-5 rounded-xl text-center shadow-lg hover:shadow-xl hover:-translate-y-1 transition duration-300">
+<h3 class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700 text-transparent bg-clip-text counter" data-target="22" data-suffix="">
 0
 </h3>
-<p class="mt-2 text-blue-900 font-semibold">
-Partner Companies
+<p class="mt-2 text-blue-900 font-semibold text-xs sm:text-sm">
+Programs
 </p>
-
 </div>
 
 <!-- Events Counter -->
-
-<div class="bg-white p-6 rounded-xl text-center shadow-lg hover:shadow-xl transition">
-
-<h3 
-class="text-4xl font-bold bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700 text-transparent bg-clip-text counter"
-data-target="300">
+<div class="bg-white p-5 rounded-xl text-center shadow-lg hover:shadow-xl hover:-translate-y-1 transition duration-300">
+<h3 class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700 text-transparent bg-clip-text counter" data-target="100" data-suffix="+">
 0
 </h3>
-<p class="mt-2 text-blue-900 font-semibold">
-Events
+<p class="mt-2 text-blue-900 font-semibold text-xs sm:text-sm">
+Alumni Events
 </p>
-
 </div>
 
-<!-- Connections Counter -->
-
-<div class="bg-white p-6 rounded-xl text-center shadow-lg hover:shadow-xl transition">
-
-<h3 
-class="text-4xl font-bold bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700 text-transparent bg-clip-text counter"
-data-target="7500">
+<!-- Faculty Members Counter -->
+<div class="bg-white p-5 rounded-xl text-center shadow-lg hover:shadow-xl hover:-translate-y-1 transition duration-300">
+<h3 class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700 text-transparent bg-clip-text counter" data-target="60" data-suffix="+">
 0
 </h3>
-
-<p class="mt-2 text-blue-900 font-semibold">
-Successful Connections
+<p class="mt-2 text-blue-900 font-semibold text-xs sm:text-sm">
+Faculty Members
 </p>
-
 </div>
+
+<!-- Departments Counter -->
+<div class="bg-white p-5 rounded-xl text-center shadow-lg hover:shadow-xl hover:-translate-y-1 transition duration-300">
+<h3 class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700 text-transparent bg-clip-text counter" data-target="5" data-suffix="">
+0
+</h3>
+<p class="mt-2 text-blue-900 font-semibold text-xs sm:text-sm">
+Departments
+</p>
+</div>
+
+<!-- Education Excellence Counter -->
+<div class="bg-white p-5 rounded-xl text-center shadow-lg hover:shadow-xl hover:-translate-y-1 transition duration-300">
+<h3 class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-700 text-transparent bg-clip-text counter" data-target="15" data-suffix="+">
+0
+</h3>
+<p class="mt-2 text-blue-900 font-semibold text-xs sm:text-sm">
+Education Excellence
+</p>
+</div>
+
 </div>
 </div>
 </section>
@@ -600,14 +690,149 @@ class="border border-white px-8 py-3 rounded-xl hover:bg-white hover:text-blue-9
 </footer>
 
 
+<!-- FLOATING COMMUNITY BLOG SIDE TAB -->
+<button id="openCommunityDrawerBtn" onclick="openCommunityDrawer()" class="fixed right-0 top-1/2 -translate-y-1/2 z-40 bg-gradient-to-b from-[#012970] to-[#0b1728] hover:from-[#c4161c] hover:to-[#960f14] text-white py-4 px-2.5 rounded-l-2xl shadow-2xl transition-all duration-300 flex flex-col items-center gap-2 group cursor-pointer border-y border-l border-blue-400/30 hover:shadow-red-900/40" title="Open Community Blog & Discussions">
+  <span class="relative flex h-3 w-3">
+    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+    <span class="relative inline-flex rounded-full h-3 w-3 bg-yellow-400"></span>
+  </span>
+  <i class="fa-solid fa-comments text-lg group-hover:scale-110 transition-transform"></i>
+  <span class="text-[11px] font-bold tracking-widest uppercase [writing-mode:vertical-rl] rotate-180 py-1 text-slate-100">
+    Community Blog
+  </span>
+</button>
+
+<!-- COMMUNITY BLOG SIDE DRAWER -->
+<div id="communityDrawerContainer" class="fixed inset-0 z-50 overflow-hidden pointer-events-none transition-all duration-300" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
+  <!-- Backdrop -->
+  <div id="communityDrawerBackdrop" onclick="closeCommunityDrawer()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs opacity-0 transition-opacity duration-300 ease-in-out"></div>
+
+  <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+    <!-- Slide-over panel -->
+    <div id="communityDrawerPanel" class="w-screen max-w-lg md:max-w-xl bg-slate-50 flex flex-col shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out pointer-events-auto">
+      
+      <!-- Drawer Header -->
+      <div class="bg-gradient-to-r from-[#012970] via-blue-900 to-[#0b1728] text-white p-5 px-6 shadow-md shrink-0">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-yellow-400 text-xl backdrop-blur-sm border border-white/10">
+              <i class="fa-solid fa-comments"></i>
+            </div>
+            <div>
+              <h2 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                Community Blog
+                <span class="bg-yellow-400/20 text-yellow-300 text-xs px-2.5 py-0.5 rounded-full font-semibold border border-yellow-400/30">Live</span>
+              </h2>
+              <p class="text-xs text-blue-200 mt-0.5">Alumni &amp; Student Discussion Space</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="toggleNewPostForm()" id="newPostToggleBtn" class="bg-[#c4161c] hover:bg-[#a01217] text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-pen"></i>
+              <span>New Post</span>
+            </button>
+            <button onclick="closeCommunityDrawer()" class="text-slate-300 hover:text-white p-2 rounded-lg hover:bg-white/10 transition cursor-pointer" aria-label="Close drawer">
+              <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Search and Quick Category Filter -->
+        <div class="mt-4 space-y-2.5">
+          <div class="relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+            <input type="text" id="communitySearchInput" oninput="filterCommunityPosts()" placeholder="Search discussions, topics, advice..." class="w-full bg-white/10 border border-white/20 text-white placeholder-blue-200/60 rounded-lg pl-9 pr-4 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:bg-white/20 transition">
+          </div>
+
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs no-scrollbar">
+            <button onclick="setCommunityCategory('All')" class="category-pill active whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition bg-white text-blue-900 shadow-sm" data-category="All">All</button>
+            <button onclick="setCommunityCategory('Career')" class="category-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition bg-white/10 hover:bg-white/20 text-white" data-category="Career">💼 Career &amp; Jobs</button>
+            <button onclick="setCommunityCategory('Mentorship')" class="category-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition bg-white/10 hover:bg-white/20 text-white" data-category="Mentorship">🤝 Mentorship</button>
+            <button onclick="setCommunityCategory('Academics')" class="category-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition bg-white/10 hover:bg-white/20 text-white" data-category="Academics">🎓 Academics</button>
+            <button onclick="setCommunityCategory('General')" class="category-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition bg-white/10 hover:bg-white/20 text-white" data-category="General">💬 General</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsible Create Post Section -->
+      <div id="createPostFormContainer" class="hidden bg-white border-b border-slate-200 p-5 shadow-inner transition-all duration-300">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+            <i class="fa-solid fa-feather-pointed text-[#c4161c]"></i> Share with the Community
+          </h3>
+          <button onclick="toggleNewPostForm()" class="text-xs text-slate-400 hover:text-slate-600">Cancel</button>
+        </div>
+        <form id="communityPostForm" onsubmit="handleCreatePost(event)" class="space-y-3">
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Your Name</label>
+              <input type="text" id="postAuthorName" required placeholder="e.g. Rahul Sharma" class="w-full text-xs border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-800 focus:outline-none bg-slate-50">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Role / Batch</label>
+              <select id="postAuthorRole" class="w-full text-xs border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-800 focus:outline-none bg-slate-50">
+                <option value="Alumni">🎓 Alumni</option>
+                <option value="Student">🎒 Student</option>
+                <option value="Faculty">👨‍🏫 Faculty</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Department / Company</label>
+              <input type="text" id="postAuthorAffiliation" placeholder="e.g. BTech CSE '22 or Google" class="w-full text-xs border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-800 focus:outline-none bg-slate-50">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">Category</label>
+              <select id="postCategory" class="w-full text-xs border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-800 focus:outline-none bg-slate-50">
+                <option value="Career">💼 Career &amp; Jobs</option>
+                <option value="Mentorship">🤝 Mentorship</option>
+                <option value="Academics">🎓 Academics</option>
+                <option value="General">💬 General Discussion</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Topic / Title</label>
+            <input type="text" id="postTitleInput" required placeholder="What do you want to talk about?" class="w-full text-xs border border-slate-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-800 focus:outline-none bg-slate-50">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Message</label>
+            <textarea id="postContentInput" required rows="3" placeholder="Share your experience, ask advice, or post an announcement..." class="w-full text-xs border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-800 focus:outline-none bg-slate-50"></textarea>
+          </div>
+
+          <div class="flex justify-end gap-2 pt-1">
+            <button type="button" onclick="toggleNewPostForm()" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition">Cancel</button>
+            <button type="submit" class="bg-[#012970] hover:bg-blue-900 text-white text-xs font-semibold px-4 py-2 rounded-lg transition shadow-sm flex items-center gap-1.5">
+              <i class="fa-solid fa-paper-plane"></i> Publish Post
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Feed Content (Scrollable) -->
+      <div id="communityFeedContainer" class="flex-1 overflow-y-auto p-5 space-y-4">
+        <!-- Posts will be rendered dynamically -->
+      </div>
+
+      <!-- Drawer Footer -->
+      <div class="bg-white border-t border-slate-200 p-3.5 px-5 text-center text-xs text-slate-500 shrink-0 flex items-center justify-between">
+        <span class="flex items-center gap-1.5">
+          <i class="fa-solid fa-users text-blue-900"></i>
+          <strong id="communityPostCount">0</strong> discussions
+        </span>
+        <span class="text-[11px] text-slate-400">ICFAI University Sikkim Alumni Network</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <!-- SCROLL TO TOP BUTTON -->
-
-
-<button id="topBtn"
-
-onclick="goTop()"
-
-class="hidden fixed bottom-8 right-8 bg-blue-800 text-white w-14 h-14 rounded-full text-3xl font-bold shadow-2xl hover:bg-blue-950 transition">
+<button id="topBtn" onclick="goTop()" class="hidden fixed bottom-8 right-8 bg-blue-800 text-white w-14 h-14 rounded-full text-3xl font-bold shadow-2xl hover:bg-blue-950 transition">
 ↑
 </button>
 </main>
@@ -786,6 +1011,448 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     } catch(err) { console.error('Failed to load feedback', err); }
 });
+
+/* ==========================================================================
+   COMMUNITY BLOG SIDE DRAWER SYSTEM
+   ========================================================================== */
+(function() {
+    const STORAGE_KEY = 'alumni_community_posts_v1';
+    let currentCategory = 'All';
+    let searchQuery = '';
+
+    const DEFAULT_POSTS = [
+        {
+            id: 'post-1',
+            author: 'Priya Sharma',
+            role: 'Alumni',
+            affiliation: 'Senior SDE @ Microsoft (Batch \'20)',
+            category: 'Career',
+            title: 'Tips for 3rd & 4th Year Students preparing for Tech Interviews',
+            content: 'Hey everyone! For all the students aiming for software engineering roles this placement season: focus deeply on Data Structures (Trees, Graphs, DP), build at least 2 full-stack projects with clean git commits, and practice mock behavioral interviews. Feel free to drop questions below!',
+            likes: 24,
+            liked: false,
+            createdAt: new Date(Date.now() - 3 * 3600 * 1000).toISOString(),
+            comments: [
+                {
+                    id: 'c-1',
+                    author: 'Rohan Verma',
+                    role: 'Student',
+                    content: 'Thank you Priya ma\'am! Should we focus more on LeetCode or system design for entry-level roles?',
+                    createdAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString()
+                },
+                {
+                    id: 'c-2',
+                    author: 'Priya Sharma',
+                    role: 'Alumni',
+                    content: 'For fresher roles, DSA and core CS subjects (OS, DBMS, Networks) are 90% of the evaluation. Basic low-level design is enough!',
+                    createdAt: new Date(Date.now() - 1 * 3600 * 1000).toISOString()
+                }
+            ]
+        },
+        {
+            id: 'post-2',
+            author: 'Amit Kumar',
+            role: 'Alumni',
+            affiliation: 'Product Lead @ FinTech (Batch \'18)',
+            category: 'Mentorship',
+            title: '🤝 Offering 1-on-1 Resume Reviews & Product Management Guidance',
+            content: 'Happy to mentor current students and recent graduates interested in transitioning from engineering to Product Management or UI/UX design. Comment or reach out through the Alumni Directory!',
+            likes: 19,
+            liked: false,
+            createdAt: new Date(Date.now() - 12 * 3600 * 1000).toISOString(),
+            comments: [
+                {
+                    id: 'c-3',
+                    author: 'Anjali Rai',
+                    role: 'Student',
+                    content: 'Would love to connect regarding PM roadmaps and APM programs!',
+                    createdAt: new Date(Date.now() - 6 * 3600 * 1000).toISOString()
+                }
+            ]
+        },
+        {
+            id: 'post-3',
+            author: 'Sneha Subba',
+            role: 'Student',
+            affiliation: 'BTech CSE (Batch \'26)',
+            category: 'Academics',
+            title: 'Starting an AI/ML Open-Source Study Group on Campus 🚀',
+            content: 'A few of us 3rd-year students are starting a weekly study group to explore Generative AI, PyTorch, and open-source contributions. Any seniors or alumni working in AI who would like to guide us or give a guest talk?',
+            likes: 15,
+            liked: false,
+            createdAt: new Date(Date.now() - 28 * 3600 * 1000).toISOString(),
+            comments: []
+        }
+    ];
+
+    function getPosts() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_POSTS));
+                return DEFAULT_POSTS;
+            }
+            return JSON.parse(raw);
+        } catch (e) {
+            return DEFAULT_POSTS;
+        }
+    }
+
+    function savePosts(posts) {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+        } catch (e) {
+            console.error('Failed to save community posts', e);
+        }
+    }
+
+    function timeAgo(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const seconds = Math.floor((now - date) / 1000);
+        if (seconds < 60) return 'Just now';
+        const minutes = Math.floor(seconds / 60);
+        if (minutes < 60) return `${minutes}m ago`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours}h ago`;
+        const days = Math.floor(hours / 24);
+        if (days < 30) return `${days}d ago`;
+        return date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    }
+
+    function getAvatarColor(role) {
+        if (role === 'Alumni') return 'bg-amber-100 text-amber-800 border-amber-300';
+        if (role === 'Faculty') return 'bg-emerald-100 text-emerald-800 border-emerald-300';
+        return 'bg-blue-100 text-blue-800 border-blue-300';
+    }
+
+    function getRoleBadge(role) {
+        if (role === 'Alumni') return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">🎓 Alumni</span>';
+        if (role === 'Faculty') return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">👨‍🏫 Faculty</span>';
+        return '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">🎒 Student</span>';
+    }
+
+    function getCategoryBadge(category) {
+        switch(category) {
+            case 'Career': return '<span class="text-[11px] font-semibold text-purple-700 bg-purple-50 border border-purple-200 px-2.5 py-0.5 rounded-full">💼 Career</span>';
+            case 'Mentorship': return '<span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">🤝 Mentorship</span>';
+            case 'Academics': return '<span class="text-[11px] font-semibold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">🎓 Academics</span>';
+            default: return '<span class="text-[11px] font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-full">💬 General</span>';
+        }
+    }
+
+    window.openCommunityDrawer = function() {
+        const container = document.getElementById('communityDrawerContainer');
+        const backdrop = document.getElementById('communityDrawerBackdrop');
+        const panel = document.getElementById('communityDrawerPanel');
+        if (!container || !backdrop || !panel) return;
+
+        container.classList.remove('pointer-events-none');
+        backdrop.classList.remove('opacity-0');
+        backdrop.classList.add('opacity-100');
+        panel.classList.remove('translate-x-full');
+        panel.classList.add('translate-x-0');
+        document.body.style.overflow = 'hidden';
+
+        renderCommunityFeed();
+    };
+
+    window.closeCommunityDrawer = function() {
+        const container = document.getElementById('communityDrawerContainer');
+        const backdrop = document.getElementById('communityDrawerBackdrop');
+        const panel = document.getElementById('communityDrawerPanel');
+        if (!container || !backdrop || !panel) return;
+
+        backdrop.classList.remove('opacity-100');
+        backdrop.classList.add('opacity-0');
+        panel.classList.remove('translate-x-0');
+        panel.classList.add('translate-x-full');
+        document.body.style.overflow = '';
+
+        setTimeout(() => {
+            container.classList.add('pointer-events-none');
+        }, 300);
+    };
+
+    window.toggleNewPostForm = function() {
+        const formContainer = document.getElementById('createPostFormContainer');
+        const btn = document.getElementById('newPostToggleBtn');
+        if (!formContainer) return;
+        const isHidden = formContainer.classList.contains('hidden');
+        if (isHidden) {
+            formContainer.classList.remove('hidden');
+            if (btn) btn.innerHTML = '<i class="fa-solid fa-xmark"></i> <span>Close</span>';
+            const nameInput = document.getElementById('postAuthorName');
+            if (nameInput) nameInput.focus();
+        } else {
+            formContainer.classList.add('hidden');
+            if (btn) btn.innerHTML = '<i class="fa-solid fa-pen"></i> <span>New Post</span>';
+        }
+    };
+
+    window.setCommunityCategory = function(cat) {
+        currentCategory = cat;
+        document.querySelectorAll('.category-pill').forEach(btn => {
+            if (btn.getAttribute('data-category') === cat) {
+                btn.className = 'category-pill active whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition bg-white text-blue-900 shadow-sm';
+            } else {
+                btn.className = 'category-pill whitespace-nowrap px-3 py-1 rounded-full text-xs font-medium transition bg-white/10 hover:bg-white/20 text-white';
+            }
+        });
+        renderCommunityFeed();
+    };
+
+    window.filterCommunityPosts = function() {
+        const input = document.getElementById('communitySearchInput');
+        searchQuery = (input ? input.value : '').toLowerCase().trim();
+        renderCommunityFeed();
+    };
+
+    window.handleCreatePost = function(e) {
+        e.preventDefault();
+        const author = document.getElementById('postAuthorName').value.trim();
+        const role = document.getElementById('postAuthorRole').value;
+        const affiliation = document.getElementById('postAuthorAffiliation').value.trim();
+        const category = document.getElementById('postCategory').value;
+        const title = document.getElementById('postTitleInput').value.trim();
+        const content = document.getElementById('postContentInput').value.trim();
+
+        if (!author || !title || !content) return;
+
+        const newPost = {
+            id: 'post-' + Date.now(),
+            author,
+            role,
+            affiliation: affiliation || (role === 'Alumni' ? 'Alumni' : 'Student'),
+            category,
+            title,
+            content,
+            likes: 1,
+            liked: true,
+            createdAt: new Date().toISOString(),
+            comments: []
+        };
+
+        const posts = getPosts();
+        posts.unshift(newPost);
+        savePosts(posts);
+
+        document.getElementById('communityPostForm').reset();
+        window.toggleNewPostForm();
+        renderCommunityFeed();
+
+        // Scroll to top of feed
+        const feed = document.getElementById('communityFeedContainer');
+        if (feed) feed.scrollTop = 0;
+    };
+
+    window.toggleCommunityLike = function(postId) {
+        const posts = getPosts();
+        const post = posts.find(p => p.id === postId);
+        if (!post) return;
+
+        if (post.liked) {
+            post.likes = Math.max(0, post.likes - 1);
+            post.liked = false;
+        } else {
+            post.likes = (post.likes || 0) + 1;
+            post.liked = true;
+        }
+        savePosts(posts);
+        renderCommunityFeed();
+    };
+
+    window.toggleCommentsList = function(postId) {
+        const commentSec = document.getElementById(`comments-${postId}`);
+        if (commentSec) {
+            commentSec.classList.toggle('hidden');
+        }
+    };
+
+    window.handleCreateComment = function(e, postId) {
+        e.preventDefault();
+        const form = e.target;
+        const input = form.querySelector('input[type="text"]');
+        const content = input ? input.value.trim() : '';
+        if (!content) return;
+
+        const posts = getPosts();
+        const post = posts.find(p => p.id === postId);
+        if (!post) return;
+
+        if (!post.comments) post.comments = [];
+        post.comments.push({
+            id: 'c-' + Date.now(),
+            author: 'You (Community Member)',
+            role: 'Student',
+            content,
+            createdAt: new Date().toISOString()
+        });
+
+        savePosts(posts);
+        renderCommunityFeed();
+
+        // Ensure comments remain expanded
+        const commentSec = document.getElementById(`comments-${postId}`);
+        if (commentSec) commentSec.classList.remove('hidden');
+    };
+
+    window.deleteCommunityPost = function(postId) {
+        if (!confirm('Are you sure you want to delete this discussion post? This action cannot be undone.')) return;
+
+        let posts = getPosts();
+        posts = posts.filter(p => p.id !== postId);
+        savePosts(posts);
+        renderCommunityFeed();
+    };
+
+    window.deleteCommunityComment = function(postId, commentId) {
+        if (!confirm('Are you sure you want to delete this reply?')) return;
+
+        const posts = getPosts();
+        const post = posts.find(p => p.id === postId);
+        if (!post || !post.comments) return;
+
+        post.comments = post.comments.filter(c => c.id !== commentId);
+        savePosts(posts);
+        renderCommunityFeed();
+
+        // Ensure comments remain expanded
+        const commentSec = document.getElementById(`comments-${postId}`);
+        if (commentSec) commentSec.classList.remove('hidden');
+    };
+
+    function renderCommunityFeed() {
+        const feedContainer = document.getElementById('communityFeedContainer');
+        const countBadge = document.getElementById('communityPostCount');
+        if (!feedContainer) return;
+
+        const allPosts = getPosts();
+        if (countBadge) countBadge.textContent = allPosts.length;
+
+        const filtered = allPosts.filter(post => {
+            const matchesCat = (currentCategory === 'All' || post.category === currentCategory);
+            const matchesSearch = !searchQuery || 
+                post.title.toLowerCase().includes(searchQuery) ||
+                post.content.toLowerCase().includes(searchQuery) ||
+                post.author.toLowerCase().includes(searchQuery) ||
+                (post.affiliation && post.affiliation.toLowerCase().includes(searchQuery));
+            return matchesCat && matchesSearch;
+        });
+
+        if (filtered.length === 0) {
+            feedContainer.innerHTML = `
+                <div class="text-center py-16 px-4 bg-white rounded-2xl border border-slate-200">
+                    <div class="w-14 h-14 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-2xl mb-3">
+                        <i class="fa-solid fa-comment-slash"></i>
+                    </div>
+                    <h4 class="text-base font-bold text-slate-800">No discussions found</h4>
+                    <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">Be the first to start a conversation in this category or try another search.</p>
+                    <button onclick="toggleNewPostForm()" class="mt-4 bg-[#012970] text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-blue-900 transition">
+                        <i class="fa-solid fa-pen mr-1"></i> Start a Discussion
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        feedContainer.innerHTML = filtered.map(post => {
+            const initial = (post.author || 'U').charAt(0).toUpperCase();
+            const avatarStyle = getAvatarColor(post.role);
+            const roleBadge = getRoleBadge(post.role);
+            const catBadge = getCategoryBadge(post.category);
+            const commentsCount = (post.comments && post.comments.length) || 0;
+            const isLiked = post.liked;
+
+            const commentsHtml = (post.comments || []).map(c => `
+                <div class="bg-slate-100/80 rounded-xl p-3 text-xs border border-slate-200/60 flex items-start gap-2.5">
+                    <div class="w-6 h-6 rounded-full bg-slate-300 text-slate-700 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">
+                        ${c.author.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-slate-800 text-[11px]">${c.author}</span>
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-[10px] text-slate-400">${timeAgo(c.createdAt)}</span>
+                                <button onclick="deleteCommunityComment('${post.id}', '${c.id}')" title="Delete reply" class="text-slate-400 hover:text-red-600 p-0.5 rounded transition cursor-pointer">
+                                    <i class="fa-regular fa-trash-can text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 leading-relaxed text-[11px]">${c.content}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 hover:shadow-md transition">
+                <!-- Post Header -->
+                <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border ${avatarStyle} shrink-0 shadow-xs">
+                            ${initial}
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="font-bold text-slate-900 text-sm">${post.author}</span>
+                                ${roleBadge}
+                            </div>
+                            <p class="text-[11px] text-slate-500 mt-0.5">${post.affiliation || ''} • <span class="text-slate-400">${timeAgo(post.createdAt)}</span></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        ${catBadge}
+                        <button onclick="deleteCommunityPost('${post.id}')" title="Delete this discussion" class="text-slate-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-lg transition cursor-pointer" aria-label="Delete discussion">
+                            <i class="fa-regular fa-trash-can text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Post Content -->
+                <h3 class="text-base font-bold text-slate-900 mb-2 leading-snug">${post.title}</h3>
+                <p class="text-xs text-slate-600 leading-relaxed whitespace-pre-line mb-4">${post.content}</p>
+
+                <!-- Post Actions Bar -->
+                <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs text-slate-500">
+                    <div class="flex items-center gap-4">
+                        <button onclick="toggleCommunityLike('${post.id}')" class="flex items-center gap-1.5 transition ${isLiked ? 'text-red-600 font-bold' : 'hover:text-red-500'}">
+                            <i class="${isLiked ? 'fa-solid' : 'fa-regular'} fa-heart ${isLiked ? 'text-red-600' : ''}"></i>
+                            <span>${post.likes || 0}</span>
+                        </button>
+                        <button onclick="toggleCommentsList('${post.id}')" class="flex items-center gap-1.5 hover:text-blue-900 transition">
+                            <i class="fa-regular fa-comment"></i>
+                            <span>${commentsCount} ${commentsCount === 1 ? 'Reply' : 'Replies'}</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button onclick="toggleCommentsList('${post.id}')" class="text-blue-900 hover:underline text-[11px] font-semibold">
+                            Reply <i class="fa-solid fa-reply ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Comments / Replies Thread -->
+                <div id="comments-${post.id}" class="${commentsCount > 0 ? '' : 'hidden'} mt-3.5 pt-3 border-t border-slate-100 space-y-2.5">
+                    ${commentsHtml}
+                    <!-- Reply Input -->
+                    <form onsubmit="handleCreateComment(event, '${post.id}')" class="flex items-center gap-2 pt-1.5">
+                        <input type="text" required placeholder="Write a reply..." class="flex-1 bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-800">
+                        <button type="submit" class="bg-blue-900 hover:bg-blue-950 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition shrink-0">
+                            Reply
+                        </button>
+                    </form>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // Keyboard ESC listener
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeCommunityDrawer();
+        }
+    });
+})();
 </script>
 </body>
 </html>

@@ -13,16 +13,17 @@ const counters = document.querySelectorAll(".counter");
 const startCounter = (counter) => {
     counter.innerText = "0";
     const target = Number(counter.getAttribute("data-target"));
+    const suffix = counter.hasAttribute("data-suffix") ? counter.getAttribute("data-suffix") : "+";
     const duration = 2000; // 2 seconds
-    const increment = target / (duration / 20);
+    const increment = Math.max(1, target / (duration / 20));
     const updateCounter = () => {
-        const current = Number(counter.innerText.replace(/,/g,''));
+        const current = Number(counter.innerText.replace(/,/g,'').replace(/\+/g,''));
         if(current < target){
             counter.innerText = Math.ceil(current + increment).toLocaleString();
             setTimeout(updateCounter,20);
         }
         else{
-            counter.innerText = target.toLocaleString() + "+";
+            counter.innerText = target.toLocaleString() + suffix;
         }
     };
     updateCounter();
@@ -102,3 +103,73 @@ function goTop(){
     behavior:"smooth"
 });
 }
+
+// HERO IMAGE SLIDER
+(function() {
+    document.addEventListener('DOMContentLoaded', () => {
+        const track = document.getElementById('heroSliderTrack');
+        if (!track) return;
+
+        const slides = track.children;
+        const totalSlides = slides.length;
+        if (totalSlides <= 1) return;
+
+        const prevBtn = document.getElementById('heroSliderPrevBtn');
+        const nextBtn = document.getElementById('heroSliderNextBtn');
+        const dotsContainer = document.getElementById('heroSliderDots');
+        const dots = dotsContainer ? dotsContainer.querySelectorAll('button') : [];
+
+        let currentSlide = 0;
+        let slideInterval = null;
+
+        function goToSlide(index) {
+            currentSlide = (index + totalSlides) % totalSlides;
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            dots.forEach((dot, idx) => {
+                if (idx === currentSlide) {
+                    dot.className = 'h-1.5 sm:h-2 rounded-full bg-white transition-all duration-300 w-4 sm:w-5 cursor-pointer';
+                } else {
+                    dot.className = 'h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer';
+                }
+            });
+        }
+
+        function nextSlide() {
+            goToSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            goToSlide(currentSlide - 1);
+        }
+
+        function startAutoPlay() {
+            stopAutoPlay();
+            slideInterval = setInterval(nextSlide, 4500);
+        }
+
+        function stopAutoPlay() {
+            if (slideInterval) clearInterval(slideInterval);
+        }
+
+        if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); startAutoPlay(); });
+        if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); startAutoPlay(); });
+
+        dots.forEach((dot, idx) => {
+            dot.addEventListener('click', () => {
+                goToSlide(idx);
+                startAutoPlay();
+            });
+        });
+
+        const sliderParent = track.closest('.group');
+        if (sliderParent) {
+            sliderParent.addEventListener('mouseenter', stopAutoPlay);
+            sliderParent.addEventListener('mouseleave', startAutoPlay);
+            sliderParent.addEventListener('touchstart', stopAutoPlay, { passive: true });
+            sliderParent.addEventListener('touchend', startAutoPlay, { passive: true });
+        }
+
+        startAutoPlay();
+    });
+})();
