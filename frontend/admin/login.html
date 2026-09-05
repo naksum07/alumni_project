@@ -7,7 +7,6 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script src="../scripts/data-store.js"></script>
-<script src="../scripts/popup.js"></script>
 <script src="../scripts/admin-common.js"></script>
 <style>
     html {
@@ -62,7 +61,7 @@
                 <label class="block text-slate-700 font-semibold text-xs uppercase tracking-wide">Username or Email</label>
                 <span id="usernameError" class="text-xs font-medium text-red-600 hidden"></span>
             </div>
-            <input type="text" id="username" placeholder="e.g. admin@alumni.com" required class="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#012970] focus:ring-2 focus:ring-[#012970]/20 transition-colors">
+            <input type="text" id="username" required class="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#012970] focus:ring-2 focus:ring-[#012970]/20 transition-colors">
         </div>
         <div class="mb-6">
             <div class="flex justify-between items-center mb-1.5">
@@ -70,7 +69,7 @@
                 <span id="passcodeError" class="text-xs font-medium text-red-600 hidden"></span>
             </div>
             <div class="relative">
-                <input type="password" id="passcode" placeholder="Enter admin passcode" required class="w-full border border-slate-300 rounded-lg px-4 py-2.5 pr-10 text-sm focus:outline-none focus:border-[#012970] focus:ring-2 focus:ring-[#012970]/20 transition-colors">
+                <input type="password" id="passcode" required class="w-full border border-slate-300 rounded-lg px-4 py-2.5 pr-10 text-sm focus:outline-none focus:border-[#012970] focus:ring-2 focus:ring-[#012970]/20 transition-colors">
                 <button type="button" onclick="togglePasscode()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none p-1">
                     <i id="toggleIcon" class="fa-solid fa-eye"></i>
                 </button>
@@ -126,7 +125,46 @@ const submitBtn = document.getElementById('adminSubmitBtn');
 });
 
 function showAdminAlert(text, type = 'error', actionHtml = '') {
-    showPopup(text, type, null, actionHtml);
+    const adminAlert = document.getElementById('adminAlert');
+    const adminAlertIconContainer = document.getElementById('adminAlertIconContainer');
+    const adminAlertIcon = document.getElementById('adminAlertIcon');
+    const adminAlertTitle = document.getElementById('adminAlertTitle');
+    const adminAlertText = document.getElementById('adminAlertText');
+    const adminAlertAction = document.getElementById('adminAlertAction');
+
+    if (!adminAlert) return;
+
+    adminAlert.classList.remove("hidden", "bg-red-50", "border-red-200", "text-red-900", "bg-emerald-50", "border-emerald-200", "text-emerald-900", "bg-rose-50", "border-rose-200", "text-rose-900");
+    adminAlertIconContainer.classList.remove("bg-red-100", "text-red-600", "bg-emerald-100", "text-emerald-600", "bg-rose-100", "text-rose-600");
+    adminAlertIcon.className = '';
+
+    if (type === 'error') {
+        adminAlert.classList.add("bg-red-50", "border-red-200", "text-red-900");
+        adminAlertIconContainer.classList.add("bg-red-100", "text-red-600");
+        adminAlertIcon.className = "fa-solid fa-circle-xmark text-base";
+        adminAlertTitle.textContent = "Access Denied";
+    } else if (type === 'network') {
+        adminAlert.classList.add("bg-rose-50", "border-rose-200", "text-rose-900");
+        adminAlertIconContainer.classList.add("bg-rose-100", "text-rose-600");
+        adminAlertIcon.className = "fa-solid fa-wifi text-base";
+        adminAlertTitle.textContent = "Connection Error";
+    } else if (type === 'success') {
+        adminAlert.classList.add("bg-emerald-50", "border-emerald-200", "text-emerald-900");
+        adminAlertIconContainer.classList.add("bg-emerald-100", "text-emerald-600");
+        adminAlertIcon.className = "fa-solid fa-circle-check text-base";
+        adminAlertTitle.textContent = "Success";
+    }
+
+    adminAlertText.textContent = text;
+
+    if (actionHtml) {
+        adminAlertAction.innerHTML = actionHtml;
+        adminAlertAction.classList.remove('hidden');
+    } else {
+        adminAlertAction.classList.add('hidden');
+    }
+
+    adminAlert.classList.remove("hidden");
 }
 
 function triggerShake() {

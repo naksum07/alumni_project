@@ -132,7 +132,7 @@ function showRegMessage(text, isError) {
 let allEvents = [];
 let filteredEvents = [];
 let currentPage = 1;
-const itemsPerPage = 21;
+const itemsPerPage = 6;
 
 const searchInput   = document.getElementById('searchInput');
 const filterStatus  = document.getElementById('filterStatus');
@@ -145,24 +145,44 @@ function updatePaginationControls() {
     const totalPages = Math.ceil(filteredEvents.length / itemsPerPage) || 1;
     const prevBtn = document.getElementById('prevPageBtn');
     const nextBtn = document.getElementById('nextPageBtn');
-    const pageIndicator = document.getElementById('pageIndicator');
+    const pageNumbers = document.getElementById('pageNumbers');
     const paginationControls = document.getElementById('paginationControls');
 
-    if (filteredEvents.length <= itemsPerPage) {
-        if (paginationControls) {
-            paginationControls.classList.add('hidden');
-            paginationControls.classList.remove('flex');
-        }
-    } else {
-        if (paginationControls) {
-            paginationControls.classList.remove('hidden');
-            paginationControls.classList.add('flex');
-        }
+    if (!paginationControls) return;
+
+    if (filteredEvents.length === 0) {
+        paginationControls.classList.add('hidden');
+        paginationControls.classList.remove('flex');
+        return;
     }
+
+    paginationControls.classList.remove('hidden');
+    paginationControls.classList.add('flex');
 
     if (prevBtn) prevBtn.disabled = currentPage === 1;
     if (nextBtn) nextBtn.disabled = currentPage === totalPages;
-    if (pageIndicator) pageIndicator.textContent = `Page ${currentPage} of ${totalPages}`;
+
+    if (pageNumbers) {
+        pageNumbers.innerHTML = '';
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement('button');
+            btn.className = `px-3.5 py-1.5 rounded-lg text-sm font-semibold transition ${
+                i === currentPage
+                    ? 'bg-[#c4161c] text-white shadow-sm'
+                    : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+            }`;
+            btn.textContent = i;
+            btn.addEventListener('click', () => {
+                if (currentPage !== i) {
+                    currentPage = i;
+                    renderCurrentPage();
+                    const section = document.getElementById('events');
+                    if (section) section.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+            pageNumbers.appendChild(btn);
+        }
+    }
 }
 
 function renderCurrentPage() {
@@ -289,10 +309,22 @@ async function loadEvents() {
 
 const prevBtn = document.getElementById('prevPageBtn');
 const nextBtn = document.getElementById('nextPageBtn');
-if (prevBtn) prevBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderCurrentPage(); } });
+if (prevBtn) prevBtn.addEventListener('click', () => { 
+  if (currentPage > 1) { 
+    currentPage--; 
+    renderCurrentPage(); 
+    const section = document.getElementById('events');
+    if (section) section.scrollIntoView({ behavior: 'smooth' });
+  } 
+});
 if (nextBtn) nextBtn.addEventListener('click', () => { 
     const totalPages = Math.ceil(filteredEvents.length / itemsPerPage) || 1;
-    if (currentPage < totalPages) { currentPage++; renderCurrentPage(); } 
+    if (currentPage < totalPages) { 
+      currentPage++; 
+      renderCurrentPage(); 
+      const section = document.getElementById('events');
+      if (section) section.scrollIntoView({ behavior: 'smooth' });
+    } 
 });
 
 if (regForm) {

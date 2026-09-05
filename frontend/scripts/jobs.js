@@ -1,18 +1,49 @@
-let allJobs      = [];   // raw list from API
-let filteredJobs = [];   // filtered list
-let selectedJob  = null; // job currently open in the details modal
-let appliedJobIds = [];  // IDs of jobs the logged-in user applied for
+let allJobs        = [];   // merged raw list (Alumni + External)
+let filteredJobs   = [];   // filtered list
+let selectedJob    = null; // job currently open in details/apply modal
+let appliedJobIds  = [];  // IDs of jobs the logged-in user applied for
+let selectedResumeBase64 = ''; // Base64 image payload for resume upload
 
 let currentPage = 1;
 const itemsPerPage = 21;
 
-//Element References
+// Element References
 const jobContainer   = document.getElementById('jobContainer');
 const noResults      = document.getElementById('noResults');
 const resultCount    = document.getElementById('resultCount');
 const searchInput    = document.getElementById('searchInput');
+const filterSource   = document.getElementById('filterSource');
 const filterType     = document.getElementById('filterType');
 const filterLocation = document.getElementById('filterLocation');
+
+function getCurrentUser() {
+  try {
+    return JSON.parse(localStorage.getItem('user') || 'null');
+  } catch (err) {
+    return null;
+  }
+}
+
+function isStudentLoggedIn() {
+  const token = localStorage.getItem('token');
+  const user = getCurrentUser();
+  return Boolean(token && user && String(user.role || '').toLowerCase() === 'student');
+}
+
+function canPostOpportunity() {
+  const user = getCurrentUser();
+  if (!user) return false;
+  const role = String(user.role || '').toLowerCase();
+  return role === 'alumni' || role === 'admin';
+}
+
+function setPostOpportunityButtonsVisibility() {
+  const isAllowed = canPostOpportunity();
+  const buttons = document.querySelectorAll('[onclick="openPostModal()"]');
+  buttons.forEach((btn) => {
+    btn.style.display = isAllowed ? '' : 'none';
+  });
+}
 
 function updatePaginationControls() {
   const totalPages = Math.ceil(filteredJobs.length / itemsPerPage) || 1;
@@ -43,54 +74,95 @@ function getPaginatedData() {
   return filteredJobs.slice(startIndex, startIndex + itemsPerPage);
 }
 
-//Fetch jobs from the API and display them
+/**
+ * Fetch both alumni jobs and external jobs (Adzuna), merge them into allJobs
+ */
 async function loadJobs() {
-  resultCount.textContent = 'Loading opportunities…';
-  jobContainer.innerHTML  = `
-    <div class="col-span-3 text-center py-16 text-gray-400">
-      <i class="fa-solid fa-spinner fa-spin text-4xl mb-4 block"></i>
-      Loading opportunities…
-    </div>`;
+  if (resultCount) resultCount.textContent = 'Loading opportunities…';
+  if (jobContainer) {
+    jobContainer.innerHTML = `
+      <div class="col-span-3 text-center py-16 text-gray-400">
+        <i class="fa-solid fa-spinner fa-spin text-4xl mb-4 block"></i>
+        Loading opportunities…
+      </div>`;
+  }
+
   try {
     const token = localStorage.getItem('token');
-    const jobsPromise = fetch('/api/jobs');
-    const appsPromise = token 
-      ? fetch('/api/jobs/my-applications', { headers: { 'Authorization': `Bearer ${token}` } }).catch(() => null)
+
+    const alumniPromise = fetch('/api/jobs').then(r => r.ok ? r.json() : []);
+    const externalPromise = fetch('/api/external-jobs?per_page=30').then(r => r.ok ? r.json() : { jobs: [] }).catch(() => ({ jobs: [] }));
+    const appsPromise = token
+      ? fetch('/api/jobs/my-applications', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).catch(() => null)
       : Promise.resolve(null);
 
-    const [res, appRes] = await Promise.all([jobsPromise, appsPromise]);
+    const [alumniData, externalData, appData] = await Promise.all([alumniPromise, externalPromise, appsPromise]);
 
-    if (appRes && appRes.ok) {
-      const appData = await appRes.json();
-      if (appData.appliedJobIds) appliedJobIds = appData.appliedJobIds;
+    if (appData && appData.appliedJobIds) {
+      appliedJobIds = appData.appliedJobIds;
     }
 
-    if (!res.ok) throw new Error(`Server returned ${res.status}`);
-    allJobs = await res.json();
+    const alumniJobs = (Array.isArray(alumniData) ? alumniData : []).map(j => ({
+      ...j,
+      isExternal: false,
+      source: 'Alumni',
+      job_type: j.job_type || 'Job'
+    }));
+
+    const extJobs = (externalData && Array.isArray(externalData.jobs) ? externalData.jobs : []).map((j, idx) => ({
+      id: `ext_${idx}_${Date.now()}`,
+      title: j.title || 'Untitled',
+      company: j.company || 'Unknown Company',
+      location: j.location || '',
+      job_type: 'Job',
+      salary: (j.salary_min || j.salary_max)
+        ? `₹${j.salary_min ? Number(j.salary_min).toLocaleString() : ''} ${j.salary_min && j.salary_max ? '–' : ''} ${j.salary_max ? '₹' + Number(j.salary_max).toLocaleString() : ''}`
+        : '',
+      skills: j.category || '',
+      description: j.description || '',
+      jobUrl: j.jobUrl || '#',
+      postedDate: j.postedDate || '',
+      isExternal: true,
+      source: 'External'
+    }));
+
+    // Unified list: alumni jobs first, followed by external jobs
+    allJobs = [...alumniJobs, ...extJobs];
     currentPage = 1;
     displayJobs();
   } catch (err) {
     console.error('Failed to load jobs:', err);
-    resultCount.textContent = 'Could not load opportunities.';
-    jobContainer.innerHTML  = `
-      <div class="col-span-3 text-center py-16 text-red-500">
-        <i class="fa-solid fa-circle-exclamation text-4xl mb-4 block"></i>
-        Could not load opportunities. Please refresh the page.
-      </div>`;
+    if (resultCount) resultCount.textContent = 'Could not load opportunities.';
+    if (jobContainer) {
+      jobContainer.innerHTML = `
+        <div class="col-span-3 text-center py-16 text-red-500">
+          <i class="fa-solid fa-circle-exclamation text-4xl mb-4 block"></i>
+          Could not load opportunities. Please refresh the page.
+        </div>`;
+    }
   }
 }
 
-//Display jobs based on search and filter criteria
+/**
+ * Display jobs based on search, source, type, and location filters
+ */
 function displayJobs() {
-  const search   = searchInput.value.toLowerCase();
-  const type     = filterType.value;
-  const location = filterLocation.value;
+  const search   = searchInput ? searchInput.value.toLowerCase().trim() : '';
+  const source   = filterSource ? filterSource.value : 'All';
+  const type     = filterType ? filterType.value : 'All';
+  const location = filterLocation ? filterLocation.value : 'All';
 
   filteredJobs = allJobs.filter(job => {
     const searchMatch =
-      (job.title    || '').toLowerCase().includes(search) ||
-      (job.company  || '').toLowerCase().includes(search) ||
-      (job.skills   || '').toLowerCase().includes(search);
+      !search ||
+      (job.title       || '').toLowerCase().includes(search) ||
+      (job.company     || '').toLowerCase().includes(search) ||
+      (job.skills      || '').toLowerCase().includes(search) ||
+      (job.description || '').toLowerCase().includes(search);
+
+    const sourceMatch =
+      source === 'All' ||
+      (job.source || '').toLowerCase() === source.toLowerCase();
 
     const typeMatch =
       type === 'All' ||
@@ -100,30 +172,37 @@ function displayJobs() {
       location === 'All' ||
       (job.location || '').toLowerCase().includes(location.toLowerCase());
 
-    return searchMatch && typeMatch && locationMatch;
+    return searchMatch && sourceMatch && typeMatch && locationMatch;
   });
 
-  resultCount.textContent = `${filteredJobs.length} opportunit${filteredJobs.length === 1 ? 'y' : 'ies'} available`;
-  jobContainer.innerHTML  = '';
+  if (resultCount) {
+    resultCount.textContent = `${filteredJobs.length} opportunit${filteredJobs.length === 1 ? 'y' : 'ies'} available`;
+  }
+  if (!jobContainer) return;
+  jobContainer.innerHTML = '';
 
   if (filteredJobs.length === 0) {
-    noResults.classList.remove('hidden');
+    if (noResults) noResults.classList.remove('hidden');
     updatePaginationControls();
     return;
   }
-  noResults.classList.add('hidden');
+  if (noResults) noResults.classList.add('hidden');
 
   const pageData = getPaginatedData();
 
   pageData.forEach(job => {
-    const isJob  = (job.job_type || '').toLowerCase() === 'job';
-    const badge  = isJob
-      ? 'bg-green-100 text-green-700'
-      : 'bg-amber-100 text-amber-700';
-    const label  = isJob ? 'Job' : 'Internship';
-    const isApplied = appliedJobIds.includes(job.id);
+    const isJob = (job.job_type || '').toLowerCase() === 'job';
+    const typeBadgeClass = isJob ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700';
+    const typeLabel = isJob ? 'Job' : 'Internship';
+
+    const isAlumni = job.source === 'Alumni';
+    const sourceBadgeClass = isAlumni ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700';
+    const sourceLabel = job.source || (isAlumni ? 'Alumni' : 'External');
+
+    const isApplied = !job.isExternal && appliedJobIds.includes(job.id);
     const currentUser = getCurrentUser();
     const isOwnerOrAdmin = Boolean(
+      !job.isExternal &&
       currentUser &&
       job.posted_by &&
       (Number(job.posted_by) === Number(currentUser.id) || String(currentUser.role || '').toLowerCase() === 'admin')
@@ -134,32 +213,46 @@ function displayJobs() {
       'bg-white rounded-2xl border border-slate-200 p-6 ' +
       'hover:shadow-xl hover:-translate-y-1 transition duration-300 relative flex flex-col justify-between';
 
-    // Build inner HTML using safe text nodes to prevent XSS
     const companyInitial = (job.company || '?').charAt(0).toUpperCase();
+
     card.innerHTML = `
       <div>
         <div class="flex justify-between items-start">
-          <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg">
+          <div class="w-12 h-12 rounded-xl ${isAlumni ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'} flex items-center justify-center font-bold text-lg">
             ${companyInitial}
           </div>
           <div class="flex flex-col items-end gap-1.5">
-            <span class="${badge} px-3 py-1 rounded-full text-xs font-semibold">${label}</span>
+            <div class="flex items-center gap-1.5">
+              <span class="${sourceBadgeClass} px-2.5 py-0.5 rounded-full text-[11px] font-bold">${sourceLabel}</span>
+              <span class="${typeBadgeClass} px-2.5 py-0.5 rounded-full text-[11px] font-bold">${typeLabel}</span>
+            </div>
             ${isApplied ? `<span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full text-[11px] font-bold inline-flex items-center gap-1"><i class="fa-solid fa-circle-check text-[10px]"></i> Applied</span>` : ''}
           </div>
         </div>
         <h3 class="text-xl font-bold mt-5 job-title-el"></h3>
         <p class="text-blue-600 font-semibold mt-1 job-company-el"></p>
-        <div class="mt-5 space-y-2 text-sm text-slate-500">
+        <div class="mt-4 space-y-1.5 text-sm text-slate-500">
           ${job.location ? `<p class="job-location-el">📍 </p>` : ''}
-          ${job.salary   ? `<p class="job-salary-el">💰 </p>` : ''}
+          ${job.salary   ? `<p class="job-salary-el">💰 </p>`   : ''}
+          ${job.postedDate ? `<p class="job-date-el">📅 Posted: </p>` : ''}
         </div>
-        ${job.skills ? `<div class="bg-slate-50 border border-slate-100 rounded-lg p-3 mt-5 text-xs text-slate-600 job-skills-el"></div>` : ''}
+        ${job.skills ? `<div class="bg-slate-50 border border-slate-100 rounded-lg p-3 mt-4 text-xs text-slate-600 job-skills-el"></div>` : ''}
       </div>
       <div class="flex gap-2 mt-5">
         <button
-          class="view-details-btn flex-1 ${isApplied ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-blue-700 hover:bg-blue-800'} text-white py-2.5 rounded-xl font-semibold transition flex items-center justify-center gap-2 shadow-sm">
-          ${isApplied ? '<i class="fa-solid fa-check-circle"></i> Applied' : 'View Details'}
+          class="view-details-btn flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl font-semibold transition flex items-center justify-center gap-2 text-sm border border-slate-200">
+          View Details
         </button>
+        ${isApplied ? `
+          <button disabled class="flex-1 bg-emerald-600 text-white py-2.5 rounded-xl font-semibold text-sm cursor-not-allowed flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-circle-check text-xs"></i> Applied
+          </button>
+        ` : `
+          <button
+            class="apply-now-card-btn flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl font-semibold transition flex items-center justify-center gap-1.5 text-sm shadow-sm">
+            Apply ${job.isExternal ? '↗' : ''}
+          </button>
+        `}
         ${isOwnerOrAdmin ? `
           <button
             class="delete-job-card-btn bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-3.5 py-2.5 rounded-xl font-semibold transition flex items-center justify-center gap-1 text-sm shadow-sm cursor-pointer"
@@ -169,7 +262,7 @@ function displayJobs() {
         ` : ''}
       </div>`;
 
-    // Set text content safely (prevents XSS)
+    // Safely set text content (prevents XSS)
     const titleEl = card.querySelector('.job-title-el');
     if (titleEl) titleEl.textContent = job.title || '';
     const companyEl = card.querySelector('.job-company-el');
@@ -178,12 +271,22 @@ function displayJobs() {
     if (locationEl) locationEl.textContent = '📍 ' + (job.location || '');
     const salaryEl = card.querySelector('.job-salary-el');
     if (salaryEl) salaryEl.textContent = '💰 ' + (job.salary || '');
+    const dateEl = card.querySelector('.job-date-el');
+    if (dateEl && job.postedDate) {
+      const formatted = new Date(job.postedDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+      dateEl.textContent = '📅 Posted: ' + formatted;
+    }
     const skillsEl = card.querySelector('.job-skills-el');
     if (skillsEl) skillsEl.textContent = job.skills || '';
 
-    // Attach click safely via addEventListener
+    // Attach event handlers
     const detailsBtn = card.querySelector('.view-details-btn');
-    if (detailsBtn) detailsBtn.addEventListener('click', () => showDetails(job.id));
+    if (detailsBtn) detailsBtn.addEventListener('click', () => showDetails(job));
+
+    const applyBtn = card.querySelector('.apply-now-card-btn');
+    if (applyBtn) {
+      applyBtn.addEventListener('click', () => handleApplyClick(job));
+    }
 
     const deleteBtn = card.querySelector('.delete-job-card-btn');
     if (deleteBtn) {
@@ -199,52 +302,60 @@ function displayJobs() {
   updatePaginationControls();
 }
 
-function getCurrentUser() {
-  try {
-    return JSON.parse(localStorage.getItem('user') || 'null');
-  } catch (err) {
-    return null;
+/**
+ * Handle Apply button clicks for both Alumni and External jobs.
+ * Enforces requirement #2: registered, logged-in student check.
+ */
+function handleApplyClick(job) {
+  if (!isStudentLoggedIn()) {
+    promptStudentLogin();
+    return;
+  }
+
+  if (job.isExternal) {
+    if (job.jobUrl) {
+      window.open(job.jobUrl, '_blank', 'noopener,noreferrer');
+    }
+  } else {
+    selectedJob = job;
+    openApply();
   }
 }
 
-function canPostOpportunity() {
-  const user = getCurrentUser();
-  if (!user) return true;
-  const role = String(user.role || '').toLowerCase();
-  return role === 'alumni' || role === 'admin';
+function promptStudentLogin() {
+  const msg = 'Only registered, logged-in students can apply for job opportunities. Please log in to your student account.';
+  if (typeof showConfirmPopup === 'function') {
+    showConfirmPopup(
+      msg,
+      'Student Login Required',
+      () => { window.location.href = 'login.html'; },
+      null,
+      'Go to Login',
+      'Cancel'
+    );
+  } else {
+    alert(msg);
+    window.location.href = 'login.html';
+  }
 }
 
-function setPostOpportunityButtonsVisibility() {
-  const buttons = document.querySelectorAll('[onclick="openPostModal()"]');
-  buttons.forEach((btn) => {
-    btn.style.display = '';
-  });
-}
-
-function showPostStatus(message, isError = false) {
-  const msg = document.getElementById('postStatusMessage');
-  if (!msg) return;
-  msg.textContent = message;
-  msg.classList.remove('hidden', 'text-red-600', 'text-green-600');
-  msg.classList.add(isError ? 'text-red-600' : 'text-green-600');
-  msg.className = `text-sm font-medium ${isError ? 'text-red-600' : 'text-green-600'}`;
-}
-
-window.addEventListener('storage', () => {
-  setPostOpportunityButtonsVisibility();
-});
-
-//Details Modal
-function showDetails(id) {
-  selectedJob = allJobs.find(j => j.id === id);
+// Show Details Modal
+function showDetails(job) {
+  selectedJob = job;
   if (!selectedJob) return;
 
   const isJob = (selectedJob.job_type || '').toLowerCase() === 'job';
-  const badge = isJob ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700';
-  const label = isJob ? 'Job' : 'Internship';
-  const isApplied = appliedJobIds.includes(selectedJob.id);
+  const typeBadgeClass = isJob ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700';
+  const typeLabel = isJob ? 'Job' : 'Internship';
+
+  const isAlumni = selectedJob.source === 'Alumni';
+  const sourceBadgeClass = isAlumni ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700';
+  const sourceLabel = selectedJob.source || 'Opportunity';
+
+  const isApplied = !selectedJob.isExternal && appliedJobIds.includes(selectedJob.id);
   const currentUser = getCurrentUser();
   const isOwnerOrAdmin = Boolean(
+    !selectedJob.isExternal &&
     currentUser &&
     selectedJob.posted_by &&
     (Number(selectedJob.posted_by) === Number(currentUser.id) || String(currentUser.role || '').toLowerCase() === 'admin')
@@ -254,9 +365,10 @@ function showDetails(id) {
   if (!detailsEl) return;
 
   detailsEl.innerHTML = `
-    <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-2xl company-initial-el"></div>
+    <div class="w-16 h-16 rounded-2xl ${isAlumni ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'} flex items-center justify-center font-bold text-2xl company-initial-el"></div>
     <div class="flex items-center gap-2 mt-5">
-      <span class="${badge} inline-block px-3 py-1 rounded-full text-xs font-semibold">${label}</span>
+      <span class="${sourceBadgeClass} inline-block px-3 py-1 rounded-full text-xs font-semibold">${sourceLabel}</span>
+      <span class="${typeBadgeClass} inline-block px-3 py-1 rounded-full text-xs font-semibold">${typeLabel}</span>
       ${isApplied ? `<span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Applied</span>` : ''}
     </div>
     <h2 class="text-3xl font-extrabold mt-4 detail-title-el"></h2>
@@ -265,10 +377,11 @@ function showDetails(id) {
     <div class="mt-6 space-y-3 text-slate-600">
       ${selectedJob.location ? `<p class="detail-location-el">📍 </p>` : ''}
       ${selectedJob.salary   ? `<p class="detail-salary-el">💰 </p>`   : ''}
+      ${selectedJob.postedDate ? `<p class="detail-date-el">📅 Posted: </p>` : ''}
     </div>
     ${selectedJob.skills ? `
     <div class="border-t mt-7 pt-6">
-      <h4 class="font-bold mb-2">Required Skills</h4>
+      <h4 class="font-bold mb-2">Required Skills / Field</h4>
       <p class="text-slate-600 detail-skills-el"></p>
     </div>` : ''}
     ${selectedJob.description ? `
@@ -284,7 +397,7 @@ function showDetails(id) {
       <button
         id="openApplyBtn"
         class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl mt-8 font-semibold shadow transition">
-        Apply Now
+        Apply Now ${selectedJob.isExternal ? '↗' : ''}
       </button>
     `}
     ${isOwnerOrAdmin ? `
@@ -295,7 +408,7 @@ function showDetails(id) {
       </button>
     ` : ''}`;
 
-  // Set text content safely (prevents XSS)
+  // Safely set text content
   const companyInitialEl = detailsEl.querySelector('.company-initial-el');
   if (companyInitialEl) companyInitialEl.textContent = (selectedJob.company || '?').charAt(0).toUpperCase();
   const detailTitleEl = detailsEl.querySelector('.detail-title-el');
@@ -306,12 +419,23 @@ function showDetails(id) {
   if (detailLocationEl) detailLocationEl.textContent = '📍 ' + (selectedJob.location || '');
   const detailSalaryEl = detailsEl.querySelector('.detail-salary-el');
   if (detailSalaryEl) detailSalaryEl.textContent = '💰 ' + (selectedJob.salary || '');
+  const detailDateEl = detailsEl.querySelector('.detail-date-el');
+  if (detailDateEl && selectedJob.postedDate) {
+    const formatted = new Date(selectedJob.postedDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    detailDateEl.textContent = '📅 Posted: ' + formatted;
+  }
   const detailSkillsEl = detailsEl.querySelector('.detail-skills-el');
   if (detailSkillsEl) detailSkillsEl.textContent = selectedJob.skills || '';
   const detailDescEl = detailsEl.querySelector('.detail-desc-el');
   if (detailDescEl) detailDescEl.textContent = selectedJob.description || '';
+
   const openApplyBtn = detailsEl.querySelector('#openApplyBtn');
-  if (openApplyBtn) openApplyBtn.addEventListener('click', openApply);
+  if (openApplyBtn) {
+    openApplyBtn.addEventListener('click', () => {
+      closeDetails();
+      handleApplyClick(selectedJob);
+    });
+  }
 
   const deleteModalBtn = detailsEl.querySelector('#deleteOpportunityModalBtn');
   if (deleteModalBtn) {
@@ -323,15 +447,27 @@ function showDetails(id) {
 
 function closeDetails() { closeModal('detailsModal'); }
 
-//Apply Modal
+// Apply Modal Initialization & Resume File Handling
 function openApply() {
+  if (!isStudentLoggedIn()) {
+    promptStudentLogin();
+    return;
+  }
+
   closeDetails();
-  document.getElementById('applyJobTitle').textContent =
-    `${selectedJob.title} — ${selectedJob.company}`;
-  // clear previous messages
+  const titleEl = document.getElementById('applyJobTitle');
+  if (titleEl && selectedJob) {
+    titleEl.textContent = `${selectedJob.title} — ${selectedJob.company}`;
+  }
+
+  // Clear previous messages & reset form
   const msg = document.getElementById('applyMessage');
   if (msg) { msg.textContent = ''; msg.className = 'text-sm font-medium hidden'; }
-  document.getElementById('applicationForm').reset();
+
+  const form = document.getElementById('applicationForm');
+  if (form) form.reset();
+
+  resetResumeFileInput();
 
   const countrySelect = document.getElementById('appCountryCode');
   const phoneInput = document.getElementById('appPhone');
@@ -340,22 +476,22 @@ function openApply() {
     phoneInput.placeholder = '98765 43210';
   }
 
-  // Autofill if logged in
-  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  // Autofill user details
+  const user = getCurrentUser();
   if (user) {
     const rawName = user.fullName || user.full_name || '';
     const parts = rawName.split(' ');
     if (parts.length === 1) {
-      document.getElementById('appFirstName').value = parts[0] || '';
+      if (document.getElementById('appFirstName')) document.getElementById('appFirstName').value = parts[0] || '';
     } else if (parts.length === 2) {
-      document.getElementById('appFirstName').value = parts[0] || '';
-      document.getElementById('appLastName').value = parts[1] || '';
+      if (document.getElementById('appFirstName')) document.getElementById('appFirstName').value = parts[0] || '';
+      if (document.getElementById('appLastName')) document.getElementById('appLastName').value = parts[1] || '';
     } else if (parts.length >= 3) {
-      document.getElementById('appFirstName').value = parts[0] || '';
-      document.getElementById('appMiddleName').value = parts.slice(1, -1).join(' ') || '';
-      document.getElementById('appLastName').value = parts[parts.length - 1] || '';
+      if (document.getElementById('appFirstName')) document.getElementById('appFirstName').value = parts[0] || '';
+      if (document.getElementById('appMiddleName')) document.getElementById('appMiddleName').value = parts.slice(1, -1).join(' ') || '';
+      if (document.getElementById('appLastName')) document.getElementById('appLastName').value = parts[parts.length - 1] || '';
     }
-    if (user.email) document.getElementById('appEmail').value = user.email;
+    if (user.email && document.getElementById('appEmail')) document.getElementById('appEmail').value = user.email;
     if (user.phone) {
       const match = user.phone.match(/^(\+\d{1,4})\s*(.*)$/);
       if (match && countrySelect) {
@@ -369,13 +505,91 @@ function openApply() {
 
   openModal('applyModal');
 }
-function closeApply() { closeModal('applyModal'); }
 
-// Setup country code change listener for jobs apply form
+function closeApply() {
+  closeModal('applyModal');
+  resetResumeFileInput();
+}
+
+function resetResumeFileInput() {
+  selectedResumeBase64 = '';
+  const fileInput = document.getElementById('appResumeFile');
+  const dropzone = document.getElementById('appResumeDropzone');
+  const fileLabel = document.getElementById('resumeFileLabel');
+  const previewWrap = document.getElementById('resumePreviewWrap');
+  const previewImg = document.getElementById('resumePreview');
+  const fileName = document.getElementById('resumeFileName');
+  const fileSize = document.getElementById('resumeFileSize');
+
+  if (fileInput) fileInput.value = '';
+  if (fileLabel) fileLabel.textContent = 'Choose Resume Image...';
+  if (dropzone) dropzone.classList.remove('hidden');
+  if (previewWrap) previewWrap.classList.add('hidden');
+  if (previewImg) previewImg.src = '';
+  if (fileName) fileName.textContent = '';
+  if (fileSize) fileSize.textContent = '';
+}
+
+// Wire up resume image file input listener
+const resumeFileInput = document.getElementById('appResumeFile');
+if (resumeFileInput) {
+  resumeFileInput.addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) {
+      resetResumeFileInput();
+      return;
+    }
+
+    if (!file.type.match(/^image\/(png|jpeg|jpg)$/)) {
+      if (typeof showPopup === 'function') {
+        showPopup('Please select an image file (PNG or JPEG format only).', 'error');
+      } else {
+        alert('Please select an image file (PNG or JPEG format only).');
+      }
+      resetResumeFileInput();
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      if (typeof showPopup === 'function') {
+        showPopup('Image file size must be less than 5MB.', 'error');
+      } else {
+        alert('Image file size must be less than 5MB.');
+      }
+      resetResumeFileInput();
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (evt) {
+      selectedResumeBase64 = evt.target.result;
+
+      const dropzone = document.getElementById('appResumeDropzone');
+      const previewWrap = document.getElementById('resumePreviewWrap');
+      const previewImg = document.getElementById('resumePreview');
+      const fileName = document.getElementById('resumeFileName');
+      const fileSize = document.getElementById('resumeFileSize');
+
+      if (previewImg) previewImg.src = evt.target.result;
+      if (fileName) fileName.textContent = file.name;
+      if (fileSize) fileSize.textContent = (file.size / 1024).toFixed(1) + ' KB';
+      if (dropzone) dropzone.classList.add('hidden');
+      if (previewWrap) previewWrap.classList.remove('hidden');
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+const removeResumeBtn = document.getElementById('removeResumeBtn');
+if (removeResumeBtn) {
+  removeResumeBtn.addEventListener('click', resetResumeFileInput);
+}
+
+// Country code change listener
 const appCountrySelect = document.getElementById('appCountryCode');
 const appPhoneInput = document.getElementById('appPhone');
 if (appCountrySelect && appPhoneInput) {
-  appCountrySelect.addEventListener('change', function() {
+  appCountrySelect.addEventListener('change', function () {
     const selectedOption = appCountrySelect.options[appCountrySelect.selectedIndex];
     const format = selectedOption.getAttribute('data-format');
     if (format) {
@@ -384,57 +598,79 @@ if (appCountrySelect && appPhoneInput) {
   });
 }
 
-//Application Form Submission
-document.getElementById('applicationForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
+// Application Form Submission
+const applicationForm = document.getElementById('applicationForm');
+if (applicationForm) {
+  applicationForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
 
-  const submitBtn = this.querySelector('button[type="submit"]');
-  const msg       = document.getElementById('applyMessage');
-  const firstName = document.getElementById('appFirstName').value.trim();
-  const middleName = (document.getElementById('appMiddleName')?.value || '').trim();
-  const lastName  = document.getElementById('appLastName').value.trim();
-  const fullName  = [firstName, middleName, lastName].filter(Boolean).join(' ');
-
-  const email      = document.getElementById('appEmail').value.trim();
-  const countryCode = document.getElementById('appCountryCode')?.value || '+91';
-  const rawPhone   = (document.getElementById('appPhone')?.value || '').trim();
-  const phone      = rawPhone ? `${countryCode} ${rawPhone}` : '';
-  const resumeUrl  = document.getElementById('appResume').value.trim();
-  const coverLetter = document.getElementById('appCover').value.trim();
-
-  submitBtn.disabled    = true;
-  submitBtn.textContent = 'Submitting…';
-
-  // Attach token if the user is logged in
-  const token   = localStorage.getItem('token');
-  const headers = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  try {
-    const res = await fetch(`/api/jobs/${selectedJob.id}/apply`, {
-      method:  'POST',
-      headers,
-      body: JSON.stringify({ fullName, email, phone, coverLetter, resumeUrl }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      showApplyMessage(data.message || 'Submission failed. Please try again.', true);
+    if (!isStudentLoggedIn()) {
+      promptStudentLogin();
       return;
     }
-    showApplyMessage('✅ Application submitted successfully!', false);
-    if (selectedJob && selectedJob.id && !appliedJobIds.includes(selectedJob.id)) {
-      appliedJobIds.push(selectedJob.id);
-      displayJobs();
+
+    if (!selectedResumeBase64) {
+      showApplyMessage('Please upload your resume as an image file (PNG/JPEG).', true);
+      return;
     }
-    this.reset();
-    setTimeout(closeApply, 2000);
-  } catch (err) {
-    console.error('Apply error:', err);
-    showApplyMessage('Could not reach the server. Please try again later.', true);
-  } finally {
-    submitBtn.disabled    = false;
-    submitBtn.textContent = 'Submit Application';
-  }
-});
+
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const firstName = document.getElementById('appFirstName').value.trim();
+    const middleName = (document.getElementById('appMiddleName')?.value || '').trim();
+    const lastName  = document.getElementById('appLastName').value.trim();
+    const fullName  = [firstName, middleName, lastName].filter(Boolean).join(' ');
+
+    const email      = document.getElementById('appEmail').value.trim();
+    const countryCode = document.getElementById('appCountryCode')?.value || '+91';
+    const rawPhone   = (document.getElementById('appPhone')?.value || '').trim();
+    const phone      = rawPhone ? `${countryCode} ${rawPhone}` : '';
+    const coverLetter = document.getElementById('appCover').value.trim();
+
+    if (submitBtn) {
+      submitBtn.disabled    = true;
+      submitBtn.textContent = 'Submitting…';
+    }
+
+    const token   = localStorage.getItem('token');
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+    try {
+      const res = await fetch(`/api/jobs/${selectedJob.id}/apply`, {
+        method:  'POST',
+        headers,
+        body: JSON.stringify({
+          fullName,
+          email,
+          phone,
+          coverLetter,
+          resumeImage: selectedResumeBase64
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showApplyMessage(data.message || 'Submission failed. Please try again.', true);
+        return;
+      }
+      showApplyMessage('✅ Application submitted successfully!', false);
+      if (selectedJob && selectedJob.id && !appliedJobIds.includes(selectedJob.id)) {
+        appliedJobIds.push(selectedJob.id);
+        displayJobs();
+      }
+      this.reset();
+      resetResumeFileInput();
+      setTimeout(closeApply, 2000);
+    } catch (err) {
+      console.error('Apply error:', err);
+      showApplyMessage('Could not reach the server. Please try again later.', true);
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled    = false;
+        submitBtn.textContent = 'Submit Application';
+      }
+    }
+  });
+}
 
 function showApplyMessage(text, isError) {
   const msg = document.getElementById('applyMessage');
@@ -444,7 +680,7 @@ function showApplyMessage(text, isError) {
   msg.classList.add(isError ? 'text-red-600' : 'text-green-600');
 }
 
-//Post Job Modal
+// Post Job Modal
 function openPostModal() {
   const token = localStorage.getItem('token');
   const user = getCurrentUser();
@@ -482,6 +718,7 @@ function openPostModal() {
   }
   openModal('postModal');
 }
+
 function closePostModal() {
   const msg = document.getElementById('postStatusMessage');
   if (msg) {
@@ -490,62 +727,79 @@ function closePostModal() {
   }
   closeModal('postModal');
 }
-document.getElementById('postForm').addEventListener('submit', async function (e) {
-  e.preventDefault();
-  const token = localStorage.getItem('token');
-  const currentUser = getCurrentUser();
 
-  if (!token) {
-    window.location.href = 'login.html';
-    return;
-  }
+const postForm = document.getElementById('postForm');
+if (postForm) {
+  postForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    const currentUser = getCurrentUser();
 
-  const role = String(currentUser?.role || '').toLowerCase();
-  if (!currentUser || (role !== 'alumni' && role !== 'admin')) {
-    showPostStatus('Only alumni and administrators can post opportunities.', true);
-    return;
-  }
-  const submitBtn = this.querySelector('button[type="submit"]');
-  submitBtn.disabled    = true;
-  submitBtn.textContent = 'Publishing…';
-  const body = {
-    title:       document.getElementById('postTitle').value.trim(),
-    company:     document.getElementById('postCompany').value.trim(),
-    jobType:     document.getElementById('postType').value,
-    location:    document.getElementById('postLocation').value.trim(),
-    salary:      document.getElementById('postSalary').value.trim(),
-    skills:      document.getElementById('postSkills').value.trim(),
-    description: document.getElementById('postDesc').value.trim(),
-  };
-  try {
-    const res = await fetch('/api/jobs', {
-      method:  'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(body),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      showPostStatus(data.message || 'Failed to post job. Please try again.', true);
+    if (!token) {
+      window.location.href = 'login.html';
       return;
     }
-    showPostStatus('✅ Opportunity posted successfully!', false);
-    if (typeof showPopup === 'function') {
-      showPopup('Opportunity posted successfully!', 'success');
+
+    const role = String(currentUser?.role || '').toLowerCase();
+    if (!currentUser || (role !== 'alumni' && role !== 'admin')) {
+      showPostStatus('Only alumni and administrators can post opportunities.', true);
+      return;
     }
-    this.reset();
-    closePostModal();
-    await loadJobs(); // refresh the list
-  } catch (err) {
-    console.error('Post job error:', err);
-    showPostStatus('Could not reach the server. Please try again later.', true);
-  } finally {
-    submitBtn.disabled    = false;
-    submitBtn.textContent = 'Publish Opportunity';
-  }
-});
+    const submitBtn = this.querySelector('button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.disabled    = true;
+      submitBtn.textContent = 'Publishing…';
+    }
+    const body = {
+      title:       document.getElementById('postTitle').value.trim(),
+      company:     document.getElementById('postCompany').value.trim(),
+      jobType:     document.getElementById('postType').value,
+      location:    document.getElementById('postLocation').value.trim(),
+      salary:      document.getElementById('postSalary').value.trim(),
+      skills:      document.getElementById('postSkills').value.trim(),
+      description: document.getElementById('postDesc').value.trim(),
+    };
+    try {
+      const res = await fetch('/api/jobs', {
+        method:  'POST',
+        headers: {
+          'Content-Type':  'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showPostStatus(data.message || 'Failed to post job. Please try again.', true);
+        return;
+      }
+      showPostStatus('✅ Opportunity posted successfully!', false);
+      if (typeof showPopup === 'function') {
+        showPopup('Opportunity posted successfully!', 'success');
+      }
+      this.reset();
+      closePostModal();
+      await loadJobs(); // refresh the list
+    } catch (err) {
+      console.error('Post job error:', err);
+      showPostStatus('Could not reach the server. Please try again later.', true);
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled    = false;
+        submitBtn.textContent = 'Publish Opportunity';
+      }
+    }
+  });
+}
+
+function showPostStatus(message, isError = false) {
+  const msg = document.getElementById('postStatusMessage');
+  if (!msg) return;
+  msg.textContent = message;
+  msg.classList.remove('hidden', 'text-red-600', 'text-green-600');
+  msg.classList.add(isError ? 'text-red-600' : 'text-green-600');
+  msg.className = `text-sm font-medium ${isError ? 'text-red-600' : 'text-green-600'}`;
+}
 
 async function deleteJobHandler(jobId) {
   const token = localStorage.getItem('token');
@@ -612,20 +866,22 @@ function escapeHTML(str) {
     .replace(/'/g, '&#039;');
 }
 
-//Modal Utility Functions
+// Modal Utility Functions
 function openModal(id) {
   const el = document.getElementById(id);
+  if (!el) return;
   el.classList.remove('hidden');
   el.classList.add('flex');
 }
 function closeModal(id) {
   const el = document.getElementById(id);
+  if (!el) return;
   el.classList.add('hidden');
   el.classList.remove('flex');
 }
 
-// Close any modal on backdrop click
-['detailsModal', 'applyModal', 'postModal', 'extDetailsModal'].forEach(id => {
+// Close modals on backdrop click
+['detailsModal', 'applyModal', 'postModal'].forEach(id => {
   const el = document.getElementById(id);
   if (el) el.addEventListener('click', e => { if (e.target === el) closeModal(id); });
 });
@@ -633,9 +889,10 @@ function closeModal(id) {
 setPostOpportunityButtonsVisibility();
 
 // Search and Filter Event Listeners
-searchInput.addEventListener('input', () => { currentPage = 1; displayJobs(); });
-filterType.addEventListener('change', () => { currentPage = 1; displayJobs(); });
-filterLocation.addEventListener('change', () => { currentPage = 1; displayJobs(); });
+if (searchInput)    searchInput.addEventListener('input', () => { currentPage = 1; displayJobs(); });
+if (filterSource)   filterSource.addEventListener('change', () => { currentPage = 1; displayJobs(); });
+if (filterType)     filterType.addEventListener('change', () => { currentPage = 1; displayJobs(); });
+if (filterLocation) filterLocation.addEventListener('change', () => { currentPage = 1; displayJobs(); });
 
 const prevBtn = document.getElementById('prevPageBtn');
 const nextBtn = document.getElementById('nextPageBtn');
@@ -643,260 +900,6 @@ if (prevBtn) prevBtn.addEventListener('click', () => { if (currentPage > 1) { cu
 if (nextBtn) nextBtn.addEventListener('click', () => {
   const totalPages = Math.ceil(filteredJobs.length / itemsPerPage) || 1;
   if (currentPage < totalPages) { currentPage++; displayJobs(); }
-});
-
-// ============================================================
-//  EXTERNAL JOBS (Adzuna API)
-// ============================================================
-
-let extCurrentPage = 1;
-let extTotalCount  = 0;
-const EXT_PER_PAGE = 21;
-
-const extPrevBtn = document.getElementById('extPrevBtn');
-const extNextBtn = document.getElementById('extNextBtn');
-if (extPrevBtn) extPrevBtn.addEventListener('click', () => { if (extCurrentPage > 1) loadExternalJobs(extCurrentPage - 1); });
-if (extNextBtn) extNextBtn.addEventListener('click', () => {
-  const totalPages = Math.ceil(extTotalCount / EXT_PER_PAGE);
-  if (extCurrentPage < totalPages) loadExternalJobs(extCurrentPage + 1);
-});
-
-/** Switch between Alumni and External job tabs */
-function switchJobTab(tab) {
-  const alumniPanel   = document.getElementById('alumniJobsPanel');
-  const externalPanel = document.getElementById('externalJobsPanel');
-  const tabAlumni     = document.getElementById('tabAlumniJobs');
-  const tabExternal   = document.getElementById('tabExternalJobs');
-
-  // Also toggle the top search/filter bar visibility
-  const topFilters = document.querySelector('section.max-w-6xl');
-
-  if (tab === 'external') {
-    alumniPanel.classList.add('hidden');
-    externalPanel.classList.remove('hidden');
-    if (topFilters) topFilters.classList.add('hidden');
-
-    tabAlumni.className   = 'px-5 py-2.5 rounded-t-xl font-semibold text-sm transition border-b-2 border-transparent text-slate-500 hover:text-slate-700';
-    tabExternal.className = 'px-5 py-2.5 rounded-t-xl font-semibold text-sm transition border-b-2 border-blue-600 text-blue-700 bg-blue-50';
-
-    // Load external jobs on first switch if container is empty
-    const container = document.getElementById('externalJobContainer');
-    if (container && container.children.length === 0) {
-      loadExternalJobs(1);
-    }
-  } else {
-    alumniPanel.classList.remove('hidden');
-    externalPanel.classList.add('hidden');
-    if (topFilters) topFilters.classList.remove('hidden');
-
-    tabAlumni.className   = 'px-5 py-2.5 rounded-t-xl font-semibold text-sm transition border-b-2 border-blue-600 text-blue-700 bg-blue-50';
-    tabExternal.className = 'px-5 py-2.5 rounded-t-xl font-semibold text-sm transition border-b-2 border-transparent text-slate-500 hover:text-slate-700';
-  }
-}
-
-/** Fetch external jobs from /api/external-jobs (Adzuna) */
-async function loadExternalJobs(page = 1) {
-  const container   = document.getElementById('externalJobContainer');
-  const countEl     = document.getElementById('extResultCount');
-  const pagination  = document.getElementById('extPagination');
-
-  if (page < 1) return;
-  extCurrentPage = page;
-
-  if (countEl) countEl.textContent = 'Searching jobs from LinkedIn, Indeed, Glassdoor…';
-  if (container) container.innerHTML = `
-    <div class="col-span-3 text-center py-16 text-gray-400">
-      <i class="fa-solid fa-spinner fa-spin text-4xl mb-4 block"></i>
-      Fetching external opportunities…
-    </div>`;
-  if (pagination) pagination.classList.add('hidden');
-
-  const what  = (document.getElementById('extSearchInput')?.value || '').trim();
-  const where = (document.getElementById('extLocationInput')?.value || '').trim();
-
-  const params = new URLSearchParams({
-    page:     page,
-    per_page: EXT_PER_PAGE,
-    country:  'in',
-  });
-  if (what)  params.set('what', what);
-  if (where) params.set('where', where);
-
-  try {
-    const res = await fetch(`/api/external-jobs?${params}`);
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      throw new Error(errData.message || `Server returned ${res.status}`);
-    }
-
-    const data = await res.json();
-    extTotalCount = data.count || 0;
-
-    if (!data.jobs || data.jobs.length === 0) {
-      countEl.textContent = '0 external jobs found';
-      container.innerHTML = `
-        <div class="col-span-3 text-center py-16 text-slate-400">
-          <div class="text-5xl mb-4">🔍</div>
-          <h3 class="text-lg font-bold text-slate-600">No external jobs found</h3>
-          <p class="mt-1">Try different keywords or location.</p>
-        </div>`;
-      return;
-    }
-
-    countEl.textContent = `${extTotalCount.toLocaleString()} external jobs found`;
-    container.innerHTML = '';
-    data.jobs.forEach((job, idx) => {
-      const card = document.createElement('div');
-      card.className =
-        'bg-white rounded-2xl border border-slate-200 p-6 ' +
-        'hover:shadow-xl hover:-translate-y-1 transition duration-300';
-
-      const postedDate = job.postedDate
-        ? new Date(job.postedDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-        : '';
-
-      const salaryText = (job.salary_min || job.salary_max)
-        ? `💰 ${job.salary_min ? '₹' + Number(job.salary_min).toLocaleString() : ''} ${job.salary_min && job.salary_max ? '–' : ''} ${job.salary_max ? '₹' + Number(job.salary_max).toLocaleString() : ''}`
-        : '';
-
-      // Build card HTML with placeholders; fill text content safely below
-      card.innerHTML = `
-        <div class="flex justify-between items-start">
-          <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center font-bold text-lg ext-initial"></div>
-          <span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full text-xs font-semibold">External</span>
-        </div>
-        <h3 class="text-xl font-bold mt-5 ext-title"></h3>
-        <p class="text-blue-600 font-semibold mt-1 ext-company"></p>
-        <div class="mt-5 space-y-2 text-sm text-slate-500">
-          ${job.location ? `<p class="ext-location">📍 </p>` : ''}
-          ${salaryText   ? `<p class="ext-salary"></p>` : ''}
-          ${postedDate   ? `<p class="ext-date">📅 </p>` : ''}
-          ${job.category ? `<p class="ext-category">📂 </p>` : ''}
-        </div>
-        <p class="text-slate-500 text-sm mt-4 line-clamp-3 ext-desc"></p>
-        <div class="flex gap-3 mt-5">
-          <button class="ext-view-btn flex-1 bg-blue-700 hover:bg-blue-800 text-white py-2.5 rounded-xl font-semibold transition shadow-sm">
-            View Details
-          </button>
-          <a href="#" target="_blank" rel="noopener"
-            class="ext-apply-link flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl font-semibold transition text-center border border-slate-200">
-            Apply ↗
-          </a>
-        </div>`;
-
-      // Safely set all user-controlled text
-      const extInitial = card.querySelector('.ext-initial');
-      if (extInitial) extInitial.textContent = (job.company || '?').charAt(0).toUpperCase();
-      const extTitle = card.querySelector('.ext-title');
-      if (extTitle) extTitle.textContent = job.title || 'Untitled';
-      const extCompany = card.querySelector('.ext-company');
-      if (extCompany) extCompany.textContent = job.company || 'Unknown Company';
-      const extLocation = card.querySelector('.ext-location');
-      if (extLocation) extLocation.textContent = '📍 ' + job.location;
-      const extSalary = card.querySelector('.ext-salary');
-      if (extSalary) extSalary.textContent = salaryText;
-      const extDate = card.querySelector('.ext-date');
-      if (extDate) extDate.textContent = '📅 ' + postedDate;
-      const extCategory = card.querySelector('.ext-category');
-      if (extCategory) extCategory.textContent = '📂 ' + job.category;
-      const extDesc = card.querySelector('.ext-desc');
-      if (extDesc) extDesc.textContent = job.description || '';
-      // Set the apply link href safely
-      const extApplyLink = card.querySelector('.ext-apply-link');
-      if (extApplyLink && job.jobUrl) extApplyLink.href = job.jobUrl;
-      // Wire up the view details button safely (no inline onclick)
-      const extViewBtn = card.querySelector('.ext-view-btn');
-      if (extViewBtn) extViewBtn.addEventListener('click', () => showExtDetails(job));
-
-      container.appendChild(card);
-    });
-
-    // Update pagination
-    const totalPages = Math.ceil(extTotalCount / EXT_PER_PAGE);
-    if (pagination) {
-      if (totalPages > 1) {
-        pagination.classList.remove('hidden');
-        const pageInfo = document.getElementById('extPageInfo');
-        const pBtn = document.getElementById('extPrevBtn');
-        const nBtn = document.getElementById('extNextBtn');
-        if (pageInfo) pageInfo.textContent = `Page ${extCurrentPage} of ${totalPages}`;
-        if (pBtn) pBtn.disabled = (extCurrentPage <= 1);
-        if (nBtn) nBtn.disabled = (extCurrentPage >= totalPages);
-      } else {
-        pagination.classList.add('hidden');
-      }
-    }
-
-  } catch (err) {
-    console.error('External jobs error:', err);
-    countEl.textContent = 'Could not load external jobs.';
-    container.innerHTML = `
-      <div class="col-span-3 text-center py-16 text-red-500">
-        <i class="fa-solid fa-circle-exclamation text-4xl mb-4 block"></i>
-        ${err.message || 'Could not load external jobs. Please try again.'}
-      </div>`;
-  }
-}
-
-/** Show external job details in a modal */
-function showExtDetails(job) {
-  let modal = document.getElementById('extDetailsModal');
-  if (!modal) {
-    modal = document.createElement('div');
-    modal.id = 'extDetailsModal';
-    modal.className = 'hidden fixed inset-0 z-[60] bg-slate-900/70 backdrop-blur-sm items-center justify-center p-5';
-    modal.innerHTML = `
-      <div class="bg-white rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="p-8 relative">
-          <button onclick="closeModal('extDetailsModal')" class="absolute right-5 top-4 text-3xl text-slate-400 hover:text-slate-700">&times;</button>
-          <div id="extDetailsContent"></div>
-        </div>
-      </div>`;
-    document.body.appendChild(modal);
-    modal.addEventListener('click', e => { if (e.target === modal) closeModal('extDetailsModal'); });
-  }
-
-  const postedDate = job.postedDate
-    ? new Date(job.postedDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
-    : '';
-
-  const salaryText = (job.salary_min || job.salary_max)
-    ? `₹${job.salary_min ? Number(job.salary_min).toLocaleString() : '?'} – ₹${job.salary_max ? Number(job.salary_max).toLocaleString() : '?'}`
-    : '';
-
-  document.getElementById('extDetailsContent').innerHTML = `
-    <div class="w-16 h-16 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center font-bold text-2xl">
-      ${(job.company || '?').charAt(0).toUpperCase()}
-    </div>
-    <span class="bg-emerald-100 text-emerald-700 inline-block px-3 py-1 rounded-full text-xs font-semibold mt-5">External · ${job.source || 'Adzuna'}</span>
-    <h2 class="text-3xl font-extrabold mt-4">${job.title}</h2>
-    <p class="text-blue-600 font-semibold mt-1">${job.company}</p>
-    <div class="mt-6 space-y-3 text-slate-600">
-      ${job.location ? `<p>📍 ${job.location}</p>` : ''}
-      ${salaryText ? `<p>💰 ${salaryText}</p>` : ''}
-      ${postedDate ? `<p>📅 Posted: ${postedDate}</p>` : ''}
-      ${job.category ? `<p>📂 ${job.category}</p>` : ''}
-    </div>
-    ${job.description ? `
-    <div class="mt-7">
-      <h4 class="font-bold mb-2">About the Opportunity</h4>
-      <p class="text-slate-600 leading-relaxed">${job.description}</p>
-    </div>` : ''}
-    <a href="${job.jobUrl}" target="_blank" rel="noopener"
-      class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl mt-8 font-semibold block text-center transition">
-      Apply on Original Site ↗
-    </a>
-    <p class="text-xs text-slate-400 text-center mt-3">You will be redirected to the original job listing</p>`;
-
-  openModal('extDetailsModal');
-}
-
-// Allow Enter key to trigger external search
-document.getElementById('extSearchInput')?.addEventListener('keydown', e => {
-  if (e.key === 'Enter') loadExternalJobs(1);
-});
-document.getElementById('extLocationInput')?.addEventListener('keydown', e => {
-  if (e.key === 'Enter') loadExternalJobs(1);
 });
 
 // Scroll to Top

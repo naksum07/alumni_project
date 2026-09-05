@@ -10,16 +10,18 @@ const {
   applyToJob,
   listApplications,
   getMyApplications,
+  getMyPostedJobs,
 } = require('../controllers/jobController');
-const { verifyToken, optionalAuth } = require('../middleware/auth');
+const { verifyToken, optionalAuth, requireStudent } = require('../middleware/auth');
 
 // Public browsing
 router.get('/', listJobs);
 router.get('/my-applications', verifyToken, getMyApplications);
+router.get('/my-posted-jobs', verifyToken, getMyPostedJobs);
 router.get('/:id', getJobById);
 
-// Public application (optionalAuth: works logged-in or as a guest)
-router.post('/:id/apply', optionalAuth, applyToJob);
+// Restrict applications to registered/logged-in students
+router.post('/:id/apply', requireStudent, applyToJob);
 
 // Requires login — posting, editing, closing, deleting a job, viewing its applicants
 router.post('/', verifyToken, postJob);

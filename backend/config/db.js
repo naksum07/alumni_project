@@ -21,7 +21,12 @@ async function ensureDatabaseSchema() {
         ADD COLUMN IF NOT EXISTS city VARCHAR(150),
         ADD COLUMN IF NOT EXISTS linkedin_url TEXT,
         ADD COLUMN IF NOT EXISTS bio TEXT,
-        ADD COLUMN IF NOT EXISTS gender VARCHAR(50);
+        ADD COLUMN IF NOT EXISTS gender VARCHAR(50),
+        ADD COLUMN IF NOT EXISTS profile_picture TEXT,
+        ADD COLUMN IF NOT EXISTS show_picture_publicly BOOLEAN DEFAULT TRUE;
+
+      ALTER TABLE job_applications
+        ADD COLUMN IF NOT EXISTS resume_image_path TEXT;
 
       ALTER TABLE events
         ADD COLUMN IF NOT EXISTS host VARCHAR(150),
@@ -45,15 +50,6 @@ async function ensureDatabaseSchema() {
       );
     `);
     console.log('✅ Database schema verified');
-    
-    // Auto-seed announcements and events if the database is fresh (both tables are sparse)
-    const annCount = await pool.query('SELECT COUNT(*) FROM announcements');
-    const evCount = await pool.query('SELECT COUNT(*) FROM events');
-    if (parseInt(annCount.rows[0].count) < 20 && parseInt(evCount.rows[0].count) < 20) {
-      console.log('🌱 Auto-seeding missing announcements and events...');
-      const seedData = require('../seed');
-      await seedData();
-    }
   } catch (err) {
     console.error('❌ Failed to verify database schema:', err.message);
     throw err;

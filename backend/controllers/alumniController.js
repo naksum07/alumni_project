@@ -3,7 +3,7 @@ const pool = require('../config/db');
 async function searchAlumni(req, res) {
   const { department, year, search } = req.query;
 
-  let query = `SELECT id, full_name, department, graduation_year, job_title, company, city, linkedin_url
+  let query = `SELECT id, full_name, department, graduation_year, job_title, company, city, linkedin_url, profile_picture, show_picture_publicly
                FROM users WHERE role = 'alumni' AND is_approved = TRUE AND status = 'active'`;
   const params = [];
 
@@ -24,7 +24,11 @@ async function searchAlumni(req, res) {
 
   try {
     const result = await pool.query(query, params);
-    res.json(result.rows);
+    const sanitized = result.rows.map(a => ({
+      ...a,
+      profile_picture: a.show_picture_publicly === true ? a.profile_picture : null
+    }));
+    res.json(sanitized);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error while searching alumni' });
@@ -36,7 +40,7 @@ async function getAlumniProfile(req, res) {
 
   try {
     const result = await pool.query(
-      `SELECT id, full_name, email, department, graduation_year, job_title, company, city, linkedin_url, bio
+      `SELECT id, full_name, email, department, graduation_year, job_title, company, city, linkedin_url, bio, profile_picture, show_picture_publicly
        FROM users WHERE id = $1 AND role = 'alumni'`,
       [id]
     );
@@ -47,6 +51,12 @@ async function getAlumniProfile(req, res) {
 
     const alumni = result.rows[0];
     const isLoggedIn = Boolean(req.user);
+    const isOwner = req.user && Number(req.user.id) === Number(id);
+
+    if (!isOwner && alumni.show_picture_publicly !== true) {
+      delete alumni.profile_picture;
+      alumni.profile_picture = null;
+    }
 
     if (!isLoggedIn) {
       delete alumni.email;

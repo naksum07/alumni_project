@@ -1,4 +1,36 @@
+const fs = require('fs');
+const path = require('path');
 const pool = require('../config/db');
+
+function saveBase64Image(base64Data, subfolder) {
+  if (!base64Data || typeof base64Data !== 'string' || !base64Data.startsWith('data:image/')) {
+    return base64Data || null;
+  }
+
+  try {
+    const matches = base64Data.match(/^data:image\/([a-zA-Z0-9+-]+);base64,(.+)$/);
+    if (!matches || matches.length !== 3) {
+      return base64Data;
+    }
+
+    const ext = matches[1] === 'jpeg' ? 'jpg' : matches[1];
+    const buffer = Buffer.from(matches[2], 'base64');
+    const uploadsDir = path.join(__dirname, '..', 'uploads', subfolder);
+
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+
+    const filename = `${subfolder}_${Date.now()}_${Math.random().toString(36).substring(2, 8)}.${ext}`;
+    const filePath = path.join(uploadsDir, filename);
+
+    fs.writeFileSync(filePath, buffer);
+    return `/uploads/${subfolder}/${filename}`;
+  } catch (err) {
+    console.error('Error saving base64 image:', err);
+    return null;
+  }
+}
 
 // GET /api/jobs?location=&type=&search=
 // Public: lists open jobs, newest first, with optional filters.
@@ -164,10 +196,14 @@ async function deleteJob(req, res) {
   }
 }
 
-// POST /api/jobs/:id/apply (public — matches jobs.html's application form fields)
+// POST /api/jobs/:id/apply (requires logged-in student)
 async function applyToJob(req, res) {
   const { id } = req.params;
-  const { fullName, email, phone, coverLetter, resumeUrl } = req.body;
+  const { fullName, email, phone, coverLetter, resumeUrl, resumeImage } = req.body;
+
+  if (!req.user || String(req.user.role || '').toLowerCase() !== 'student') {
+    return res.status(403).json({ message: 'Only registered, logged-in students can apply for jobs.' });
+  }
 
   if (!fullName || !email) {
     return res.status(400).json({ message: 'Full name and email are required' });
@@ -182,13 +218,16 @@ async function applyToJob(req, res) {
       return res.status(400).json({ message: 'This job is no longer accepting applications' });
     }
 
-    // req.user is only present if a valid token was sent; applying works either way
-    const applicantId = req.user ? req.user.id : null;
+    const applicantId = req.user.id;
+    let savedResumePath = saveBase64Image(resumeImage || resumeUrl, 'resumes');
+    if (!savedResumePath && (resumeImage || resumeUrl)) {
+      savedResumePath = resumeUrl || resumeImage;
+    }
 
     const result = await pool.query(
-      `INSERT INTO job_applications (job_id, applicant_id, full_name, email, phone, cover_letter, resume_url)
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-      [id, applicantId, fullName, email, phone, coverLetter, resumeUrl]
+      `INSERT INTO job_applications (job_id, applicant_id, full_name, email, phone, cover_letter, resume_url, resume_image_path)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+      [id, applicantId, fullName, email, phone, coverLetter, savedResumePath, savedResumePath]
     );
 
     res.status(201).json({ message: 'Application submitted successfully', applicationId: result.rows[0].id });
@@ -237,6 +276,39 @@ async function getMyApplications(req, res) {
   }
 }
 
+// GET /api/jobs/my-posted-jobs (logged in user)
+async function getMyPostedJobs(req, res) {
+  if (!req.user || !req.user.id) {
+    return res.status(401).json({ success: false, message: 'Authentication required' });
+  }
+
+  try {
+    const jobsResult = await pool.query(
+      `SELECT id, title, company, location, job_type, salary, status, created_at
+       FROM jobs WHERE posted_by = $1 ORDER BY created_at DESC`,
+      [req.user.id]
+    );
+    const jobs = jobsResult.rows;
+
+    for (let job of jobs) {
+      const appsResult = await pool.query(
+        `SELECT app.*, u.department, u.graduation_year, u.enrollment_number, u.gender, u.profile_picture
+         FROM job_applications app
+         LEFT JOIN users u ON u.id = app.applicant_id
+         WHERE app.job_id = $1
+         ORDER BY app.applied_at DESC`,
+        [job.id]
+      );
+      job.applications = appsResult.rows;
+    }
+
+    res.json({ success: true, jobs });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: 'Server error while fetching posted jobs' });
+  }
+}
+
 module.exports = {
   listJobs,
   getJobById,
@@ -247,4 +319,5 @@ module.exports = {
   applyToJob,
   listApplications,
   getMyApplications,
+  getMyPostedJobs,
 };

@@ -1,4 +1,5 @@
-// --- Search and Pagination ---
+(function () {
+  // --- Search and Pagination ---
   const searchInput = document.getElementById("searchInput");
   const filterDepartment = document.getElementById("filterDepartment");
   const filterYear = document.getElementById("filterYear");
@@ -59,16 +60,19 @@
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const pageData = filteredStudents.slice(startIndex, startIndex + itemsPerPage);
+    const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
 
     if (studentGrid) {
       studentGrid.innerHTML = pageData.map(s => {
         const initial = (s.full_name || '?').charAt(0).toUpperCase();
+        const avatarHtml = s.profile_picture
+          ? `<img src="${s.profile_picture}" class="w-20 h-20 mx-auto rounded-full object-cover border-2 border-emerald-200 shadow-sm" alt="${s.full_name}">`
+          : `<div class="w-20 h-20 mx-auto rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl font-bold">${initial}</div>`;
+
         return `
           <div class="student-card bg-white rounded-xl shadow-md p-6 text-center border border-gray-100 hover:-translate-y-1 hover:shadow-lg transition flex flex-col justify-between">
             <div>
-              <div class="w-20 h-20 mx-auto rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-3xl font-bold">
-                ${initial}
-              </div>
+              ${avatarHtml}
               <h3 class="text-xl font-bold mt-5 text-gray-900">${s.full_name}</h3>
               <span class="inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">Student</span>
               ${s.enrollment_number ? `<p class="text-gray-500 text-xs font-mono mt-1">Roll No: ${s.enrollment_number}</p>` : ''}
@@ -144,6 +148,7 @@
   async function loadLiveStudents() {
     const apiOrigin = window.location.protocol === 'file:' ? 'http://localhost:5001' : window.location.origin;
     const url = apiOrigin + '/api/students';
+    const token = localStorage.getItem('token');
     const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
 
     try {
@@ -162,6 +167,10 @@
   const initialStudentSearch = new URLSearchParams(window.location.search).get('search') || '';
   if (initialStudentSearch && searchInput) searchInput.value = initialStudentSearch;
   
-  loadLiveStudents();
-
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadLiveStudents);
+  } else {
+    loadLiveStudents();
+  }
 })();
+

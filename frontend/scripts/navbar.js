@@ -39,6 +39,7 @@
           </button>`;
       }
 
+
       function doLogout(e) {
         if (e) e.preventDefault();
         localStorage.removeItem('token');

@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-function sendEmail(to, subject, html) {
+async function sendEmail(to, subject, html) {
   const mailOptions = {
     from: 'Alumni Portal <onboarding@resend.dev>',
     to,
@@ -19,13 +19,7 @@ function sendEmail(to, subject, html) {
     html
   };
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log('Error sending email:', error);
-    } else {
-      console.log('Email sent:', info.response);
-    }
-  });
+  return transporter.sendMail(mailOptions);
 }
 
 module.exports = sendEmail;
