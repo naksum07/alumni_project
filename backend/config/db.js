@@ -196,8 +196,12 @@ pool.connect()
     await ensureDatabaseSchema();
   })
   .catch((err) => {
-    console.error('❌ PostgreSQL connection failed:', err.message);
+    console.error('❌ PostgreSQL connection failed:', err ? (err.stack || err.message || err) : 'Unknown error');
+    if (!process.env.DATABASE_URL) {
+      console.error('⚠️ WARNING: DATABASE_URL environment variable is NOT set on Render! Please set DATABASE_URL in Render Environment settings.');
+    }
     process.exit(1);
   });
+
 
 module.exports = pool;
