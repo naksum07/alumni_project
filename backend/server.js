@@ -46,6 +46,11 @@ app.get('/api/test', (req, res) => {
   res.send('Backend is connected!');
 });
 
+// Community Blog Route Aliases
+app.get(['/community', '/community-blog'], (req, res) => {
+  res.redirect('/community-blog/index.html');
+});
+
 // Global error handler — catches any unhandled errors passed via next(err)
 // Must have 4 parameters for Express to recognize it as an error handler.
 // eslint-disable-next-line no-unused-vars

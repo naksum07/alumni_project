@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = getAdminToken();
     if (!isLoginPage && !token) {
         clearAdminTokens();
-        window.location.href = '/admin/login.html';
+        window.location.href = 'login.html';
         return;
     }
 
@@ -121,41 +121,46 @@ function renderSidebar() {
     navbar.innerHTML = `
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <nav class="flex h-20 items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
+                <a href="dashboard.html" class="flex items-center gap-3 hover:opacity-90 transition">
                     <span class="text-3xl">🎓</span>
                     <div class="text-lg font-bold tracking-tight">
                         Alumni<span class="text-red-400">Connect</span>
+                        <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded bg-blue-800 text-blue-200 uppercase">Admin</span>
                     </div>
-                </div>
+                </a>
 
-                <div class="hidden items-center gap-2 md:flex">
-                    <a href="/admin/dashboard.html" class="${navLinkClasses} ${currentPath.includes('dashboard') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-yellow-300'}">
+                <div class="hidden items-center gap-1 lg:gap-2 md:flex">
+                    <a href="dashboard.html" class="${navLinkClasses} ${currentPath.includes('dashboard') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-yellow-300'}">
                         <i class="fa-solid fa-chart-line"></i>
                         <span>Dashboard</span>
                     </a>
-                    <a href="/admin/events.html" class="${navLinkClasses} ${currentPath.includes('events') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-yellow-300'}">
+                    <a href="events.html" class="${navLinkClasses} ${currentPath.includes('events') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-yellow-300'}">
                         <i class="fa-solid fa-calendar-alt"></i>
                         <span>Events</span>
                     </a>
-                    <a href="/admin/news.html" class="${navLinkClasses} ${currentPath.includes('news') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-yellow-300'}">
+                    <a href="news.html" class="${navLinkClasses} ${currentPath.includes('news') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-yellow-300'}">
                         <i class="fa-solid fa-bullhorn"></i>
                         <span>News</span>
                     </a>
-                    <a href="/admin/announcements.html" class="${navLinkClasses} ${currentPath.includes('announcements') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-yellow-300'}">
+                    <a href="announcements.html" class="${navLinkClasses} ${currentPath.includes('announcements') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-yellow-300'}">
                         <i class="fa-solid fa-bell"></i>
                         <span>Announcements</span>
                     </a>
-                    <a href="/admin/members.html" class="${navLinkClasses} ${currentPath.includes('members') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-yellow-300'}">
+                    <a href="members.html" class="${navLinkClasses} ${currentPath.includes('members') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-yellow-300'}">
                         <i class="fa-solid fa-users"></i>
                         <span>Members</span>
                     </a>
-                    <a href="/admin/feedback.html" class="${navLinkClasses} ${currentPath.includes('feedback') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-yellow-300'}">
+                    <a href="feedback.html" class="${navLinkClasses} ${currentPath.includes('feedback') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-yellow-300'}">
                         <i class="fa-solid fa-comments"></i>
                         <span>Feedback</span>
                     </a>
+                    <a href="../pages/index.html" class="${navLinkClasses} text-blue-200 hover:bg-blue-800 hover:text-white border border-blue-700/50 ml-2" title="Return to Public Site">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                        <span>Public Site</span>
+                    </a>
                 </div>
 
-                <button id="logoutBtn" class="inline-flex items-center gap-2 rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-red-700">
+                <button id="logoutBtn" class="inline-flex items-center gap-2 rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-red-700 cursor-pointer">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span>Logout</span>
                 </button>
@@ -171,7 +176,7 @@ function renderSidebar() {
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
             clearAdminTokens();
-            window.location.href = '/admin/login.html';
+            window.location.href = 'login.html';
         });
     }
 }

@@ -8,6 +8,13 @@
 
     const currentPath = window.location.pathname;
     const isProfilePage = currentPath.endsWith('my-profile.html');
+    const isInSubfolder = currentPath.includes('/community-blog/') || currentPath.includes('/pages/community-blog/');
+    const pagePrefix = isInSubfolder ? '../' : '';
+    const adminPrefix = isInSubfolder ? '../../admin/' : '../admin/';
+
+    const profileUrl = `${pagePrefix}my-profile.html`;
+    const loginUrl = `${pagePrefix}login.html`;
+    const adminLoginUrl = `${adminPrefix}login.html`;
 
     if (token && user) {
       const rawName = user.fullName || user.full_name || user.name || 'You';
@@ -16,7 +23,7 @@
       if (navAuth) {
         navAuth.innerHTML = `
           <span class="text-slate-700 font-medium text-sm">Hi, <strong class="text-[#012970]">${escapeHTML(firstName)}</strong></span>
-          <a href="my-profile.html"
+          <a href="${profileUrl}"
              class="border border-slate-300 text-slate-700 px-4 py-2 rounded-lg hover:border-[#012970] hover:text-[#012970] transition text-sm ${isProfilePage ? 'border-[#012970] text-[#012970] font-semibold' : ''}">
             👤 My Profile
           </a>
@@ -29,7 +36,7 @@
       if (mobileNavAuth) {
         mobileNavAuth.innerHTML = `
           <p class="text-slate-700 text-sm py-1">Logged in as <strong class="text-[#012970]">${escapeHTML(firstName)}</strong></p>
-          <a href="my-profile.html"
+          <a href="${profileUrl}"
              class="block text-center border border-slate-300 text-slate-700 py-2 rounded-lg hover:border-[#012970] hover:text-[#012970] transition text-sm ${isProfilePage ? 'border-[#012970] text-[#012970] font-semibold' : ''}">
             👤 My Profile
           </a>
@@ -45,7 +52,7 @@
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         if (isProfilePage) {
-          window.location.href = 'login.html';
+          window.location.href = loginUrl;
         } else {
           window.location.reload();
         }
@@ -63,11 +70,11 @@
     } else {
       if (navAuth) {
         navAuth.innerHTML = `
-          <a href="../admin/login.html"
+          <a href="${adminLoginUrl}"
              class="text-slate-500 font-medium hover:text-[#012970] transition text-sm px-2 border-r border-gray-200 pr-4">
             Admin Login
           </a>
-          <a href="login.html"
+          <a href="${loginUrl}"
              class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-5 py-2 rounded-lg transition text-sm shadow-sm">
             Login / Register
           </a>`;
@@ -75,12 +82,12 @@
 
       if (mobileNavAuth) {
         mobileNavAuth.innerHTML = `
-          <a href="../admin/login.html"
+          <a href="${adminLoginUrl}"
              class="block text-center text-slate-500 py-2 rounded-lg font-medium hover:bg-gray-100 transition text-sm border-b border-gray-200 pb-3 mb-3">
             Admin Login
           </a>
           <div class="space-y-2">
-            <a href="login.html"
+            <a href="${loginUrl}"
                class="block text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">
               Login / Register
             </a>
