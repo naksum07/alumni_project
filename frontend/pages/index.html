@@ -56,13 +56,7 @@
           <a href="events.html" class="hover:text-[#c4161c] transition">Events</a>
           <a href="news-announcements.html" class="hover:text-[#c4161c] transition">News</a>
           <a href="jobs.html" class="hover:text-[#c4161c] transition">Jobs</a>
-<<<<<<< HEAD
-          <button type="button" onclick="openCommunityDrawer()" class="text-blue-900 hover:text-[#c4161c] font-semibold transition flex items-center gap-1.5 focus:outline-none">
-            <i class="fa-solid fa-comments text-sm text-[#c4161c]"></i> Community
-          </button>
-=======
           <a href="feedback.html" class="hover:text-[#c4161c] transition">Feedback</a>
->>>>>>> 5650e0613907cca06c5ab55e01c2bdb276cf83b6
         </div>
 
         <div class="hidden md:flex gap-3 items-center" id="navAuth">
@@ -101,109 +95,111 @@
   </header>
 <!-- MAIN CONTENT -->
 <main id="home" class="pt-20">
-<!-- HERO SECTION -->
-<section data-aos="fade-up" class="min-h-[calc(100vh-80px)] flex items-center bg-gray-100 py-10 md:py-14 lg:py-0">
-    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 lg:gap-12 items-center">
-    <div>
-        <h2 class="text-5xl font-bold text-blue-900 leading-tight">Connect With Your Alumni Network</h2>
-            <p class="mt-6 text-lg text-gray-600">
-            A platform where students and alumni connect,
-            share experiences, discover opportunities,
-            and build professional relationships.
-            </p>
-    <div class="mt-8 flex flex-wrap gap-4">
-    <a href="register.html" class="bg-blue-900 text-white px-8 py-3 rounded-lg shadow-lg hover:bg-blue-800 hover:scale-105 transition">🚀 Get Started</a>
-    <a href="alumni-directory.html" class="border border-blue-900 text-blue-900 px-8 py-3 rounded-lg hover:bg-blue-100 hover:scale-105 transition">👥 Explore Alumni</a>
-    </div>
-    </div>
-
-<!-- HERO IMAGE SLIDER CONTAINER (RESPONSIVE) -->
-<div class="relative w-full flex items-center justify-center md:justify-end">
-    <div class="relative w-full h-[260px] sm:h-[340px] md:h-[380px] lg:h-[460px] xl:h-[500px] overflow-hidden rounded-2xl sm:rounded-3xl shadow-xl md:shadow-2xl shadow-blue-950/15 border border-slate-200/80 bg-slate-900 group">
-        <!-- Slides Track -->
+<!-- HERO SECTION (FULL-BLEED BACKGROUND WITH SMOOTH CINEMATIC IMAGE OVERLAY & 75% OPACITY) -->
+<section data-aos="fade-up" class="relative min-h-[calc(100vh-80px)] flex items-center bg-black py-16 md:py-20 lg:py-0 overflow-hidden text-white group">
+    
+    <!-- FULL-BLEED SLIDER TRACK BACKGROUND -->
+    <div class="absolute inset-0 w-full h-full z-0 overflow-hidden">
         <div id="heroSliderTrack" class="flex h-full w-full transition-transform duration-700 ease-in-out">
+            
             <!-- Slide 1: Networking -->
-            <div class="min-w-full h-full relative shrink-0">
-                <img loading="lazy" src="../assets/1.jpg" alt="Alumni and student networking" class="w-full h-full object-cover select-none">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-transparent"></div>
-                <div class="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 text-white">
-                    <span class="inline-block bg-blue-900/90 text-yellow-300 text-[10px] sm:text-xs px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-semibold backdrop-blur-md border border-white/10 shadow-sm">
-                        🤝 Networking &amp; Connections
-                    </span>
-                    <h3 class="text-sm sm:text-lg md:text-xl font-bold mt-1.5 sm:mt-2 text-white drop-shadow-md">Building Lifelong Professional Bonds</h3>
-                    <p class="text-[11px] sm:text-xs md:text-sm text-slate-200 mt-0.5 sm:mt-1 drop-shadow-sm line-clamp-1">Connect with 3000+ university graduates worldwide</p>
+            <div class="min-w-full h-full relative shrink-0 overflow-hidden bg-black">
+                <img loading="lazy" src="../assets/1.jpg" alt="Alumni and student networking" class="w-full h-full object-cover object-center select-none filter blur-[3px] scale-105 transition-all duration-700">
+                <div class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
+                <div class="absolute bottom-6 sm:bottom-10 left-6 sm:left-12 right-6 sm:right-12 text-white z-10">
+                    
+                    <h3 class="text-lg sm:text-2xl font-bold text-white drop-shadow-md">Building Lifelong Professional Bonds</h3>
+                    <p class="text-xs sm:text-sm text-slate-200 mt-1 drop-shadow-sm">Connect with 3000+ university graduates worldwide</p>
                 </div>
             </div>
+
             <!-- Slide 2: Convocation & Alumni -->
-            <div class="min-w-full h-full relative shrink-0">
-                <img loading="lazy" src="../assets/2.jpg" alt="Alumni convocation and graduation celebration" class="w-full h-full object-cover select-none">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-transparent"></div>
-                <div class="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 text-white">
-                    <span class="inline-block bg-[#c4161c]/90 text-white text-[10px] sm:text-xs px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-semibold backdrop-blur-md border border-white/10 shadow-sm">
-                        🎓 Convocation &amp; Alumni
-                    </span>
-                    <h3 class="text-sm sm:text-lg md:text-xl font-bold mt-1.5 sm:mt-2 text-white drop-shadow-md">Celebrating 3000+ Alumni Across the Globe</h3>
-                    <p class="text-[11px] sm:text-xs md:text-sm text-slate-200 mt-0.5 sm:mt-1 drop-shadow-sm line-clamp-1">Empowering leaders across diverse industries</p>
+            <div class="min-w-full h-full relative shrink-0 overflow-hidden bg-black">
+                <img loading="lazy" src="../assets/2.jpg" alt="Alumni convocation and graduation celebration" class="w-full h-full object-cover object-center select-none filter blur-[3px] scale-105 transition-all duration-700">
+                <div class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
+                <div class="absolute bottom-6 sm:bottom-10 left-6 sm:left-12 right-6 sm:right-12 text-white z-10">
+
+                    <h3 class="text-lg sm:text-2xl font-bold text-white drop-shadow-md">Celebrating 3000+ Alumni Across the Globe</h3>
+                    <p class="text-xs sm:text-sm text-slate-200 mt-1 drop-shadow-sm">Empowering leaders across diverse industries</p>
                 </div>
             </div>
+
             <!-- Slide 3: Campus & Academics -->
-            <div class="min-w-full h-full relative shrink-0">
-                <img loading="lazy" src="../assets/3.jpg" alt="Campus and academic excellence" class="w-full h-full object-cover select-none">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-transparent"></div>
-                <div class="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 text-white">
-                    <span class="inline-block bg-emerald-800/90 text-emerald-100 text-[10px] sm:text-xs px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-semibold backdrop-blur-md border border-white/10 shadow-sm">
-                        🏛️ Campus Excellence
-                    </span>
-                    <h3 class="text-sm sm:text-lg md:text-xl font-bold mt-1.5 sm:mt-2 text-white drop-shadow-md">15+ Years of Academic Excellence</h3>
-                    <p class="text-[11px] sm:text-xs md:text-sm text-slate-200 mt-0.5 sm:mt-1 drop-shadow-sm line-clamp-1">22 degree programs and world-class faculty</p>
+            <div class="min-w-full h-full relative shrink-0 overflow-hidden bg-black">
+                <img loading="lazy" src="../assets/3.jpg" alt="Campus and academic excellence" class="w-full h-full object-cover object-center select-none filter blur-[3px] scale-105 transition-all duration-700">
+                <div class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
+                <div class="absolute bottom-6 sm:bottom-10 left-6 sm:left-12 right-6 sm:right-12 text-white z-10">
+                   
+                    <h3 class="text-lg sm:text-2xl font-bold text-white drop-shadow-md">15+ Years of Academic Excellence</h3>
+                    <p class="text-xs sm:text-sm text-slate-200 mt-1 drop-shadow-sm">22 degree programs and world-class faculty</p>
                 </div>
             </div>
+
             <!-- Slide 4: Mentorship & Careers -->
-            <div class="min-w-full h-full relative shrink-0">
-                <img loading="lazy" src="../assets/4.jpg" alt="Alumni mentorship and career development" class="w-full h-full object-cover select-none">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-transparent"></div>
-                <div class="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 text-white">
-                    <span class="inline-block bg-purple-900/90 text-purple-100 text-[10px] sm:text-xs px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-semibold backdrop-blur-md border border-white/10 shadow-sm">
-                        💡 Mentorship &amp; Careers
-                    </span>
-                    <h3 class="text-sm sm:text-lg md:text-xl font-bold mt-1.5 sm:mt-2 text-white drop-shadow-md">Industry Mentorship &amp; Guidance</h3>
-                    <p class="text-[11px] sm:text-xs md:text-sm text-slate-200 mt-0.5 sm:mt-1 drop-shadow-sm line-clamp-1">Internships and career pathways from senior alumni</p>
+            <div class="min-w-full h-full relative shrink-0 overflow-hidden bg-black">
+                <img loading="lazy" src="../assets/4.jpg" alt="Alumni mentorship and career development" class="w-full h-full object-cover object-center select-none filter blur-[3px] scale-105 transition-all duration-700">
+                <div class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
+                <div class="absolute bottom-6 sm:bottom-10 left-6 sm:left-12 right-6 sm:right-12 text-white z-10">
+                   
+                    <h3 class="text-lg sm:text-2xl font-bold text-white drop-shadow-md">Industry Mentorship &amp; Guidance</h3>
+                    <p class="text-xs sm:text-sm text-slate-200 mt-1 drop-shadow-sm">Internships and career pathways from senior alumni</p>
                 </div>
             </div>
+
             <!-- Slide 5: Global Community & Reunions -->
-            <div class="min-w-full h-full relative shrink-0">
-                <img loading="lazy" src="../assets/5.jpg" alt="Alumni reunions and community meets" class="w-full h-full object-cover select-none">
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/25 to-transparent"></div>
-                <div class="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 right-4 sm:right-6 text-white">
-                    <span class="inline-block bg-amber-600/90 text-white text-[10px] sm:text-xs px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-semibold backdrop-blur-md border border-white/10 shadow-sm">
-                        🎉 Reunions &amp; Community
-                    </span>
-                    <h3 class="text-sm sm:text-lg md:text-xl font-bold mt-1.5 sm:mt-2 text-white drop-shadow-md">100+ Events &amp; Annual Meets</h3>
-                    <p class="text-[11px] sm:text-xs md:text-sm text-slate-200 mt-0.5 sm:mt-1 drop-shadow-sm line-clamp-1">Reunite with batchmates and expand your network</p>
+            <div class="min-w-full h-full relative shrink-0 overflow-hidden bg-black">
+                <img loading="lazy" src="../assets/5.jpg" alt="Alumni reunions and community meets" class="w-full h-full object-cover object-center select-none filter blur-[3px] scale-105 transition-all duration-700">
+                <div class="absolute inset-0 bg-black/75 backdrop-blur-sm"></div>
+                <div class="absolute bottom-6 sm:bottom-10 left-6 sm:left-12 right-6 sm:right-12 text-white z-10">
+                   
+                    <h3 class="text-lg sm:text-2xl font-bold text-white drop-shadow-md">100+ Events &amp; Annual Meets</h3>
+                    <p class="text-xs sm:text-sm text-slate-200 mt-1 drop-shadow-sm">Reunite with batchmates and expand your network</p>
                 </div>
             </div>
-        </div>
 
-        <!-- Navigation Arrows (Left and Right Edges) -->
-        <button id="heroSliderPrevBtn" aria-label="Previous Slide" class="absolute left-2.5 sm:left-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-900/40 hover:bg-slate-900/80 text-white/90 hover:text-white backdrop-blur-md transition-all duration-200 opacity-80 sm:opacity-0 group-hover:opacity-100 focus:opacity-100 flex items-center justify-center cursor-pointer border border-white/20 shadow-md hover:scale-105 z-10">
-            <i class="fa-solid fa-chevron-left text-xs sm:text-sm"></i>
-        </button>
-        <button id="heroSliderNextBtn" aria-label="Next Slide" class="absolute right-2.5 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-slate-900/40 hover:bg-slate-900/80 text-white/90 hover:text-white backdrop-blur-md transition-all duration-200 opacity-80 sm:opacity-0 group-hover:opacity-100 focus:opacity-100 flex items-center justify-center cursor-pointer border border-white/20 shadow-md hover:scale-105 z-10">
-            <i class="fa-solid fa-chevron-right text-xs sm:text-sm"></i>
-        </button>
-
-        <!-- Slide Indicators / Dots (Bottom Center) -->
-        <div id="heroSliderDots" class="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-black/35 backdrop-blur-md px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full border border-white/15 z-10">
-            <button class="h-1.5 sm:h-2 rounded-full bg-white transition-all duration-300 w-4 sm:w-5 cursor-pointer" data-slide="0" aria-label="Slide 1"></button>
-            <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="1" aria-label="Slide 2"></button>
-            <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="2" aria-label="Slide 3"></button>
-            <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="3" aria-label="Slide 4"></button>
-            <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="4" aria-label="Slide 5"></button>
         </div>
     </div>
-</div>
-</div>
+
+    <!-- HERO TEXT OVERLAY -->
+    <div class="max-w-7xl mx-auto px-6 relative z-10 w-full py-12">
+        <div class="max-w-2xl space-y-6 text-center md:text-left">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight drop-shadow-lg">
+                Connect With Your <span class="text-yellow-400">Alumni Network</span>
+            </h1>
+            <p class="text-base sm:text-xl text-slate-200 leading-relaxed font-normal drop-shadow">
+                A platform where students and alumni connect, share experiences, discover opportunities, and build professional relationships.
+            </p>
+            <div class="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-4">
+                <a href="register.html" class="bg-[#c4161c] hover:bg-[#a01217] text-white px-8 py-3.5 rounded-xl font-bold text-base shadow-xl hover:scale-105 transition duration-300">
+                    🚀 Get Started
+                </a>
+                <a href="alumni-directory.html" class="border border-white/40 bg-white/10 hover:bg-white/20 text-white backdrop-blur-md px-8 py-3.5 rounded-xl font-semibold text-base hover:scale-105 transition duration-300 shadow-lg">
+                    👥 Explore Alumni
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Arrows -->
+    <button id="heroSliderPrevBtn" aria-label="Previous Slide" class="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md transition-all duration-200 opacity-90 sm:opacity-0 group-hover:opacity-100 focus:opacity-100 flex items-center justify-center cursor-pointer border border-white/20 shadow-xl z-20">
+        <i class="fa-solid fa-chevron-left text-sm sm:text-base"></i>
+    </button>
+    <button id="heroSliderNextBtn" aria-label="Next Slide" class="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black/50 hover:bg-black/80 text-white backdrop-blur-md transition-all duration-200 opacity-90 sm:opacity-0 group-hover:opacity-100 focus:opacity-100 flex items-center justify-center cursor-pointer border border-white/20 shadow-xl z-20">
+        <i class="fa-solid fa-chevron-right text-sm sm:text-base"></i>
+    </button>
+
+    <!-- Slide Indicators / Dots (Bottom Center) -->
+    <div id="heroSliderDots" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-black/60 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 z-20 shadow-xl">
+        <button class="h-2 rounded-full bg-white transition-all duration-300 w-5 cursor-pointer" data-slide="0" aria-label="Slide 1"></button>
+        <button class="h-2 w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="1" aria-label="Slide 2"></button>
+        <button class="h-2 w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="2" aria-label="Slide 3"></button>
+        <button class="h-2 w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="3" aria-label="Slide 4"></button>
+        <button class="h-2 w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="4" aria-label="Slide 5"></button>
+    </div>
 </section>
+
+
+
 
 <!-- ANNOUNCEMENTS CAROUSEL -->
 <section class="py-12 bg-gradient-to-b from-blue-50 to-gray-100" id="announcements-section" style="display:none;">
@@ -234,6 +230,46 @@
         </div>
     </div>
 </section>
+
+<!-- SUCCESS STORIES CAROUSEL -->
+<section class="py-16 bg-white overflow-hidden" id="success-stories-section" style="display:none;">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-10">
+            <span class="inline-block px-3.5 py-1 rounded-full text-xs font-bold bg-blue-50 text-[#012970] border border-blue-100 uppercase tracking-widest mb-2">
+                ⭐ Alumni Journeys &amp; Impact
+            </span>
+            <h2 class="text-3xl md:text-4xl font-bold text-[#012970]">Success Stories</h2>
+            <p class="mt-2 text-slate-600 max-w-2xl mx-auto text-sm md:text-base">Inspiring milestones and achievements from our distinguished alumni community worldwide.</p>
+        </div>
+
+        <div class="relative max-w-5xl mx-auto group" id="success-stories-carousel-wrapper">
+            <!-- Viewport -->
+            <div class="overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-[#0b1728] to-slate-900 text-white p-6 sm:p-10 shadow-2xl border border-slate-800 relative">
+                <!-- Watermark Quote Icon -->
+                <i class="fa-solid fa-quote-right absolute right-8 bottom-6 text-7xl text-white/5 pointer-events-none"></i>
+                
+                <!-- Carousel Track -->
+                <div id="success-stories-track" class="flex transition-transform duration-700 ease-in-out">
+                    <!-- Dynamic Slide Items -->
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <button id="successStoriesPrevBtn" aria-label="Previous Success Story" class="absolute left-2 sm:-left-6 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white text-[#012970] shadow-lg hover:bg-slate-50 hover:scale-105 transition-all duration-200 flex items-center justify-center cursor-pointer border border-slate-200 z-20 focus:outline-none">
+                <i class="fa-solid fa-chevron-left text-sm"></i>
+            </button>
+            <button id="successStoriesNextBtn" aria-label="Next Success Story" class="absolute right-2 sm:-right-6 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white text-[#012970] shadow-lg hover:bg-slate-50 hover:scale-105 transition-all duration-200 flex items-center justify-center cursor-pointer border border-slate-200 z-20 focus:outline-none">
+                <i class="fa-solid fa-chevron-right text-sm"></i>
+            </button>
+
+            <!-- Dots Indicator Container -->
+            <div id="successStoriesDots" class="flex justify-center items-center gap-2 mt-6">
+                <!-- Dots populated by JS -->
+            </div>
+        </div>
+    </div>
+</section>
+
 
 <!-- FEATURES SECTION -->
 <section data-aos="fade-up" class="py-20 bg-gray-100">

@@ -220,6 +220,43 @@ html {
                         <p class="text-gray-400 text-sm italic">Loading your posted jobs...</p>
                     </div>
                 </div>
+
+                <!-- MY SUCCESS STORY SECTION (LOGGED-IN ALUMNI ONLY) -->
+                <div id="mySuccessStorySection" class="hidden bg-white rounded-2xl shadow-md p-6 md:p-8 border border-gray-100 mt-6">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 border-b border-gray-100 mb-6 gap-3">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">My Success Story</h3>
+                            <p class="text-sm text-gray-500 mt-1">Share your professional journey, career milestones, or advice for students.</p>
+                        </div>
+                        <div id="storyStatusContainer" class="shrink-0">
+                            <!-- Status badge populated by JS -->
+                        </div>
+                    </div>
+
+                    <form id="mySuccessStoryForm" class="space-y-4">
+                        <input type="hidden" id="storyId" value="">
+                        <div>
+                            <label for="storyTitle" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Story Title / Headline *</label>
+                            <input type="text" id="storyTitle" required placeholder="e.g. From Campus Hackathons to Senior Lead at Tech Corp" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                        </div>
+
+                        <div>
+                            <label for="storyText" class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Your Story *</label>
+                            <textarea id="storyText" rows="5" required placeholder="Share details about your background, career challenges, achievements, and key learnings..." class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-200"></textarea>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-2">
+                            <div>
+                                <button type="button" id="deleteStoryBtn" class="hidden bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-4 py-2 rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-sm">
+                                    <i class="fa-solid fa-trash-can"></i> Delete Story
+                                </button>
+                            </div>
+                            <button type="submit" id="saveStoryBtn" class="bg-[#c4161c] hover:bg-[#a01217] text-white px-5 py-2.5 rounded-xl font-semibold transition text-xs shadow-md flex items-center gap-2">
+                                <i class="fa-solid fa-paper-plane"></i> Save &amp; Submit for Approval
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <!-- Right 1 Col: Account Privacy & Security Controls -->

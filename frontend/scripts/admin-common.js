@@ -153,6 +153,10 @@ function renderSidebar() {
                         <i class="fa-solid fa-comments"></i>
                         <span>Feedback</span>
                     </a>
+                    <a href="/admin/success-stories.html" class="${navLinkClasses} ${currentPath.includes('success-stories') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-yellow-300'}">
+                        <i class="fa-solid fa-trophy"></i>
+                        <span>Success Stories</span>
+                    </a>
                 </div>
 
                 <button id="logoutBtn" class="inline-flex items-center gap-2 rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-red-700">

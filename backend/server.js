@@ -15,6 +15,7 @@ const feedbackRoutes = require('./routes/feedbackRoutes');
 const newsRoutes = require('./routes/newsRoutes');
 const externalJobRoutes = require('./routes/externalJobRoutes');
 const announcementRoutes = require('./routes/announcementRoutes');
+const successStoryRoutes = require('./routes/successStoryRoutes');
 
 const app = express();
 app.use(cors({ origin: process.env.ALLOWED_ORIGIN || '*' }));
@@ -40,6 +41,8 @@ app.use('/api/feedback', feedbackRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/external-jobs', externalJobRoutes);
 app.use('/api/announcements', announcementRoutes);
+app.use('/api/success-stories', successStoryRoutes);
+
 
 
 app.get('/api/test', (req, res) => {

@@ -21,6 +21,9 @@ const {
   createAnnouncement,
   toggleAnnouncementStatus,
   deleteAnnouncement,
+  listSuccessStoriesAdmin,
+  updateSuccessStoryStatusAdmin,
+  deleteSuccessStoryAdmin,
 } = require('../controllers/adminController');
 const { verifyToken, requireAdmin } = require('../middleware/auth');
 
@@ -65,4 +68,9 @@ router.delete('/announcements/:id', deleteAnnouncement);
 // Feedback
 router.delete('/feedback/:id', deleteFeedback);
 
-module.exports = router;
+// Success Stories
+router.get('/success-stories', listSuccessStoriesAdmin);
+router.put('/success-stories/:id/status', updateSuccessStoryStatusAdmin);
+router.delete('/success-stories/:id', deleteSuccessStoryAdmin);
+
+module.exports = router;
