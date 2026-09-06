@@ -7,9 +7,9 @@
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135755.png">
     
     <!-- Scripts -->
-    <script src="../../scripts/popup.js" defer></script>
-    <script src="../../scripts/navbar.js" defer></script>
-    <script src="community.js"></script>
+    <script src="../scripts/popup.js" defer></script>
+    <script src="../scripts/navbar.js" defer></script>
+    <script src="../scripts/community.js"></script>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -33,7 +33,7 @@
 
             <a href="../index.html" class="flex items-center gap-3">
                 <span class="p-1 flex items-center">
-                    <img src="../../assets/logo.png" alt="ICFAI University Sikkim" class="h-10 w-auto">
+                    <img src="../assets/logo.png" alt="ICFAI University Sikkim" class="h-10 w-auto">
                 </span>
                 <span class="text-2xl font-bold text-[#012970] tracking-tight">Alumni<span class="text-[#c4161c]">Connect</span></span>
             </a>
@@ -59,7 +59,7 @@
             </div>
 
             <div class="hidden md:flex gap-3 items-center" id="navAuth">
-                <a href="../../admin/login.html" class="text-slate-500 font-medium hover:text-[#012970] transition text-sm px-2 border-r border-gray-200 pr-4">Admin Login</a>
+                <a href="../admin/login.html" class="text-slate-500 font-medium hover:text-[#012970] transition text-sm px-2 border-r border-gray-200 pr-4">Admin Login</a>
                 <a href="../login.html" class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-5 py-2 rounded-lg transition text-sm shadow-sm">Login / Register</a>
             </div>
 
@@ -82,7 +82,7 @@
             <a href="index.html" class="block py-3 border-b border-gray-100 text-[#c4161c] font-semibold">Community</a>
             <a href="../feedback.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Feedback</a>
             <div class="mt-4 space-y-3" id="mobileNavAuth">
-                <a href="../../admin/login.html" class="block text-center text-slate-500 py-2 rounded-lg font-medium hover:bg-gray-100 transition text-sm border-b border-gray-200 pb-3 mb-3">Admin Login</a>
+                <a href="../admin/login.html" class="block text-center text-slate-500 py-2 rounded-lg font-medium hover:bg-gray-100 transition text-sm border-b border-gray-200 pb-3 mb-3">Admin Login</a>
                 <a href="../login.html" class="block text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">Login / Register</a>
             </div>
         </div>
@@ -106,55 +106,36 @@
                 <span class="w-10 h-10 rounded-xl bg-red-100 text-[#c4161c] flex items-center justify-center text-lg">
                     <i class="fa-solid fa-feather-pointed"></i>
                 </span>
-                Publish a Discussion
+                <span id="pageTitleText">Publish a Discussion</span>
             </h1>
-            <p class="text-xs sm:text-sm text-slate-500 mt-2">
+            <p class="text-xs sm:text-sm text-slate-500 mt-2" id="pageSubtitleText">
                 Share practical advice, career openings, academic updates, or start a productive dialogue with alumni and students.
             </p>
         </div>
 
         <form id="createPostForm" onsubmit="handleSubmitPost(event)" class="space-y-6">
-            <!-- Author Information -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                        Your Full Name <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="authorName" required placeholder="e.g. Rahul Sharma" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-900 focus:bg-white focus:outline-none transition">
+            <!-- User Info Banner -->
+            <div class="bg-blue-50/80 border border-blue-200 rounded-2xl p-4 flex items-center gap-4" id="userBanner">
+                <div class="w-10 h-10 rounded-full bg-[#012970] text-white flex items-center justify-center font-bold text-sm shrink-0" id="userAvatar">
+                    U
                 </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                        Your Role <span class="text-red-500">*</span>
-                    </label>
-                    <select id="authorRole" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-900 focus:bg-white focus:outline-none transition">
-                        <option value="Alumni">🎓 Alumni</option>
-                        <option value="Student" selected>🎒 Student</option>
-                        <option value="Faculty">👨‍🏫 Faculty</option>
-                    </select>
+                <div class="flex-1 min-w-0">
+                    <p class="font-bold text-slate-900 text-sm" id="userName">Logged-in User</p>
+                    <p class="text-xs text-slate-500" id="userMeta">Verified Account</p>
                 </div>
             </div>
 
-            <!-- Affiliation & Category -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                        Department / Batch / Company
-                    </label>
-                    <input type="text" id="authorAffiliation" placeholder="e.g. BTech CSE '24 or Software Engineer @ TCS" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-900 focus:bg-white focus:outline-none transition">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                        Discussion Category <span class="text-red-500">*</span>
-                    </label>
-                    <select id="postCategory" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-900 focus:bg-white focus:outline-none transition">
-                        <option value="Career">💼 Career &amp; Jobs</option>
-                        <option value="Mentorship">🤝 Mentorship</option>
-                        <option value="Academics">🎓 Academics</option>
-                        <option value="General" selected>💬 General Discussion</option>
-                    </select>
-                </div>
+            <!-- Category -->
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                    Discussion Category <span class="text-red-500">*</span>
+                </label>
+                <select id="postCategory" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm focus:ring-2 focus:ring-blue-900 focus:bg-white focus:outline-none transition">
+                    <option value="Career">💼 Career &amp; Jobs</option>
+                    <option value="Mentorship">🤝 Mentorship</option>
+                    <option value="Academics">🎓 Academics</option>
+                    <option value="General" selected>💬 General Discussion</option>
+                </select>
             </div>
 
             <!-- Title -->
@@ -182,8 +163,8 @@
                     <button type="reset" class="px-5 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">
                         Clear Fields
                     </button>
-                    <button type="submit" class="bg-[#012970] hover:bg-blue-950 text-white text-xs font-bold px-7 py-3 rounded-xl transition shadow-md flex items-center gap-2 justify-center w-full sm:w-auto">
-                        <i class="fa-solid fa-paper-plane"></i> Publish Discussion
+                    <button type="submit" id="submitBtn" class="bg-[#012970] hover:bg-blue-950 text-white text-xs font-bold px-7 py-3 rounded-xl transition shadow-md flex items-center gap-2 justify-center w-full sm:w-auto">
+                        <i class="fa-solid fa-paper-plane"></i> <span id="submitBtnText">Publish Discussion</span>
                     </button>
                 </div>
             </div>
@@ -206,22 +187,69 @@
 </footer>
 
 <script>
+    let editPostId = null;
+
     function toggleMobileMenu() {
         const menu = document.getElementById('mobileMenu');
         menu.classList.toggle('hidden');
     }
 
-    function handleSubmitPost(e) {
+    function initUserBanner() {
+        const user = window.CommunityBlog.getCurrentUser();
+        if (user) {
+            const rawName = user.fullName || user.full_name || user.name || 'User';
+            document.getElementById('userAvatar').textContent = rawName.charAt(0).toUpperCase();
+            document.getElementById('userName').textContent = rawName;
+            const roleFormatted = (user.role || 'Member').charAt(0).toUpperCase() + (user.role || 'Member').slice(1);
+            document.getElementById('userMeta').textContent = `${roleFormatted} • ${user.email || 'Verified Account'}`;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        if (!window.CommunityBlog.requireAuth('create or edit a post')) return;
+        initUserBanner();
+
+        const params = new URLSearchParams(window.location.search);
+        editPostId = params.get('edit');
+
+        if (editPostId) {
+            const posts = await window.CommunityBlog.fetchPosts();
+            const post = posts.find(p => String(p.id) === String(editPostId));
+
+            if (post) {
+                if (!window.CommunityBlog.isOwner(post.user_id || post.userId)) {
+                    if (typeof window.showPopup === 'function') {
+                        window.showPopup('You are not authorized to edit this discussion.', 'error', 'Permission Denied', null, () => {
+                            window.location.href = 'index.html';
+                        });
+                    } else {
+                        alert('You are not authorized to edit this discussion.');
+                        window.location.href = 'index.html';
+                    }
+                    return;
+                }
+
+                document.getElementById('pageTitleText').textContent = 'Edit Discussion';
+                document.getElementById('pageSubtitleText').textContent = 'Update your discussion details below.';
+                document.getElementById('submitBtnText').textContent = 'Save Changes';
+
+                document.getElementById('postCategory').value = post.category || 'General';
+                document.getElementById('postTitle').value = post.title || '';
+                document.getElementById('postContent').value = post.content || '';
+            }
+        }
+    });
+
+    async function handleSubmitPost(e) {
         e.preventDefault();
 
-        const author = document.getElementById('authorName').value.trim();
-        const role = document.getElementById('authorRole').value;
-        const affiliation = document.getElementById('authorAffiliation').value.trim();
+        if (!window.CommunityBlog.requireAuth('publish a post')) return;
+
         const category = document.getElementById('postCategory').value;
         const title = document.getElementById('postTitle').value.trim();
         const content = document.getElementById('postContent').value.trim();
 
-        if (!author || !title || !content) {
+        if (!title || !content) {
             if (typeof window.showPopup === 'function') {
                 window.showPopup('Please fill out all required fields.', 'warning', 'Missing Details');
             } else {
@@ -230,24 +258,28 @@
             return;
         }
 
-        const newPost = window.CommunityBlog.createPost({
-            author,
-            role,
-            affiliation: affiliation || (role === 'Alumni' ? 'Alumni' : 'Student'),
-            category,
-            title,
-            content
-        });
-
-        const redirect = () => {
-            window.location.href = `post-detail.html?id=${newPost.id}`;
-        };
-
-        if (typeof window.showPopup === 'function') {
-            window.showPopup('Your discussion post has been published successfully!', 'success', 'Post Published', null, redirect);
+        let resultPost = null;
+        if (editPostId) {
+            resultPost = await window.CommunityBlog.updatePost(editPostId, { category, title, content });
         } else {
-            alert('Your discussion post has been published successfully!');
-            redirect();
+            resultPost = await window.CommunityBlog.createPost({ category, title, content });
+        }
+
+        if (resultPost) {
+            const targetId = resultPost.id || editPostId;
+            const redirect = () => {
+                window.location.href = `post-detail.html?id=${targetId}`;
+            };
+
+            const msg = editPostId ? 'Your discussion post has been updated successfully!' : 'Your discussion post has been published successfully!';
+            const titleMsg = editPostId ? 'Post Updated' : 'Post Published';
+
+            if (typeof window.showPopup === 'function') {
+                window.showPopup(msg, 'success', titleMsg, null, redirect);
+            } else {
+                alert(msg);
+                redirect();
+            }
         }
     }
 </script>

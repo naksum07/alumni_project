@@ -25,4 +25,4 @@ async function sendEmail(to, subject, html) {
   return transporter.sendMail(mailOptions);
 }
 
-module.exports = sendEmail;
+module.exports = sendEmail;

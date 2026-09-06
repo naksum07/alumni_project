@@ -2,7 +2,7 @@ const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const { Pool } = require('pg');
 
-const dbUrl = process.env.DATABASE_URL || process.env.INTERNAL_DATABASE_URL;
+const dbUrl = process.env.DATABASE_URL || process.env.EXTERNAL_DATABASE_URL || process.env.INTERNAL_DATABASE_URL;
 
 const poolConfig = dbUrl
   ? {
@@ -176,6 +176,27 @@ async function ensureDatabaseSchema() {
         status      VARCHAR(20) NOT NULL DEFAULT 'pending',
         created_at  TIMESTAMP NOT NULL DEFAULT NOW(),
         updated_at  TIMESTAMP NOT NULL DEFAULT NOW()
+      );
+
+      CREATE TABLE IF NOT EXISTS community_posts (
+        id           SERIAL PRIMARY KEY,
+        author_name  VARCHAR(150) NOT NULL,
+        role         VARCHAR(50) DEFAULT 'Alumni',
+        affiliation  VARCHAR(150),
+        category     VARCHAR(50) DEFAULT 'General',
+        title        VARCHAR(250) NOT NULL,
+        content      TEXT NOT NULL,
+        likes        INT DEFAULT 0,
+        created_at   TIMESTAMP NOT NULL DEFAULT NOW()
+      );
+
+      CREATE TABLE IF NOT EXISTS community_comments (
+        id           SERIAL PRIMARY KEY,
+        post_id      INT NOT NULL REFERENCES community_posts(id) ON DELETE CASCADE,
+        author_name  VARCHAR(150) NOT NULL,
+        role         VARCHAR(50) DEFAULT 'Student',
+        content      TEXT NOT NULL,
+        created_at   TIMESTAMP NOT NULL DEFAULT NOW()
       );
 
       -- Seed default Admin user (password: AdminPass123!)

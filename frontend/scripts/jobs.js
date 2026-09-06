@@ -91,7 +91,7 @@ async function loadJobs() {
     const token = localStorage.getItem('token');
 
     const alumniPromise = fetch('/api/jobs').then(r => r.ok ? r.json() : []);
-    const externalPromise = fetch('/api/external-jobs?per_page=30').then(r => r.ok ? r.json() : { jobs: [] }).catch(() => ({ jobs: [] }));
+    const externalPromise = fetch('/api/external-jobs?per_page=315').then(r => r.ok ? r.json() : { jobs: [] }).catch(() => ({ jobs: [] }));
     const appsPromise = token
       ? fetch('/api/jobs/my-applications', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).catch(() => null)
       : Promise.resolve(null);

@@ -422,9 +422,9 @@ async function createNews(req, res) {
 
   try {
     const result = await pool.query(
-      `INSERT INTO news (title, content, category, visibility, status, posted_by)
-       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [title, content, category || 'News', audience || 'Everyone', status || 'Draft', req.user?.id || null]
+      `INSERT INTO news (title, content, category, visibility, status)
+       VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [title, content, category || 'News', audience || 'Everyone', status || 'Draft']
     );
     res.status(201).json({ message: 'News created', news: result.rows[0] });
   } catch (err) {

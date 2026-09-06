@@ -154,6 +154,10 @@ function renderSidebar() {
                         <i class="fa-solid fa-comments"></i>
                         <span>Feedback</span>
                     </a>
+                    <a href="success-stories.html" class="${navLinkClasses} ${currentPath.includes('success-stories') ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-yellow-300'}">
+                        <i class="fa-solid fa-star"></i>
+                        <span>Stories</span>
+                    </a>
                     <a href="../pages/index.html" class="${navLinkClasses} text-blue-200 hover:bg-blue-800 hover:text-white border border-blue-700/50 ml-2" title="Return to Public Site">
                         <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
                         <span>Public Site</span>

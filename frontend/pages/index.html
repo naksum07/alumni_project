@@ -18,15 +18,22 @@
 
 <script src="../scripts/popup.js" defer></script>
 <script src="../scripts/navbar.js" defer></script>
+<script src="../scripts/community.js" defer></script>
 <script src="../scripts/index.js" defer></script>
 
 <style>
     html{
         scroll-behavior:smooth;
     }
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
+<body class="bg-[#f8fafc] text-slate-800">
 
  <!-- HEADER / NAVBAR -->
   <header>
@@ -92,31 +99,58 @@
   </header>
 <!-- MAIN CONTENT -->
 <main id="home" class="pt-20">
-<!-- HERO SECTION -->
-<section data-aos="fade-up" class="relative w-full h-[520px] sm:h-[580px] md:h-[620px] lg:h-[650px] overflow-hidden bg-slate-900 group">
+<!-- HERO SECTION (FULL-WIDTH SLIDER WITH CLEAN DIRECT TEXT OVERLAY) -->
+<section data-aos="fade-up" class="relative w-full h-[520px] sm:h-[580px] md:h-[620px] lg:h-[650px] overflow-hidden bg-black group">
     <!-- Full-Width Background Slider Track -->
     <div id="heroSliderTrack" class="flex h-full w-full transition-transform duration-700 ease-in-out">
         <!-- Slide 1: Networking -->
         <div class="min-w-full h-full relative shrink-0">
             <img loading="lazy" src="../assets/1.png" alt="Alumni and student networking" class="w-full h-full object-cover select-none">
-            <div class="absolute inset-0 bg-slate-950/40"></div>
+            <div class="absolute inset-0 bg-black/70"></div>
         </div>
         <!-- Slide 2: Convocation & Alumni -->
         <div class="min-w-full h-full relative shrink-0">
             <img loading="lazy" src="../assets/2.png" alt="Alumni convocation and graduation celebration" class="w-full h-full object-cover select-none">
-            <div class="absolute inset-0 bg-slate-950/40"></div>
+            <div class="absolute inset-0 bg-black/70"></div>
         </div>
         <!-- Slide 3: Campus & Academics -->
         <div class="min-w-full h-full relative shrink-0">
             <img loading="lazy" src="../assets/3.png" alt="Campus and academic excellence" class="w-full h-full object-cover select-none">
-            <div class="absolute inset-0 bg-slate-950/40"></div>
+            <div class="absolute inset-0 bg-black/70"></div>
         </div>
         <!-- Slide 4: Mentorship & Careers -->
         <div class="min-w-full h-full relative shrink-0">
             <img loading="lazy" src="../assets/4.png" alt="Alumni mentorship and career development" class="w-full h-full object-cover select-none">
-            <div class="absolute inset-0 bg-slate-950/40"></div>
+            <div class="absolute inset-0 bg-black/70"></div>
         </div>
+    </div>
 
+    <!-- CLEAN DIRECT HERO TEXT OVERLAY (NO SOLID WHITE BOX) -->
+    <div class="absolute inset-0 z-10 flex items-center pointer-events-none">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12 w-full">
+            <div class="pointer-events-auto max-w-2xl space-y-5 text-center md:text-left">
+                <!-- Main Headline -->
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight drop-shadow-lg">
+                    Connect With Your <span class="text-yellow-400">Alumni Network</span>
+                </h1>
+
+                <!-- Subtitle Paragraph -->
+                <p class="text-sm sm:text-lg lg:text-xl text-slate-200 leading-relaxed font-normal drop-shadow-md">
+                    A platform where students and alumni connect, share experiences, discover opportunities, and build professional relationships.
+                </p>
+
+                <!-- Action CTA Buttons -->
+                <div class="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-3.5">
+                    <a href="register.html" class="bg-[#c4161c] hover:bg-[#a01217] text-white px-7 py-3 rounded-xl font-bold text-sm sm:text-base shadow-xl hover:scale-105 transition duration-300 flex items-center gap-2">
+                        <span>🚀 Get Started</span>
+                    </a>
+                    <a href="alumni-directory.html" class="border border-white/40 bg-white/10 hover:bg-white/20 text-white backdrop-blur-md px-7 py-3 rounded-xl font-semibold text-sm sm:text-base hover:scale-105 transition duration-300 shadow-lg flex items-center gap-2">
+                        <i class="fa-solid fa-users"></i>
+                        <span>Explore Alumni</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Navigation Arrows -->
@@ -133,24 +167,6 @@
         <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="1" aria-label="Slide 2"></button>
         <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="2" aria-label="Slide 3"></button>
         <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="3" aria-label="Slide 4"></button>
-    </div>
-
-    <!-- Overlay Content Box (Left-aligned, vertically centered) -->
-    <div class="absolute inset-0 z-10 flex items-center pointer-events-none">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:pl-10 w-full">
-            <div class="pointer-events-auto max-w-xs sm:max-w-sm md:max-w-md bg-white/95 backdrop-blur-md p-4 sm:p-5 md:p-6 rounded-xl sm:rounded-2xl shadow-2xl border border-white/60">
-                <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-blue-900 leading-tight">Connect With Your Alumni Network</h2>
-                <p class="mt-2 sm:mt-3 text-sm sm:text-base text-gray-700 leading-relaxed">
-                    A platform where students and alumni connect,
-                    share experiences, discover opportunities,
-                    and build professional relationships.
-                </p>
-                <div class="mt-4 sm:mt-5 flex flex-wrap gap-3">
-                    <a href="register.html" class="bg-blue-900 text-white px-5 sm:px-6 py-2 sm:py-2.5 rounded-lg shadow-lg hover:bg-blue-800 hover:scale-105 transition font-medium text-sm">🚀 Get Started</a>
-                    <a href="alumni-directory.html" class="border border-blue-900 text-blue-900 bg-white/80 hover:bg-blue-50 px-5 sm:px-6 py-2 sm:py-2.5 rounded-lg hover:scale-105 transition font-medium text-sm">👥 Explore Alumni</a>
-                </div>
-            </div>
-        </div>
     </div>
 </section>
 
@@ -194,12 +210,12 @@
     <div class="grid md:grid-cols-3 gap-8">
 
 <!-- CARD 1 -->
-    <a href="alumni-directory.html" data-aos="zoom-in" class="block bg-white p-8 rounded-xl shadow hover:shadow-xl hover:-translate-y-1 transition group">
+    <div data-aos="zoom-in" class="block bg-white p-8 rounded-xl shadow hover:shadow-xl hover:-translate-y-1 transition group">
       <div class="text-5xl mb-5">🎓</div>
       <h3 class="text-xl font-bold text-blue-900 group-hover:text-blue-700 transition">Alumni Directory</h3>
       <p class="mt-3 text-gray-600">Search and connect with alumni based on department, batch, company and location.</p>
       <span class="inline-block mt-4 text-blue-700 font-semibold group-hover:underline">Explore Directory →</span>
-    </a>
+    </div>
 
 <!-- CARD 2 -->
 <div data-aos="zoom-in" class="bg-white p-8 rounded-xl shadow hover:shadow-xl transition">
@@ -246,9 +262,50 @@ professional success.
 </p>
 
 </div>
+</div>
+</section>
 
-</div>
-</div>
+<!-- COMMUNITY BLOG & DISCUSSIONS SECTION -->
+<section data-aos="fade-up" class="py-16 bg-gradient-to-b from-blue-50 to-gray-100 border-t border-b border-gray-200/60" id="community-blog-section">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center mb-10">
+            <h2 class="text-3xl sm:text-4xl font-bold text-[#012970] flex items-center justify-center gap-3">
+                <i class="fa-solid fa-comments text-[#c4161c]"></i>
+                <span>Community Blog &amp; Discussions</span>
+            </h2>
+            <p class="mt-3 text-slate-600 max-w-2xl mx-auto text-sm sm:text-base">
+                Join active conversations, share career guidance, ask questions, and collaborate with alumni, students, and faculty.
+            </p>
+        </div>
+
+        <div class="relative max-w-6xl mx-auto" id="blog-carousel-wrapper">
+            <!-- Carousel viewport container -->
+            <div class="overflow-hidden py-3" id="blog-viewport">
+                <div id="blog-carousel" class="flex transition-transform duration-500 ease-in-out gap-6">
+                    <!-- Filled dynamically -->
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <button id="blog-prev-btn" class="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 md:-ml-6 bg-white shadow-lg rounded-full w-10 h-10 flex items-center justify-center text-[#012970] hover:bg-blue-50 hover:scale-110 transition z-10 focus:outline-none border border-slate-200" aria-label="Previous blog post">
+                <i class="fa-solid fa-chevron-left text-sm"></i>
+            </button>
+            <button id="blog-next-btn" class="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 md:-mr-6 bg-white shadow-lg rounded-full w-10 h-10 flex items-center justify-center text-[#012970] hover:bg-blue-50 hover:scale-110 transition z-10 focus:outline-none border border-slate-200" aria-label="Next blog post">
+                <i class="fa-solid fa-chevron-right text-sm"></i>
+            </button>
+
+            <!-- Dot Indicators -->
+            <div id="blog-dots" class="flex justify-center items-center gap-2 mt-6"></div>
+        </div>
+
+        <!-- Centered View All Discussions Button -->
+        <div class="text-center mt-8">
+            <a href="../community-blog/index.html" class="inline-flex items-center gap-2.5 bg-[#012970] hover:bg-[#c4161c] text-white font-semibold px-7 py-3 rounded-xl transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105 group text-sm sm:text-base">
+                <span>View All Discussions</span>
+                <i class="fa-solid fa-arrow-right text-yellow-400 group-hover:translate-x-1 transition-transform"></i>
+            </a>
+        </div>
+    </div>
 </section>
 
 <!-- ABOUT SECTION -->
@@ -530,12 +587,12 @@ discover career opportunities and grow together.
 <a href="register.html"
 
 class="bg-yellow-400 text-blue-900 px-8 py-3 rounded-xl font-semibold hover:bg-yellow-300 transition">
-🚀 Create Account
+Create Account
 </a>
 
 <a href="alumni-directory.html"
 class="border border-white px-8 py-3 rounded-xl hover:bg-white hover:text-blue-900 transition">
-👥 Explore Alumni
+Explore Alumni
 </a>
 </div>
 </div>
@@ -641,198 +698,44 @@ class="border border-white px-8 py-3 rounded-xl hover:bg-white hover:text-blue-9
   </div>
 </footer>
 
+<!-- FLOATING ACTION BUTTON (COMMUNITY BLOG) -->
+<div class="fixed bottom-7 right-7 z-50 group">
+  <!-- Soft Single-Color Glow Backdrop Aura -->
+  <div class="absolute -inset-1 rounded-full bg-[#012970] opacity-50 blur-md group-hover:opacity-75 transition duration-300 group-hover:scale-105"></div>
 
+  <a href="../community-blog/index.html"
+     class="relative flex items-center gap-3.5 bg-[#012970] hover:bg-[#001f56] text-white px-5 py-3.5 rounded-full shadow-[0_10px_25px_-5px_rgba(1,41,112,0.5)] border-2 border-white/20 hover:border-white/40 transition-all duration-300 transform group-hover:-translate-y-1"
+     title="Explore Community Blog &amp; Discussions">
+
+      <!-- Icon Box with Single-Color Theme -->
+      <div class="relative flex items-center justify-center w-9 h-9 rounded-full bg-white/15 text-white shadow-inner group-hover:rotate-12 group-hover:scale-110 transition-all duration-300 shrink-0">
+          <i class="fa-solid fa-comments text-lg"></i>
+          <!-- Pulse Dot -->
+          <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-80"></span>
+              <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-white border-2 border-[#012970]"></span>
+          </span>
+      </div>
+
+      <!-- Text Label & Badge -->
+      <div class="flex items-center gap-2">
+          <span class="font-bold text-sm tracking-wide text-white transition-colors whitespace-nowrap hidden sm:inline">
+              Community Hub
+          </span>
+          <span id="communityFabBadge" class="bg-white text-[#012970] text-[10px] font-black px-2 py-0.5 rounded-full shadow-sm uppercase tracking-wider hidden sm:inline-block">
+              NEW
+          </span>
+      </div>
+
+      <!-- Arrow Indicator on Hover -->
+      <i class="fa-solid fa-chevron-right text-xs text-white/80 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 hidden sm:inline-block"></i>
+  </a>
+</div>
 
 <!-- SCROLL TO TOP BUTTON -->
-<button id="topBtn" onclick="goTop()" class="hidden fixed bottom-8 right-8 bg-blue-800 text-white w-14 h-14 rounded-full text-3xl font-bold shadow-2xl hover:bg-blue-950 transition">
-↑
+<button id="topBtn" onclick="goTop()" aria-label="Scroll to top" class="hidden fixed bottom-24 right-8 z-40 bg-[#012970]/80 hover:bg-[#c4161c] text-white w-11 h-11 rounded-full text-lg shadow-xl backdrop-blur-md flex items-center justify-center transition-all duration-300 border border-white/20 hover:scale-110 hover:-translate-y-1">
+  <i class="fa-solid fa-arrow-up text-sm"></i>
 </button>
 
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-    // Load announcements for carousel
-    try {
-        const annRes = await fetch('/api/announcements');
-        if (annRes.ok) {
-            const announcements = await annRes.json();
-            if (announcements && announcements.length > 0) {
-                // Priority ranking: urgent (1) -> normal (2) -> low (3), then newest date
-                const priorityRank = { urgent: 1, normal: 2, low: 3 };
-                announcements.sort((a, b) => {
-                    const rankA = priorityRank[(a.priority || 'normal').toLowerCase()] || 2;
-                    const rankB = priorityRank[(b.priority || 'normal').toLowerCase()] || 2;
-                    if (rankA !== rankB) return rankA - rankB;
-                    return new Date(b.created_at || 0) - new Date(a.created_at || 0);
-                });
-
-                const annCarousel = document.getElementById('announcements-carousel');
-                const dotsContainer = document.getElementById('announcements-dots');
-                const prevBtn = document.getElementById('announcements-prev-btn');
-                const nextBtn = document.getElementById('announcements-next-btn');
-                const wrapper = document.getElementById('announcements-carousel-wrapper');
-
-                annCarousel.innerHTML = announcements.map(a => {
-                    const priorityClass = a.priority === 'urgent' 
-                        ? 'bg-red-100 text-red-700 border-red-200' 
-                        : (a.priority === 'low' ? 'bg-blue-100 text-blue-700 border-blue-200' : 'bg-amber-100 text-amber-700 border-amber-200');
-                    const priorityIcon = a.priority === 'urgent'
-                        ? 'fa-triangle-exclamation'
-                        : (a.priority === 'low' ? 'fa-circle-info' : 'fa-bullhorn');
-                    const dateStr = a.created_at ? new Date(a.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '';
-                    return `
-                    <div class="shrink-0 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${priorityClass}">
-                                    <i class="fa-solid ${priorityIcon}"></i>
-                                    <span class="capitalize">${a.priority || 'Normal'}</span>
-                                </span>
-                                <span class="text-xs text-slate-400"><i class="fa-regular fa-clock mr-1"></i>${dateStr}</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-slate-900 mb-2">${a.title}</h3>
-                            <p class="text-slate-600 text-sm leading-relaxed">${a.content}</p>
-                        </div>
-                    </div>`;
-                }).join('');
-                document.getElementById('announcements-section').style.display = 'block';
-
-                let currentIndex = 0;
-                let autoPlayTimer = null;
-
-                function getVisibleCards() {
-                    if (window.innerWidth >= 1024) return 3;
-                    if (window.innerWidth >= 768) return 2;
-                    return 1;
-                }
-
-                function getMaxIndex() {
-                    const visible = getVisibleCards();
-                    return Math.max(0, announcements.length - visible);
-                }
-
-                function updateCarousel() {
-                    const maxIndex = getMaxIndex();
-                    if (currentIndex > maxIndex) currentIndex = maxIndex;
-                    if (currentIndex < 0) currentIndex = 0;
-
-                    const card = annCarousel.children[0];
-                    if (card) {
-                        const gap = 24; // gap-6
-                        const cardWidth = card.getBoundingClientRect().width;
-                        const shift = currentIndex * (cardWidth + gap);
-                        annCarousel.style.transform = `translateX(-${shift}px)`;
-                    }
-
-                    renderDots();
-                }
-
-                function renderDots() {
-                    const maxIndex = getMaxIndex();
-                    if (!dotsContainer) return;
-                    if (maxIndex <= 0) {
-                        dotsContainer.innerHTML = '';
-                        return;
-                    }
-                    dotsContainer.innerHTML = Array.from({ length: maxIndex + 1 }, (_, i) => `
-                        <button class="h-2.5 rounded-full transition-all duration-300 ${i === currentIndex ? 'bg-[#c4161c] w-6' : 'bg-slate-300 hover:bg-slate-400 w-2.5'}"
-                            aria-label="Go to slide ${i + 1}" data-index="${i}"></button>
-                    `).join('');
-
-                    dotsContainer.querySelectorAll('button').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            currentIndex = parseInt(btn.getAttribute('data-index'), 10);
-                            updateCarousel();
-                            resetTimer();
-                        });
-                    });
-                }
-
-                function nextSlide() {
-                    const maxIndex = getMaxIndex();
-                    if (maxIndex <= 0) return;
-                    if (currentIndex >= maxIndex) {
-                        currentIndex = 0;
-                    } else {
-                        currentIndex++;
-                    }
-                    updateCarousel();
-                }
-
-                function prevSlide() {
-                    const maxIndex = getMaxIndex();
-                    if (maxIndex <= 0) return;
-                    if (currentIndex <= 0) {
-                        currentIndex = maxIndex;
-                    } else {
-                        currentIndex--;
-                    }
-                    updateCarousel();
-                }
-
-                if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); resetTimer(); });
-                if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); resetTimer(); });
-
-                function startTimer() {
-                    stopTimer();
-                    autoPlayTimer = setInterval(nextSlide, 5500);
-                }
-
-                function stopTimer() {
-                    if (autoPlayTimer) clearInterval(autoPlayTimer);
-                }
-
-                function resetTimer() {
-                    stopTimer();
-                    startTimer();
-                }
-
-                if (wrapper) {
-                    wrapper.addEventListener('mouseenter', stopTimer);
-                    wrapper.addEventListener('mouseleave', startTimer);
-                    wrapper.addEventListener('touchstart', stopTimer, { passive: true });
-                    wrapper.addEventListener('touchend', startTimer, { passive: true });
-                }
-
-                window.addEventListener('resize', updateCarousel);
-                updateCarousel();
-                startTimer();
-            }
-        }
-    } catch(err) { console.error('Failed to load announcements', err); }
-
-    // Load feedbacks for carousel
-    try {
-        const res = await fetch('/api/feedback');
-        if (res.ok) {
-            const feedbacks = await res.json();
-            if (feedbacks && feedbacks.length > 0) {
-                const carousel = document.getElementById('feedback-carousel');
-                carousel.innerHTML = feedbacks.map(f => {
-                    const stars = Array(5).fill(0).map((_, i) => i < f.rating ? '<i class="fa-solid fa-star text-yellow-400"></i>' : '<i class="fa-solid fa-star text-gray-300"></i>').join('');
-                    return `
-                    <div class="snap-center shrink-0 w-80 bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
-                        <div>
-                            <div class="flex gap-1 mb-4 text-sm">${stars}</div>
-                            <p class="text-gray-600 italic">"${f.message}"</p>
-                        </div>
-                        <div class="mt-6 font-semibold text-[#012970]">- ${f.author_name || 'Anonymous User'}</div>
-                    </div>`;
-                }).join('');
-                document.getElementById('feedback-section').style.display = 'block';
-            }
-        }
-    } catch(err) { console.error('Failed to load feedback', err); }
-});
-
-</script>
-<!-- Floating Community Blog Tab -->
-<a href="community-blog/index.html"
-   class="fixed right-0 top-1/2 -translate-y-1/2 z-50 flex items-center gap-2 bg-[#012970] hover:bg-[#01408e] text-white px-3 py-4 rounded-l-xl shadow-lg transition-all duration-300 hover:pr-5 group"
-   title="Community Blog"
-   style="writing-mode: vertical-lr; text-orientation: mixed;">
-    <i class="fa-solid fa-blog text-base rotate-90 group-hover:scale-110 transition-transform"></i>
-    <span class="text-sm font-semibold tracking-wide">Community Blog</span>
-</a>
-
 </body>
-</html>
+</html>

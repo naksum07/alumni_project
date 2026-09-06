@@ -1,5 +1,5 @@
 /* ==========================================================================
-   COMMUNITY BLOG DATA & INTERACTION SYSTEM (TAILWIND INTEGRATED)
+   COMMUNITY BLOG DATA & INTERACTION SYSTEM (JWT AUTH & REST API INTEGRATED)
    ========================================================================== */
 
 const STORAGE_KEY = 'alumni_community_posts_v1';
@@ -7,6 +7,7 @@ const STORAGE_KEY = 'alumni_community_posts_v1';
 const DEFAULT_POSTS = [
     {
         id: 'post-1',
+        user_id: null,
         author: 'Priya Sharma',
         role: 'Alumni',
         affiliation: 'Senior SDE @ Microsoft (Batch \'20)',
@@ -25,6 +26,7 @@ Feel free to ask your questions or request resume reviews below!`,
         comments: [
             {
                 id: 'c-1',
+                user_id: null,
                 author: 'Rohan Verma',
                 role: 'Student',
                 content: 'Thank you Priya ma\'am! Should we focus more on LeetCode or system design for entry-level roles?',
@@ -32,6 +34,7 @@ Feel free to ask your questions or request resume reviews below!`,
             },
             {
                 id: 'c-2',
+                user_id: null,
                 author: 'Priya Sharma',
                 role: 'Alumni',
                 content: 'For fresher roles, DSA and core CS subjects (OS, DBMS, Networks) are 90% of the evaluation. Basic low-level design is enough!',
@@ -41,6 +44,7 @@ Feel free to ask your questions or request resume reviews below!`,
     },
     {
         id: 'post-2',
+        user_id: null,
         author: 'Amit Kumar',
         role: 'Alumni',
         affiliation: 'Product Lead @ FinTech (Batch \'18)',
@@ -55,50 +59,115 @@ Drop a comment with your areas of interest or reach out through the Alumni Direc
         comments: [
             {
                 id: 'c-3',
+                user_id: null,
                 author: 'Anjali Rai',
                 role: 'Student',
                 content: 'Would love to connect regarding PM roadmaps and APM program preparation!',
                 createdAt: new Date(Date.now() - 8 * 3600 * 1000).toISOString()
             }
         ]
-    },
-    {
-        id: 'post-3',
-        author: 'Sneha Subba',
-        role: 'Student',
-        affiliation: 'BTech CSE (Batch \'26)',
-        category: 'Academics',
-        title: '🚀 Starting an AI/ML Open-Source Study Group on Campus',
-        content: `A few of us 3rd-year students are starting a weekly peer study group to explore Generative AI, PyTorch models, and real-world open-source contributions.
-
-Any seniors or alumni working in AI/Data Science who would like to guide us, suggest roadmaps, or give a guest talk? All students are welcome to join!`,
-        likes: 19,
-        liked: false,
-        createdAt: new Date(Date.now() - 30 * 3600 * 1000).toISOString(),
-        comments: []
-    },
-    {
-        id: 'post-4',
-        author: 'Dr. Tashi Dorjee',
-        role: 'Faculty',
-        affiliation: 'Dept. of Science & Technology',
-        category: 'General',
-        title: 'Call for Alumni Guest Speakers: Tech Innovate Symposium 2026',
-        content: `The Department of Science & Technology is inviting distinguished alumni working in cloud computing, cybersecurity, and data analytics to deliver keynote sessions at our upcoming Tech Innovate Symposium next month. Interested alumni may comment or email the department.`,
-        likes: 31,
-        liked: false,
-        createdAt: new Date(Date.now() - 48 * 3600 * 1000).toISOString(),
-        comments: []
     }
 ];
+
+function getAuthToken() {
+    return localStorage.getItem('token');
+}
+
+function getCurrentUser() {
+    try {
+        const raw = localStorage.getItem('user');
+        return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+        return null;
+    }
+}
+
+function isLoggedIn() {
+    return !!(getAuthToken() && getCurrentUser());
+}
+
+function getLoginUrl() {
+    return window.location.pathname.includes('/community-blog/') ? '../login.html' : 'login.html';
+}
+
+function requireAuth(actionName = 'participate') {
+    if (isLoggedIn()) return true;
+
+    const message = `Please log in to ${actionName}.`;
+    const redirect = () => {
+        window.location.href = getLoginUrl();
+    };
+
+    if (typeof window.showPopup === 'function') {
+        window.showPopup(message, 'warning', 'Authentication Required', null, redirect);
+    } else if (typeof window.showConfirmPopup === 'function') {
+        window.showConfirmPopup(
+            `${message} Would you like to go to the login page now?`,
+            'Log In Required',
+            redirect,
+            null,
+            'Log In',
+            'Cancel'
+        );
+    } else {
+        alert(message);
+        redirect();
+    }
+    return false;
+}
+
+function getAuthHeaders() {
+    const headers = { 'Content-Type': 'application/json' };
+    const token = getAuthToken();
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+    return headers;
+}
+
+async function handleResponse(res, defaultErrMsg) {
+    if (res.status === 401) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        const redirect = () => { window.location.href = getLoginUrl(); };
+        if (typeof window.showPopup === 'function') {
+            window.showPopup('Your session has expired. Please log in again.', 'warning', 'Session Expired', null, redirect);
+        } else {
+            alert('Your session has expired. Please log in again.');
+            redirect();
+        }
+        throw new Error('Unauthorized');
+    }
+
+    if (res.status === 403) {
+        const data = await res.json().catch(() => ({}));
+        const msg = data.message || 'Forbidden: You are not authorized to perform this action.';
+        if (typeof window.showPopup === 'function') {
+            window.showPopup(msg, 'error', 'Permission Denied');
+        } else {
+            alert(msg);
+        }
+        throw new Error(msg);
+    }
+
+    if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const msg = data.message || defaultErrMsg || `Request failed with status ${res.status}`;
+        if (typeof window.showPopup === 'function') {
+            window.showPopup(msg, 'error', 'Error');
+        } else {
+            alert(msg);
+        }
+        throw new Error(msg);
+    }
+
+    return await res.json();
+}
 
 function getPosts() {
     try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_POSTS));
-            return DEFAULT_POSTS;
-        }
+        if (!raw) return DEFAULT_POSTS;
         const parsed = JSON.parse(raw);
         return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_POSTS;
     } catch (e) {
@@ -109,13 +178,42 @@ function getPosts() {
 function savePosts(posts) {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+        if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('community_posts_updated', { detail: posts }));
+        }
     } catch (e) {
         console.error('Failed to save posts to localStorage:', e);
     }
 }
 
+async function fetchPostsFromAPI() {
+    try {
+        const res = await fetch('/api/community/posts', {
+            headers: getAuthHeaders()
+        });
+        if (res.ok) {
+            const apiPosts = await res.json();
+            if (Array.isArray(apiPosts)) {
+                savePosts(apiPosts);
+                return apiPosts;
+            }
+        }
+    } catch (err) {
+        console.warn('Backend API fetch unavailable, using cached posts:', err.message || err);
+    }
+    return getPosts();
+}
+
+function isOwner(itemUserId) {
+    const user = getCurrentUser();
+    if (!user || !user.id || itemUserId === undefined || itemUserId === null) return false;
+    return String(user.id) === String(itemUserId);
+}
+
 function timeAgo(dateString) {
+    if (!dateString) return 'Just now';
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Just now';
     const now = new Date();
     const seconds = Math.floor((now - date) / 1000);
     if (seconds < 60) return 'Just now';
@@ -131,7 +229,7 @@ function timeAgo(dateString) {
 function getAvatarColor(role) {
     if (role === 'Alumni') return 'bg-amber-100 text-amber-800 border-amber-300';
     if (role === 'Faculty') return 'bg-emerald-100 text-emerald-800 border-emerald-300';
-    return 'bg-blue-100 text-blue-800 border-blue-300';
+    return 'bg-blue-100 text-blue-800 border-blue-200';
 }
 
 function getRoleBadge(role) {
@@ -149,78 +247,158 @@ function getCategoryBadge(category) {
     }
 }
 
+// Auto-trigger API fetch when script loads
+if (typeof window !== 'undefined') {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', fetchPostsFromAPI);
+    } else {
+        fetchPostsFromAPI();
+    }
+}
+
 window.CommunityBlog = {
+    getAuthToken,
+    getCurrentUser,
+    isLoggedIn,
+    requireAuth,
+    isOwner,
     getPosts,
     savePosts,
+    fetchPosts: fetchPostsFromAPI,
     timeAgo,
     getAvatarColor,
     getRoleBadge,
     getCategoryBadge,
 
-    createPost: function(postData) {
-        const posts = getPosts();
-        const newPost = {
-            id: 'post-' + Date.now(),
-            author: postData.author,
-            role: postData.role || 'Alumni',
-            affiliation: postData.affiliation || 'Community Member',
-            category: postData.category || 'General',
-            title: postData.title,
-            content: postData.content,
-            likes: 1,
-            liked: true,
-            createdAt: new Date().toISOString(),
-            comments: []
-        };
-        posts.unshift(newPost);
-        savePosts(posts);
-        return newPost;
-    },
+    createPost: async function(postData) {
+        if (!requireAuth('create a post')) return null;
 
-    toggleLike: function(postId) {
-        const posts = getPosts();
-        const post = posts.find(p => p.id === postId);
-        if (!post) return;
-        if (post.liked) {
-            post.likes = Math.max(0, (post.likes || 1) - 1);
-            post.liked = false;
-        } else {
-            post.likes = (post.likes || 0) + 1;
-            post.liked = true;
+        try {
+            const res = await fetch('/api/community/posts', {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify({
+                    category: postData.category,
+                    title: postData.title,
+                    content: postData.content
+                })
+            });
+            const newPost = await handleResponse(res, 'Failed to create post');
+            await fetchPostsFromAPI();
+            return newPost;
+        } catch (err) {
+            console.error('Error creating post:', err);
+            return null;
         }
-        savePosts(posts);
-        return post;
     },
 
-    addComment: function(postId, commentData) {
-        const posts = getPosts();
-        const post = posts.find(p => p.id === postId);
-        if (!post) return;
-        if (!post.comments) post.comments = [];
+    updatePost: async function(postId, postData) {
+        if (!requireAuth('edit this post')) return null;
 
-        const comment = {
-            id: 'c-' + Date.now(),
-            author: commentData.author || 'You (Community Member)',
-            role: commentData.role || 'Student',
-            content: commentData.content,
-            createdAt: new Date().toISOString()
-        };
-        post.comments.push(comment);
-        savePosts(posts);
-        return comment;
+        try {
+            const res = await fetch(`/api/community/posts/${postId}`, {
+                method: 'PUT',
+                headers: getAuthHeaders(),
+                body: JSON.stringify({
+                    category: postData.category,
+                    title: postData.title,
+                    content: postData.content
+                })
+            });
+            const updatedPost = await handleResponse(res, 'Failed to update post');
+            await fetchPostsFromAPI();
+            return updatedPost;
+        } catch (err) {
+            console.error('Error updating post:', err);
+            return null;
+        }
     },
 
-    deletePost: function(postId) {
-        let posts = getPosts();
-        posts = posts.filter(p => p.id !== postId);
-        savePosts(posts);
+    deletePost: async function(postId) {
+        if (!requireAuth('delete this post')) return false;
+
+        try {
+            const res = await fetch(`/api/community/posts/${postId}`, {
+                method: 'DELETE',
+                headers: getAuthHeaders()
+            });
+            await handleResponse(res, 'Failed to delete post');
+            await fetchPostsFromAPI();
+            return true;
+        } catch (err) {
+            console.error('Error deleting post:', err);
+            return false;
+        }
     },
 
-    deleteComment: function(postId, commentId) {
-        const posts = getPosts();
-        const post = posts.find(p => p.id === postId);
-        if (!post || !post.comments) return;
-        post.comments = post.comments.filter(c => c.id !== commentId);
-        savePosts(posts);
+    toggleLike: async function(postId) {
+        if (!requireAuth('like posts')) return null;
+
+        try {
+            const res = await fetch(`/api/community/posts/${postId}/like`, {
+                method: 'POST',
+                headers: getAuthHeaders()
+            });
+            await handleResponse(res, 'Failed to like post');
+            await fetchPostsFromAPI();
+            const posts = getPosts();
+            return posts.find(p => String(p.id) === String(postId));
+        } catch (err) {
+            console.error('Error toggling like:', err);
+            return null;
+        }
+    },
+
+    addComment: async function(postId, commentData) {
+        if (!requireAuth('add a comment')) return null;
+
+        try {
+            const res = await fetch(`/api/community/posts/${postId}/comments`, {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify({ content: commentData.content })
+            });
+            const comment = await handleResponse(res, 'Failed to add comment');
+            await fetchPostsFromAPI();
+            return comment;
+        } catch (err) {
+            console.error('Error adding comment:', err);
+            return null;
+        }
+    },
+
+    updateComment: async function(commentId, commentData) {
+        if (!requireAuth('edit this comment')) return null;
+
+        try {
+            const res = await fetch(`/api/community/comments/${commentId}`, {
+                method: 'PUT',
+                headers: getAuthHeaders(),
+                body: JSON.stringify({ content: commentData.content })
+            });
+            const updatedComment = await handleResponse(res, 'Failed to update comment');
+            await fetchPostsFromAPI();
+            return updatedComment;
+        } catch (err) {
+            console.error('Error updating comment:', err);
+            return null;
+        }
+    },
+
+    deleteComment: async function(commentId) {
+        if (!requireAuth('delete this comment')) return false;
+
+        try {
+            const res = await fetch(`/api/community/comments/${commentId}`, {
+                method: 'DELETE',
+                headers: getAuthHeaders()
+            });
+            await handleResponse(res, 'Failed to delete comment');
+            await fetchPostsFromAPI();
+            return true;
+        } catch (err) {
+            console.error('Error deleting comment:', err);
+            return false;
+        }
     }
 };

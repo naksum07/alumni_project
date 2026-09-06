@@ -7,9 +7,9 @@
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135755.png">
     
     <!-- Scripts -->
-    <script src="../../scripts/popup.js" defer></script>
-    <script src="../../scripts/navbar.js" defer></script>
-    <script src="community.js"></script>
+    <script src="../scripts/popup.js" defer></script>
+    <script src="../scripts/navbar.js" defer></script>
+    <script src="../scripts/community.js"></script>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -33,7 +33,7 @@
 
             <a href="../index.html" class="flex items-center gap-3">
                 <span class="p-1 flex items-center">
-                    <img src="../../assets/logo.png" alt="ICFAI University Sikkim" class="h-10 w-auto">
+                    <img src="../assets/logo.png" alt="ICFAI University Sikkim" class="h-10 w-auto">
                 </span>
                 <span class="text-2xl font-bold text-[#012970] tracking-tight">Alumni<span class="text-[#c4161c]">Connect</span></span>
             </a>
@@ -59,7 +59,7 @@
             </div>
 
             <div class="hidden md:flex gap-3 items-center" id="navAuth">
-                <a href="../../admin/login.html" class="text-slate-500 font-medium hover:text-[#012970] transition text-sm px-2 border-r border-gray-200 pr-4">Admin Login</a>
+                <a href="../admin/login.html" class="text-slate-500 font-medium hover:text-[#012970] transition text-sm px-2 border-r border-gray-200 pr-4">Admin Login</a>
                 <a href="../login.html" class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-5 py-2 rounded-lg transition text-sm shadow-sm">Login / Register</a>
             </div>
 
@@ -82,7 +82,7 @@
             <a href="index.html" class="block py-3 border-b border-gray-100 text-[#c4161c] font-semibold">Community</a>
             <a href="../feedback.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Feedback</a>
             <div class="mt-4 space-y-3" id="mobileNavAuth">
-                <a href="../../admin/login.html" class="block text-center text-slate-500 py-2 rounded-lg font-medium hover:bg-gray-100 transition text-sm border-b border-gray-200 pb-3 mb-3">Admin Login</a>
+                <a href="../admin/login.html" class="block text-center text-slate-500 py-2 rounded-lg font-medium hover:bg-gray-100 transition text-sm border-b border-gray-200 pb-3 mb-3">Admin Login</a>
                 <a href="../login.html" class="block text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">Login / Register</a>
             </div>
         </div>
@@ -138,10 +138,10 @@
         return params.get('id');
     }
 
-    function renderThread() {
+    async function renderThread() {
         const postId = getPostIdFromUrl();
-        const posts = window.CommunityBlog.getPosts();
-        currentPost = posts.find(p => p.id === postId) || posts[0];
+        const posts = await window.CommunityBlog.fetchPosts();
+        currentPost = posts.find(p => String(p.id) === String(postId)) || posts[0];
 
         const container = document.getElementById('threadContainer');
         const breadcrumbTitle = document.getElementById('breadcrumbTitle');
@@ -170,26 +170,35 @@
         const catBadge = window.CommunityBlog.getCategoryBadge(currentPost.category);
         const comments = currentPost.comments || [];
         const isLiked = currentPost.liked;
+        const isPostOwner = window.CommunityBlog.isOwner(currentPost.user_id || currentPost.userId);
 
-        const repliesHtml = comments.map(c => `
-            <div class="bg-slate-50 rounded-2xl p-4 text-xs sm:text-sm border border-slate-200 flex items-start gap-3">
-                <div class="w-8 h-8 rounded-full bg-slate-300 text-slate-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
-                    ${c.author.charAt(0).toUpperCase()}
-                </div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center justify-between mb-1">
-                        <span class="font-bold text-slate-800 text-xs sm:text-sm">${c.author}</span>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[11px] text-slate-400">${window.CommunityBlog.timeAgo(c.createdAt)}</span>
-                            <button onclick="deleteThreadReply('${c.id}')" title="Delete reply" class="text-slate-400 hover:text-red-600 transition">
-                                <i class="fa-regular fa-trash-can text-xs"></i>
-                            </button>
-                        </div>
+        const repliesHtml = comments.map(c => {
+            const isCommentOwner = window.CommunityBlog.isOwner(c.user_id || c.userId);
+            return `
+                <div class="bg-slate-50 rounded-2xl p-4 text-xs sm:text-sm border border-slate-200 flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-full bg-slate-300 text-slate-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                        ${(c.author || 'U').charAt(0).toUpperCase()}
                     </div>
-                    <p class="text-slate-700 text-xs sm:text-sm leading-relaxed">${c.content}</p>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-bold text-slate-800 text-xs sm:text-sm">${c.author}</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-[11px] text-slate-400">${window.CommunityBlog.timeAgo(c.createdAt)}</span>
+                                ${isCommentOwner ? `
+                                    <button onclick="editThreadReply('${c.id}')" title="Edit reply" class="text-slate-400 hover:text-blue-600 transition">
+                                        <i class="fa-regular fa-pen-to-square text-xs"></i>
+                                    </button>
+                                    <button onclick="deleteThreadReply('${c.id}')" title="Delete reply" class="text-slate-400 hover:text-red-600 transition">
+                                        <i class="fa-regular fa-trash-can text-xs"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                        <p class="text-slate-700 text-xs sm:text-sm leading-relaxed">${c.content}</p>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
 
         container.innerHTML = `
             <article class="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-slate-200">
@@ -211,6 +220,14 @@
                     </div>
                     <div class="flex items-center gap-2">
                         ${catBadge}
+                        ${isPostOwner ? `
+                            <a href="create-post.html?edit=${currentPost.id}" title="Edit discussion" class="text-slate-500 hover:text-blue-900 border border-slate-200 hover:border-blue-900 px-3 py-1.5 rounded-xl transition text-xs font-semibold flex items-center gap-1.5">
+                                <i class="fa-regular fa-pen-to-square"></i> Edit
+                            </a>
+                            <button onclick="deleteCurrentPost('${currentPost.id}')" title="Delete discussion" class="text-red-600 hover:text-red-700 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-xl transition text-xs font-semibold flex items-center gap-1.5 cursor-pointer">
+                                <i class="fa-regular fa-trash-can"></i> Delete
+                            </button>
+                        ` : ''}
                     </div>
                 </div>
 
@@ -252,7 +269,7 @@
                     <label class="block text-xs font-bold text-slate-700">Add to the Conversation</label>
                     <textarea id="threadReplyInput" required rows="3" placeholder="Share your perspective, helpful advice, or follow-up question..." class="w-full bg-white border border-slate-300 rounded-xl p-3 text-xs sm:text-sm text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-blue-900 focus:outline-none leading-relaxed"></textarea>
                     <div class="flex justify-end">
-                        <button type="submit" class="bg-[#012970] hover:bg-blue-950 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition shadow-sm flex items-center gap-1.5">
+                        <button type="submit" class="bg-[#012970] hover:bg-blue-950 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition shadow-sm flex items-center gap-1.5 cursor-pointer">
                             <i class="fa-solid fa-paper-plane"></i> Post Reply
                         </button>
                     </div>
@@ -270,39 +287,94 @@
         `;
     }
 
-    function toggleThreadLike() {
+    async function toggleThreadLike() {
         if (!currentPost) return;
-        window.CommunityBlog.toggleLike(currentPost.id);
-        renderThread();
+        if (!window.CommunityBlog.requireAuth('like discussions')) return;
+        await window.CommunityBlog.toggleLike(currentPost.id);
+        await renderThread();
     }
 
-    function submitThreadReply(e) {
+    async function submitThreadReply(e) {
         e.preventDefault();
+        if (!window.CommunityBlog.requireAuth('add a reply')) return;
         const input = document.getElementById('threadReplyInput');
         if (!input || !input.value.trim() || !currentPost) return;
 
-        window.CommunityBlog.addComment(currentPost.id, {
-            author: 'You (Community Member)',
-            role: 'Student',
+        const comment = await window.CommunityBlog.addComment(currentPost.id, {
             content: input.value.trim()
         });
 
-        renderThread();
+        if (comment) {
+            input.value = '';
+            await renderThread();
+        }
+    }
+
+    async function editThreadReply(commentId) {
+        if (!window.CommunityBlog.requireAuth('edit this reply')) return;
+        if (!currentPost || !currentPost.comments) return;
+
+        const comment = currentPost.comments.find(c => String(c.id) === String(commentId));
+        if (!comment) return;
+
+        if (!window.CommunityBlog.isOwner(comment.user_id || comment.userId)) {
+            if (typeof window.showPopup === 'function') {
+                window.showPopup('You are not authorized to edit this reply.', 'error', 'Permission Denied');
+            } else {
+                alert('You are not authorized to edit this reply.');
+            }
+            return;
+        }
+
+        const newContent = prompt('Edit your reply:', comment.content);
+        if (newContent !== null && newContent.trim() && newContent.trim() !== comment.content) {
+            const updated = await window.CommunityBlog.updateComment(commentId, { content: newContent.trim() });
+            if (updated) {
+                await renderThread();
+            }
+        }
     }
 
     function deleteThreadReply(commentId) {
         if (!currentPost) return;
-        const executeDelete = () => {
-            window.CommunityBlog.deleteComment(currentPost.id, commentId);
-            renderThread();
-            if (typeof window.showPopup === 'function') {
-                window.showPopup('Reply deleted successfully.', 'info', 'Deleted');
+        if (!window.CommunityBlog.requireAuth('delete this reply')) return;
+
+        const executeDelete = async () => {
+            const success = await window.CommunityBlog.deleteComment(commentId);
+            if (success) {
+                await renderThread();
+                if (typeof window.showPopup === 'function') {
+                    window.showPopup('Reply deleted successfully.', 'info', 'Deleted');
+                }
             }
         };
 
         if (typeof window.showConfirmPopup === 'function') {
             window.showConfirmPopup('Are you sure you want to delete this reply?', 'Delete Reply?', executeDelete, null, 'Delete', 'Cancel');
         } else if (confirm('Delete this reply?')) {
+            executeDelete();
+        }
+    }
+
+    function deleteCurrentPost(postId) {
+        if (!window.CommunityBlog.requireAuth('delete this post')) return;
+
+        const executeDelete = async () => {
+            const success = await window.CommunityBlog.deletePost(postId);
+            if (success) {
+                const redirect = () => { window.location.href = 'index.html'; };
+                if (typeof window.showPopup === 'function') {
+                    window.showPopup('Discussion deleted successfully.', 'info', 'Deleted', null, redirect);
+                } else {
+                    alert('Discussion deleted successfully.');
+                    redirect();
+                }
+            }
+        };
+
+        if (typeof window.showConfirmPopup === 'function') {
+            window.showConfirmPopup('Are you sure you want to delete this discussion? This action cannot be undone.', 'Delete Discussion?', executeDelete, null, 'Delete', 'Cancel');
+        } else if (confirm('Are you sure you want to delete this discussion?')) {
             executeDelete();
         }
     }

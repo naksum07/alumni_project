@@ -7,9 +7,9 @@
     <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135755.png">
     
     <!-- Scripts -->
-    <script src="../../scripts/popup.js" defer></script>
-    <script src="../../scripts/navbar.js" defer></script>
-    <script src="community.js"></script>
+    <script src="../scripts/popup.js" defer></script>
+    <script src="../scripts/navbar.js" defer></script>
+    <script src="../scripts/community.js" defer></script>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -33,7 +33,7 @@
 
             <a href="../index.html" class="flex items-center gap-3">
                 <span class="p-1 flex items-center">
-                    <img src="../../assets/logo.png" alt="ICFAI University Sikkim" class="h-10 w-auto">
+                    <img src="../assets/logo.png" alt="ICFAI University Sikkim" class="h-10 w-auto">
                 </span>
                 <span class="text-2xl font-bold text-[#012970] tracking-tight">Alumni<span class="text-[#c4161c]">Connect</span></span>
             </a>
@@ -59,7 +59,7 @@
             </div>
 
             <div class="hidden md:flex gap-3 items-center" id="navAuth">
-                <a href="../../admin/login.html" class="text-slate-500 font-medium hover:text-[#012970] transition text-sm px-2 border-r border-gray-200 pr-4">Admin Login</a>
+                <a href="../admin/login.html" class="text-slate-500 font-medium hover:text-[#012970] transition text-sm px-2 border-r border-gray-200 pr-4">Admin Login</a>
                 <a href="../login.html" class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-5 py-2 rounded-lg transition text-sm shadow-sm">Login / Register</a>
             </div>
 
@@ -82,7 +82,7 @@
             <a href="index.html" class="block py-3 border-b border-gray-100 text-[#c4161c] font-semibold">Community</a>
             <a href="../feedback.html" class="block py-3 border-b border-gray-100 hover:text-[#c4161c]">Feedback</a>
             <div class="mt-4 space-y-3" id="mobileNavAuth">
-                <a href="../../admin/login.html" class="block text-center text-slate-500 py-2 rounded-lg font-medium hover:bg-gray-100 transition text-sm border-b border-gray-200 pb-3 mb-3">Admin Login</a>
+                <a href="../admin/login.html" class="block text-center text-slate-500 py-2 rounded-lg font-medium hover:bg-gray-100 transition text-sm border-b border-gray-200 pb-3 mb-3">Admin Login</a>
                 <a href="../login.html" class="block text-center bg-[#c4161c] hover:bg-[#a01217] text-white py-2 rounded-lg font-semibold text-sm transition">Login / Register</a>
             </div>
         </div>
@@ -107,7 +107,7 @@
                 <button type="button" onclick="openCreatePostModal()" class="bg-[#c4161c] hover:bg-[#a01217] text-white font-bold px-6 py-3 rounded-xl shadow-lg transition-transform hover:-translate-y-0.5 flex items-center gap-2 text-sm cursor-pointer">
                     <i class="fa-solid fa-feather-pointed"></i> Write a Post
                 </button>
-                <a href="create-post.html" class="bg-white/10 hover:bg-white/20 text-white font-medium px-4 py-3 rounded-xl border border-white/20 transition flex items-center gap-1.5 text-xs">
+                <a href="create-post.html" onclick="return handleFullEditorClick(event)" class="bg-white/10 hover:bg-white/20 text-white font-medium px-4 py-3 rounded-xl border border-white/20 transition flex items-center gap-1.5 text-xs">
                     <i class="fa-solid fa-up-right-from-square"></i> Full Editor
                 </a>
             </div>
@@ -242,7 +242,7 @@
                 <span class="w-9 h-9 rounded-xl bg-red-100 text-[#c4161c] flex items-center justify-center text-base">
                     <i class="fa-solid fa-feather-pointed"></i>
                 </span>
-                Publish a Discussion
+                <span id="modalHeaderTitleText">Publish a Discussion</span>
             </h3>
             <button type="button" onclick="closeCreatePostModal()" class="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition cursor-pointer" aria-label="Close modal">
                 <i class="fa-solid fa-xmark text-lg"></i>
@@ -250,45 +250,28 @@
         </div>
 
         <form id="modalCreatePostForm" onsubmit="handleModalSubmitPost(event)" class="space-y-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                        Your Name <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="modalAuthorName" required placeholder="e.g. Rahul Sharma" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-blue-900 focus:bg-white focus:outline-none transition">
-                </div>
+            <input type="hidden" id="modalPostId" value="">
 
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                        Role <span class="text-red-500">*</span>
-                    </label>
-                    <select id="modalAuthorRole" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-blue-900 focus:bg-white focus:outline-none transition">
-                        <option value="Alumni">🎓 Alumni</option>
-                        <option value="Student" selected>🎒 Student</option>
-                        <option value="Faculty">👨‍🏫 Faculty</option>
-                    </select>
+            <div class="bg-blue-50/70 border border-blue-100 rounded-xl p-3 flex items-center gap-3" id="modalUserInfoBox">
+                <div class="w-8 h-8 rounded-full bg-[#012970] text-white flex items-center justify-center font-bold text-xs shrink-0" id="modalUserAvatar">
+                    U
+                </div>
+                <div class="flex-1 min-w-0 text-xs">
+                    <p class="font-bold text-slate-800" id="modalUserName">Logged-in User</p>
+                    <p class="text-slate-500 text-[11px]" id="modalUserMeta">Verified Account</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                        Batch / Company
-                    </label>
-                    <input type="text" id="modalAuthorAffiliation" placeholder="e.g. BTech CSE '24" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-blue-900 focus:bg-white focus:outline-none transition">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                        Category <span class="text-red-500">*</span>
-                    </label>
-                    <select id="modalPostCategory" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-blue-900 focus:bg-white focus:outline-none transition">
-                        <option value="Career">💼 Career &amp; Jobs</option>
-                        <option value="Mentorship">🤝 Mentorship</option>
-                        <option value="Academics">🎓 Academics</option>
-                        <option value="General" selected>💬 General Discussion</option>
-                    </select>
-                </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Discussion Category <span class="text-red-500">*</span>
+                </label>
+                <select id="modalPostCategory" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs sm:text-sm focus:ring-2 focus:ring-blue-900 focus:bg-white focus:outline-none transition">
+                    <option value="Career">💼 Career &amp; Jobs</option>
+                    <option value="Mentorship">🤝 Mentorship</option>
+                    <option value="Academics">🎓 Academics</option>
+                    <option value="General" selected>💬 General Discussion</option>
+                </select>
             </div>
 
             <div>
@@ -309,8 +292,8 @@
                 <button type="button" onclick="closeCreatePostModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition cursor-pointer">
                     Cancel
                 </button>
-                <button type="submit" class="bg-[#012970] hover:bg-blue-950 text-white text-xs font-bold px-6 py-2.5 rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer">
-                    <i class="fa-solid fa-paper-plane"></i> Publish Discussion
+                <button type="submit" id="modalSubmitBtn" class="bg-[#012970] hover:bg-blue-950 text-white text-xs font-bold px-6 py-2.5 rounded-xl transition shadow-md flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-paper-plane"></i> <span id="modalSubmitBtnText">Publish Discussion</span>
                 </button>
             </div>
         </form>
@@ -342,6 +325,14 @@
         menu.classList.toggle('hidden');
     }
 
+    function handleFullEditorClick(e) {
+        if (!window.CommunityBlog.requireAuth('create a post')) {
+            if (e) e.preventDefault();
+            return false;
+        }
+        return true;
+    }
+
     function setCategory(cat) {
         activeCategory = cat;
         document.querySelectorAll('.category-btn').forEach(btn => {
@@ -371,7 +362,34 @@
         renderFeed();
     }
 
+    function updateModalUserDisplay() {
+        const user = window.CommunityBlog.getCurrentUser();
+        const avatarEl = document.getElementById('modalUserAvatar');
+        const nameEl = document.getElementById('modalUserName');
+        const metaEl = document.getElementById('modalUserMeta');
+
+        if (user) {
+            const rawName = user.fullName || user.full_name || user.name || 'User';
+            if (avatarEl) avatarEl.textContent = rawName.charAt(0).toUpperCase();
+            if (nameEl) nameEl.textContent = rawName;
+            if (metaEl) {
+                const roleFormatted = (user.role || 'Member').charAt(0).toUpperCase() + (user.role || 'Member').slice(1);
+                metaEl.textContent = `${roleFormatted} • ${user.email || 'Verified Account'}`;
+            }
+        }
+    }
+
     function openCreatePostModal() {
+        if (!window.CommunityBlog.requireAuth('create a post')) return;
+
+        updateModalUserDisplay();
+        document.getElementById('modalPostId').value = '';
+        document.getElementById('modalHeaderTitleText').textContent = 'Publish a Discussion';
+        document.getElementById('modalSubmitBtnText').textContent = 'Publish Discussion';
+        document.getElementById('modalPostTitle').value = '';
+        document.getElementById('modalPostContent').value = '';
+        document.getElementById('modalPostCategory').value = 'General';
+
         const modal = document.getElementById('createPostModal');
         const card = document.getElementById('createPostModalCard');
         if (!modal || !card) return;
@@ -381,9 +399,43 @@
         card.classList.add('scale-100');
         document.body.style.overflow = 'hidden';
         setTimeout(() => {
-            const nameInput = document.getElementById('modalAuthorName');
-            if (nameInput) nameInput.focus();
+            const titleInput = document.getElementById('modalPostTitle');
+            if (titleInput) titleInput.focus();
         }, 100);
+    }
+
+    function openEditPostModal(postId) {
+        if (!window.CommunityBlog.requireAuth('edit this post')) return;
+
+        const posts = window.CommunityBlog.getPosts();
+        const post = posts.find(p => String(p.id) === String(postId));
+        if (!post) return;
+
+        if (!window.CommunityBlog.isOwner(post.user_id || post.userId)) {
+            if (typeof window.showPopup === 'function') {
+                window.showPopup('You are not authorized to edit this discussion.', 'error', 'Permission Denied');
+            } else {
+                alert('You are not authorized to edit this discussion.');
+            }
+            return;
+        }
+
+        updateModalUserDisplay();
+        document.getElementById('modalPostId').value = post.id;
+        document.getElementById('modalHeaderTitleText').textContent = 'Edit Discussion';
+        document.getElementById('modalSubmitBtnText').textContent = 'Save Changes';
+        document.getElementById('modalPostTitle').value = post.title || '';
+        document.getElementById('modalPostCategory').value = post.category || 'General';
+        document.getElementById('modalPostContent').value = post.content || '';
+
+        const modal = document.getElementById('createPostModal');
+        const card = document.getElementById('createPostModalCard');
+        if (!modal || !card) return;
+        modal.classList.remove('opacity-0', 'pointer-events-none');
+        modal.classList.add('opacity-100');
+        card.classList.remove('scale-95');
+        card.classList.add('scale-100');
+        document.body.style.overflow = 'hidden';
     }
 
     function closeCreatePostModal() {
@@ -400,46 +452,53 @@
         }, 300);
     }
 
-    function handleModalSubmitPost(e) {
+    async function handleModalSubmitPost(e) {
         e.preventDefault();
-        const author = document.getElementById('modalAuthorName').value.trim();
-        const role = document.getElementById('modalAuthorRole').value;
-        const affiliation = document.getElementById('modalAuthorAffiliation').value.trim();
+
+        const postId = document.getElementById('modalPostId').value;
         const category = document.getElementById('modalPostCategory').value;
         const title = document.getElementById('modalPostTitle').value.trim();
         const content = document.getElementById('modalPostContent').value.trim();
 
-        if (!author || !title || !content) return;
+        if (!title || !content) return;
 
-        window.CommunityBlog.createPost({
-            author,
-            role,
-            affiliation: affiliation || (role === 'Alumni' ? 'Alumni' : 'Student'),
-            category,
-            title,
-            content
-        });
-
-        document.getElementById('modalCreatePostForm').reset();
-        closeCreatePostModal();
-        renderFeed();
-
-        if (typeof window.showPopup === 'function') {
-            window.showPopup('Your discussion has been published successfully!', 'success', 'Discussion Published');
+        if (postId) {
+            const updated = await window.CommunityBlog.updatePost(postId, { category, title, content });
+            if (updated) {
+                closeCreatePostModal();
+                renderFeed();
+                if (typeof window.showPopup === 'function') {
+                    window.showPopup('Your discussion has been updated successfully!', 'success', 'Discussion Updated');
+                }
+            }
+        } else {
+            const newPost = await window.CommunityBlog.createPost({ category, title, content });
+            if (newPost) {
+                closeCreatePostModal();
+                renderFeed();
+                if (typeof window.showPopup === 'function') {
+                    window.showPopup('Your discussion has been published successfully!', 'success', 'Discussion Published');
+                }
+            }
         }
     }
 
-    function toggleLike(postId) {
-        window.CommunityBlog.toggleLike(postId);
+    async function toggleLike(postId) {
+        if (!window.CommunityBlog.requireAuth('like discussions')) return;
+        await window.CommunityBlog.toggleLike(postId);
         renderFeed();
     }
 
     function deletePost(postId) {
-        const executeDelete = () => {
-            window.CommunityBlog.deletePost(postId);
-            renderFeed();
-            if (typeof window.showPopup === 'function') {
-                window.showPopup('Discussion deleted successfully.', 'info', 'Deleted');
+        if (!window.CommunityBlog.requireAuth('delete this post')) return;
+
+        const executeDelete = async () => {
+            const success = await window.CommunityBlog.deletePost(postId);
+            if (success) {
+                renderFeed();
+                if (typeof window.showPopup === 'function') {
+                    window.showPopup('Discussion deleted successfully.', 'info', 'Deleted');
+                }
             }
         };
 
@@ -462,28 +521,65 @@
         if (thread) thread.classList.toggle('hidden');
     }
 
-    function submitReply(e, postId) {
+    async function submitReply(e, postId) {
         e.preventDefault();
+        if (!window.CommunityBlog.requireAuth('add a reply')) return;
+
         const input = e.target.querySelector('input[type="text"]');
         if (!input || !input.value.trim()) return;
 
-        window.CommunityBlog.addComment(postId, {
-            author: 'You (Community Member)',
-            role: 'Student',
+        const comment = await window.CommunityBlog.addComment(postId, {
             content: input.value.trim()
         });
 
-        renderFeed();
-        const thread = document.getElementById(`comments-${postId}`);
-        if (thread) thread.classList.remove('hidden');
-    }
-
-    function deleteReply(postId, commentId) {
-        const executeDelete = () => {
-            window.CommunityBlog.deleteComment(postId, commentId);
+        if (comment) {
+            input.value = '';
             renderFeed();
             const thread = document.getElementById(`comments-${postId}`);
             if (thread) thread.classList.remove('hidden');
+        }
+    }
+
+    async function editReply(postId, commentId) {
+        if (!window.CommunityBlog.requireAuth('edit this reply')) return;
+
+        const posts = window.CommunityBlog.getPosts();
+        const post = posts.find(p => String(p.id) === String(postId));
+        if (!post || !post.comments) return;
+
+        const comment = post.comments.find(c => String(c.id) === String(commentId));
+        if (!comment) return;
+
+        if (!window.CommunityBlog.isOwner(comment.user_id || comment.userId)) {
+            if (typeof window.showPopup === 'function') {
+                window.showPopup('You are not authorized to edit this reply.', 'error', 'Permission Denied');
+            } else {
+                alert('You are not authorized to edit this reply.');
+            }
+            return;
+        }
+
+        const newContent = prompt('Edit your reply:', comment.content);
+        if (newContent !== null && newContent.trim() && newContent.trim() !== comment.content) {
+            const updated = await window.CommunityBlog.updateComment(commentId, { content: newContent.trim() });
+            if (updated) {
+                renderFeed();
+                const thread = document.getElementById(`comments-${postId}`);
+                if (thread) thread.classList.remove('hidden');
+            }
+        }
+    }
+
+    function deleteReply(postId, commentId) {
+        if (!window.CommunityBlog.requireAuth('delete this reply')) return;
+
+        const executeDelete = async () => {
+            const success = await window.CommunityBlog.deleteComment(commentId);
+            if (success) {
+                renderFeed();
+                const thread = document.getElementById(`comments-${postId}`);
+                if (thread) thread.classList.remove('hidden');
+            }
         };
 
         if (typeof window.showConfirmPopup === 'function') {
@@ -551,9 +647,9 @@
                     </div>
                     <h3 class="text-base font-bold text-slate-800">No discussions found</h3>
                     <p class="text-xs text-slate-500 mt-1 max-w-sm mx-auto">Try clearing your search query or change category filter.</p>
-                    <a href="create-post.html" class="mt-4 inline-block bg-[#012970] text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-blue-900 transition">
+                    <button onclick="openCreatePostModal()" class="mt-4 inline-block bg-[#012970] text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-blue-900 transition cursor-pointer">
                         <i class="fa-solid fa-plus mr-1"></i> Start a Discussion
-                    </a>
+                    </button>
                 </div>
             `;
             return;
@@ -566,26 +662,35 @@
             const catBadge = window.CommunityBlog.getCategoryBadge(post.category);
             const comments = post.comments || [];
             const isLiked = post.liked;
+            const isPostOwner = window.CommunityBlog.isOwner(post.user_id || post.userId);
 
-            const commentsHtml = comments.map(c => `
-                <div class="bg-slate-50 rounded-xl p-3 text-xs border border-slate-200 flex items-start gap-2.5">
-                    <div class="w-6 h-6 rounded-full bg-slate-300 text-slate-700 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">
-                        ${c.author.charAt(0).toUpperCase()}
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between mb-1">
-                            <span class="font-bold text-slate-800 text-[11px]">${c.author}</span>
-                            <div class="flex items-center gap-1.5">
-                                <span class="text-[10px] text-slate-400">${window.CommunityBlog.timeAgo(c.createdAt)}</span>
-                                <button onclick="deleteReply('${post.id}', '${c.id}')" title="Delete reply" class="text-slate-400 hover:text-red-600 transition">
-                                    <i class="fa-regular fa-trash-can text-[10px]"></i>
-                                </button>
-                            </div>
+            const commentsHtml = comments.map(c => {
+                const isCommentOwner = window.CommunityBlog.isOwner(c.user_id || c.userId);
+                return `
+                    <div class="bg-slate-50 rounded-xl p-3 text-xs border border-slate-200 flex items-start gap-2.5">
+                        <div class="w-6 h-6 rounded-full bg-slate-300 text-slate-700 flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">
+                            ${(c.author || 'U').charAt(0).toUpperCase()}
                         </div>
-                        <p class="text-slate-600 text-[11px] leading-relaxed">${c.content}</p>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="font-bold text-slate-800 text-[11px]">${c.author}</span>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-[10px] text-slate-400">${window.CommunityBlog.timeAgo(c.createdAt)}</span>
+                                    ${isCommentOwner ? `
+                                        <button onclick="editReply('${post.id}', '${c.id}')" title="Edit reply" class="text-slate-400 hover:text-blue-600 transition">
+                                            <i class="fa-regular fa-pen-to-square text-[10px]"></i>
+                                        </button>
+                                        <button onclick="deleteReply('${post.id}', '${c.id}')" title="Delete reply" class="text-slate-400 hover:text-red-600 transition">
+                                            <i class="fa-regular fa-trash-can text-[10px]"></i>
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            <p class="text-slate-600 text-[11px] leading-relaxed">${c.content}</p>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
 
             return `
                 <article class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition">
@@ -607,9 +712,14 @@
                         </div>
                         <div class="flex items-center gap-2">
                             ${catBadge}
-                            <button onclick="deletePost('${post.id}')" title="Delete discussion" class="text-slate-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-lg transition">
-                                <i class="fa-regular fa-trash-can text-xs"></i>
-                            </button>
+                            ${isPostOwner ? `
+                                <button onclick="openEditPostModal('${post.id}')" title="Edit discussion" class="text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-1.5 rounded-lg transition">
+                                    <i class="fa-regular fa-pen-to-square text-xs"></i>
+                                </button>
+                                <button onclick="deletePost('${post.id}')" title="Delete discussion" class="text-slate-400 hover:text-red-600 hover:bg-red-50 p-1.5 rounded-lg transition">
+                                    <i class="fa-regular fa-trash-can text-xs"></i>
+                                </button>
+                            ` : ''}
                         </div>
                     </div>
 
@@ -661,6 +771,7 @@
     }
 
     // Init on page load
+    window.addEventListener('community_posts_updated', renderFeed);
     document.addEventListener('DOMContentLoaded', () => {
         renderFeed();
 

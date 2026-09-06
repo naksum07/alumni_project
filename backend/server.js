@@ -16,6 +16,7 @@ const newsRoutes = require('./routes/newsRoutes');
 const externalJobRoutes = require('./routes/externalJobRoutes');
 const announcementRoutes = require('./routes/announcementRoutes');
 const successStoryRoutes = require('./routes/successStoryRoutes');
+const communityRoutes = require('./routes/communityRoutes');
 
 const app = express();
 app.use(cors({ origin: process.env.ALLOWED_ORIGIN || '*' }));
@@ -28,6 +29,7 @@ app.use('/scripts', express.static(path.join(__dirname, '..', 'frontend', 'scrip
 app.use('/public', express.static(path.join(__dirname, '..', 'frontend', 'public')));
 app.use('/assets', express.static(path.join(__dirname, '..', 'frontend', 'assets')));
 app.use('/admin', express.static(path.join(__dirname, '..', 'frontend', 'admin')));
+app.use('/community-blog', express.static(path.join(__dirname, '..', 'frontend', 'community-blog')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/auth', authRoutes);
@@ -42,6 +44,9 @@ app.use('/api/news', newsRoutes);
 app.use('/api/external-jobs', externalJobRoutes);
 app.use('/api/announcements', announcementRoutes);
 app.use('/api/success-stories', successStoryRoutes);
+app.use('/api/community-posts', communityRoutes);
+app.use('/api/community-blog', communityRoutes);
+app.use('/api/community', communityRoutes);
 
 
 

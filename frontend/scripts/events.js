@@ -203,22 +203,25 @@ function renderCurrentPage() {
   const pageData = filteredEvents.slice(startIndex, startIndex + itemsPerPage);
 
   pageData.forEach((event, index) => {
-    const palette = PALETTES[index % PALETTES.length];
     const card = document.createElement('div');
     card.className = 'bg-white rounded-2xl shadow-md overflow-hidden hover:-translate-y-2 hover:shadow-xl transition-all duration-300 border border-slate-100 flex flex-col justify-between';
 
     let dateDisplay = formatDate(event.event_date);
     if (event.event_date_end) dateDisplay += ' – ' + formatDate(event.event_date_end);
 
+    const eventImgSrc = event.image_url || `../assets/${(index % 4) + 1}.png`;
+
     card.innerHTML = `
       <div>
-        <div class="${palette.bg} text-white p-6">
-          <i class="fa-solid ${palette.icon} text-4xl"></i>
-          <p class="mt-4 font-semibold">${dateDisplay}</p>
-          ${event.event_time ? `<p class="text-sm opacity-80 mt-1">${event.event_time}</p>` : ''}
+        <div class="relative h-48 w-full overflow-hidden">
+          <img src="${eventImgSrc}" alt="${event.name}" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent p-5 flex flex-col justify-end text-white">
+            <p class="font-bold text-sm text-amber-300">${dateDisplay}</p>
+            ${event.event_time ? `<p class="text-xs opacity-90 mt-0.5">${event.event_time}</p>` : ''}
+          </div>
         </div>
         <div class="p-6">
-          <h2 class="text-2xl font-bold text-slate-800">${event.name}</h2>
+          <h2 class="text-xl font-bold text-slate-800">${event.name}</h2>
           <p class="text-gray-600 mt-3 text-sm leading-relaxed">${event.description || ''}</p>
           ${event.venue ? `<p class="text-gray-500 mt-4 text-sm flex items-center gap-2"><i class="fa-solid fa-location-dot text-[#c4161c]"></i>${event.venue}</p>` : ''}
         </div>

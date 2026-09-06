@@ -204,3 +204,33 @@ VALUES
 ('Global Alumni Virtual Coffee Connect (Spring Edition)', '2027-04-22', '2027-04-22', '07:00 PM - 09:00 PM', 'Gather.town Virtual Lounge', 'Global Alumni Engagement Team', 'upcoming', 'Informal virtual lounge meet for alumni across North America, Europe, Asia-Pacific, and Middle East to network in thematic virtual rooms.'),
 ('Class of 2016 10-Year Milestone Reunion', '2027-05-08', '2027-05-09', '10:00 AM - 08:00 PM', 'Main Campus Grounds & Alumni House', 'Class of 2016 Steering Committee', 'upcoming', 'A celebratory 10-year reunion for the batch of 2016 featuring nostalgic slide shows, faculty felicitations, campus tours, and celebratory banquet.')
 ON CONFLICT DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS community_posts (
+    id           SERIAL PRIMARY KEY,
+    user_id      INT REFERENCES users(id) ON DELETE CASCADE,
+    author_name  VARCHAR(150),
+    role         VARCHAR(50),
+    affiliation  VARCHAR(255),
+    category     VARCHAR(50) NOT NULL DEFAULT 'General',
+    title        VARCHAR(255) NOT NULL,
+    content      TEXT NOT NULL,
+    likes        INT NOT NULL DEFAULT 0,
+    created_at   TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at   TIMESTAMP NOT NULL DEFAULT NOW()
+);
+ALTER TABLE community_posts ADD COLUMN IF NOT EXISTS user_id INT REFERENCES users(id) ON DELETE CASCADE;
+ALTER TABLE community_posts ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP NOT NULL DEFAULT NOW();
+
+CREATE TABLE IF NOT EXISTS community_comments (
+    id           SERIAL PRIMARY KEY,
+    post_id      INT NOT NULL REFERENCES community_posts(id) ON DELETE CASCADE,
+    user_id      INT REFERENCES users(id) ON DELETE CASCADE,
+    author_name  VARCHAR(150),
+    role         VARCHAR(50),
+    content      TEXT NOT NULL,
+    created_at   TIMESTAMP NOT NULL DEFAULT NOW(),
+    updated_at   TIMESTAMP NOT NULL DEFAULT NOW()
+);
+ALTER TABLE community_comments ADD COLUMN IF NOT EXISTS user_id INT REFERENCES users(id) ON DELETE CASCADE;
+ALTER TABLE community_comments ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP NOT NULL DEFAULT NOW();
+
