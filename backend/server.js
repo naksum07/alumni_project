@@ -24,6 +24,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 app.use(express.static(path.join(__dirname, '..', 'frontend', 'pages')));
+app.use('/pages', express.static(path.join(__dirname, '..', 'frontend', 'pages')));
 app.use('/styles', express.static(path.join(__dirname, '..', 'frontend', 'styles')));
 app.use('/scripts', express.static(path.join(__dirname, '..', 'frontend', 'scripts')));
 app.use('/public', express.static(path.join(__dirname, '..', 'frontend', 'public')));
