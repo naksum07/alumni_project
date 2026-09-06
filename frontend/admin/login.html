@@ -81,13 +81,24 @@
     </form>
     
     <div class="mt-6 text-center text-sm">
-        <a href="../pages/index.html" class="text-slate-500 hover:text-[#c4161c] inline-flex items-center gap-1 font-medium transition">
+        <a id="backToPublicLink" href="/index.html" class="text-slate-500 hover:text-[#c4161c] inline-flex items-center gap-1 font-medium transition">
             <i class="fa-solid fa-arrow-left text-xs"></i> Back to Public Site
         </a>
     </div>
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const link = document.getElementById('backToPublicLink');
+    if (link) {
+        if (window.location.protocol === 'file:') {
+            link.href = '../pages/index.html';
+        } else {
+            link.href = '/index.html';
+        }
+    }
+});
+
 function togglePasscode() {
     const input = document.getElementById('passcode');
     const icon = document.getElementById('toggleIcon');
