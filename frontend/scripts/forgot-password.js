@@ -12,7 +12,8 @@ function showMsg(el, text, isError) {
 }
 
 async function requestResetLink(email) {
-  const res  = await fetch('/api/auth/forgot-password', {
+  const url = typeof getApiUrl === 'function' ? getApiUrl('/api/auth/forgot-password') : '/api/auth/forgot-password';
+  const res  = await fetch(url, {
     method:  'POST',
     headers: { 'Content-Type': 'application/json' },
     body:    JSON.stringify({ email }),

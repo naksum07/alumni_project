@@ -21,7 +21,7 @@ function togglePasswordVisibility(inputId, btn) {
 
 // Profile API & Data Population
 (function () {
-  const API_BASE = '/api';
+  const API_BASE = typeof getApiUrl === 'function' ? getApiUrl('/api') : '/api';
 
   const token = localStorage.getItem('token');
   const loggedInUser = JSON.parse(localStorage.getItem('user') || 'null');
@@ -283,7 +283,7 @@ function togglePasswordVisibility(inputId, btn) {
     section.classList.remove('hidden');
 
     try {
-      const res = await fetch('/api/jobs/my-posted-jobs', {
+      const res = await fetch(`${API_BASE}/jobs/my-posted-jobs`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -840,7 +840,7 @@ function togglePasswordVisibility(inputId, btn) {
       }
 
       try {
-        const res = await fetch('/api/auth/forgot-password', {
+        const res = await fetch(`${API_BASE}/auth/forgot-password`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -881,7 +881,7 @@ function togglePasswordVisibility(inputId, btn) {
     section.classList.remove('hidden');
 
     try {
-      const res = await fetch('/api/success-stories/my-story', {
+      const res = await fetch(`${API_BASE}/success-stories/my-story`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();

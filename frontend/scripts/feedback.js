@@ -322,7 +322,7 @@
                     const headers = { 'Content-Type': 'application/json' };
                     if (token) headers['Authorization'] = `Bearer ${token}`;
 
-                    const res = await fetch('/api/feedback', {
+                    const res = await fetch(getApiUrl('/api/feedback'), {
                         method: 'POST',
                         headers,
                         body: JSON.stringify({

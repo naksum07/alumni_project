@@ -293,7 +293,7 @@ async function loadEvents() {
         </div>`;
   }
   try {
-    const res = await fetch('/api/events');
+    const res = await fetch(getApiUrl('/api/events'));
     if (!res.ok) throw new Error(`Server returned ${res.status}`);
     const events = await res.json();
     if (Array.isArray(events)) allEvents = events;
@@ -359,7 +359,7 @@ if (regForm) {
           submitBtn.textContent = 'Registering…';
       }
       try {
-        const res = await fetch(`/api/events/${eventId}/register`, {
+        const res = await fetch(getApiUrl(`/api/events/${eventId}/register`), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ fullName, email, phone, message, attendeeType, designationOrOrg }),

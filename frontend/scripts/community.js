@@ -188,7 +188,7 @@ function savePosts(posts) {
 
 async function fetchPostsFromAPI() {
     try {
-        const res = await fetch('/api/community/posts', {
+        const res = await fetch(getApiUrl('/api/community/posts'), {
             headers: getAuthHeaders()
         });
         if (res.ok) {
@@ -274,7 +274,7 @@ window.CommunityBlog = {
         if (!requireAuth('create a post')) return null;
 
         try {
-            const res = await fetch('/api/community/posts', {
+            const res = await fetch(getApiUrl('/api/community/posts'), {
                 method: 'POST',
                 headers: getAuthHeaders(),
                 body: JSON.stringify({
@@ -296,7 +296,7 @@ window.CommunityBlog = {
         if (!requireAuth('edit this post')) return null;
 
         try {
-            const res = await fetch(`/api/community/posts/${postId}`, {
+            const res = await fetch(getApiUrl(`/api/community/posts/${postId}`), {
                 method: 'PUT',
                 headers: getAuthHeaders(),
                 body: JSON.stringify({
@@ -318,7 +318,7 @@ window.CommunityBlog = {
         if (!requireAuth('delete this post')) return false;
 
         try {
-            const res = await fetch(`/api/community/posts/${postId}`, {
+            const res = await fetch(getApiUrl(`/api/community/posts/${postId}`), {
                 method: 'DELETE',
                 headers: getAuthHeaders()
             });
@@ -335,7 +335,7 @@ window.CommunityBlog = {
         if (!requireAuth('like posts')) return null;
 
         try {
-            const res = await fetch(`/api/community/posts/${postId}/like`, {
+            const res = await fetch(getApiUrl(`/api/community/posts/${postId}/like`), {
                 method: 'POST',
                 headers: getAuthHeaders()
             });
@@ -353,7 +353,7 @@ window.CommunityBlog = {
         if (!requireAuth('add a comment')) return null;
 
         try {
-            const res = await fetch(`/api/community/posts/${postId}/comments`, {
+            const res = await fetch(getApiUrl(`/api/community/posts/${postId}/comments`), {
                 method: 'POST',
                 headers: getAuthHeaders(),
                 body: JSON.stringify({ content: commentData.content })
@@ -371,7 +371,7 @@ window.CommunityBlog = {
         if (!requireAuth('edit this comment')) return null;
 
         try {
-            const res = await fetch(`/api/community/comments/${commentId}`, {
+            const res = await fetch(getApiUrl(`/api/community/comments/${commentId}`), {
                 method: 'PUT',
                 headers: getAuthHeaders(),
                 body: JSON.stringify({ content: commentData.content })
@@ -389,7 +389,7 @@ window.CommunityBlog = {
         if (!requireAuth('delete this comment')) return false;
 
         try {
-            const res = await fetch(`/api/community/comments/${commentId}`, {
+            const res = await fetch(getApiUrl(`/api/community/comments/${commentId}`), {
                 method: 'DELETE',
                 headers: getAuthHeaders()
             });

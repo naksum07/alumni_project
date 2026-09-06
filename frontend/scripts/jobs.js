@@ -90,10 +90,10 @@ async function loadJobs() {
   try {
     const token = localStorage.getItem('token');
 
-    const alumniPromise = fetch('/api/jobs').then(r => r.ok ? r.json() : []);
-    const externalPromise = fetch('/api/external-jobs?per_page=315').then(r => r.ok ? r.json() : { jobs: [] }).catch(() => ({ jobs: [] }));
+    const alumniPromise = fetch(getApiUrl('/api/jobs')).then(r => r.ok ? r.json() : []);
+    const externalPromise = fetch(getApiUrl('/api/external-jobs?per_page=315')).then(r => r.ok ? r.json() : { jobs: [] }).catch(() => ({ jobs: [] }));
     const appsPromise = token
-      ? fetch('/api/jobs/my-applications', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).catch(() => null)
+      ? fetch(getApiUrl('/api/jobs/my-applications'), { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.ok ? r.json() : null).catch(() => null)
       : Promise.resolve(null);
 
     const [alumniData, externalData, appData] = await Promise.all([alumniPromise, externalPromise, appsPromise]);
@@ -636,7 +636,7 @@ if (applicationForm) {
     if (token) headers['Authorization'] = `Bearer ${token}`;
 
     try {
-      const res = await fetch(`/api/jobs/${selectedJob.id}/apply`, {
+      const res = await fetch(getApiUrl(`/api/jobs/${selectedJob.id}/apply`), {
         method:  'POST',
         headers,
         body: JSON.stringify({
@@ -760,7 +760,7 @@ if (postForm) {
       description: document.getElementById('postDesc').value.trim(),
     };
     try {
-      const res = await fetch('/api/jobs', {
+      const res = await fetch(getApiUrl('/api/jobs'), {
         method:  'POST',
         headers: {
           'Content-Type':  'application/json',
@@ -812,7 +812,7 @@ async function deleteJobHandler(jobId) {
 
   const executeDelete = async () => {
     try {
-      const res = await fetch(`/api/jobs/${jobId}`, {
+      const res = await fetch(getApiUrl(`/api/jobs/${jobId}`), {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` }
       });

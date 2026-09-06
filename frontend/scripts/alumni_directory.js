@@ -158,7 +158,6 @@
   }
 
   async function loadLiveAlumni() {
-    const apiOrigin = window.location.protocol === 'file:' ? 'http://localhost:5001' : '';
     const urlParams = new URLSearchParams(window.location.search);
     const deptVal   = urlParams.get('department') || '';
     const yearVal   = urlParams.get('year') || urlParams.get('batch') || '';
@@ -169,7 +168,7 @@
     if (yearVal)   params.set('year', yearVal);
 
     const queryStr = params.toString();
-    const url = apiOrigin + '/api/alumni' + (queryStr ? `?${queryStr}` : '');
+    const url = getApiUrl('/api/alumni' + (queryStr ? `?${queryStr}` : ''));
     const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
 
     try {

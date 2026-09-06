@@ -185,7 +185,7 @@ window.goTop = goTop;
         if (!section || !annCarousel) return;
 
         try {
-            const annRes = await fetch('/api/announcements').catch(() => null);
+            const annRes = await fetch(getApiUrl('/api/announcements')).catch(() => null);
             if (!annRes || !annRes.ok) return;
 
             const announcements = await annRes.json().catch(() => null);
@@ -500,7 +500,7 @@ window.goTop = goTop;
         if (!section || !carousel) return;
 
         try {
-            const res = await fetch('/api/feedback').catch(() => null);
+            const res = await fetch(getApiUrl('/api/feedback')).catch(() => null);
             if (res && res.ok) {
                 const feedbacks = await res.json().catch(() => null);
                 if (Array.isArray(feedbacks) && feedbacks.length > 0) {
@@ -536,7 +536,7 @@ window.goTop = goTop;
         if (!section || !track) return;
 
         try {
-            const res = await fetch('/api/success-stories/public').catch(() => null);
+            const res = await fetch(getApiUrl('/api/success-stories/public')).catch(() => null);
             if (!res || !res.ok) return;
 
             const stories = await res.json().catch(() => null);
@@ -675,7 +675,7 @@ window.goTop = goTop;
 document.addEventListener('DOMContentLoaded', async () => {
     // Load announcements for carousel
     try {
-        const annRes = await fetch('/api/announcements');
+        const annRes = await fetch(getApiUrl('/api/announcements'));
         if (annRes.ok) {
             const announcements = await annRes.json();
             if (announcements && announcements.length > 0) {
@@ -825,7 +825,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Load feedbacks for carousel
     try {
-        const res = await fetch('/api/feedback');
+        const res = await fetch(getApiUrl('/api/feedback'));
         if (res.ok) {
             const feedbacks = await res.json();
             if (feedbacks && feedbacks.length > 0) {

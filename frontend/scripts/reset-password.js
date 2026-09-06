@@ -56,7 +56,8 @@ document.getElementById('resetForm').addEventListener('submit', async function (
   btn.textContent = 'Resetting…';
 
   try {
-    const res  = await fetch('/api/auth/reset-password', {
+    const url = typeof getApiUrl === 'function' ? getApiUrl('/api/auth/reset-password') : '/api/auth/reset-password';
+    const res  = await fetch(url, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ token, newPassword }),

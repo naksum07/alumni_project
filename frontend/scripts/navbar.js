@@ -1,4 +1,14 @@
 // Shared Global Navigation & Auth Bar Handler
+window.getApiUrl = function(endpoint) {
+    if (!endpoint) return '';
+    if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) return endpoint;
+    const path = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
+    if (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '5001')) {
+        return `http://localhost:5001${path}`;
+    }
+    return path;
+};
+
 (function () {
   function initNav() {
     const token = localStorage.getItem('token');

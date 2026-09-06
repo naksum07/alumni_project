@@ -167,10 +167,6 @@ function renderSidebar() {
                         <i class="fa-solid fa-star"></i>
                         <span>Stories</span>
                     </a>
-                    <a href="../pages/index.html" class="${navLinkClasses} text-blue-200 hover:bg-blue-800 hover:text-white border border-blue-700/50 ml-2" title="Return to Public Site">
-                        <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-                        <span>Public Site</span>
-                    </a>
                 </div>
 
                 <div class="flex items-center gap-2">
@@ -212,10 +208,6 @@ function renderSidebar() {
                 <a href="success-stories.html" class="${mobileLinkClasses} ${currentPath.includes('success-stories') ? 'bg-blue-800 text-white font-semibold' : 'text-blue-100 hover:bg-blue-900'}">
                     <i class="fa-solid fa-star w-5 text-center"></i>
                     <span>Stories</span>
-                </a>
-                <a href="../pages/index.html" class="${mobileLinkClasses} text-yellow-300 hover:bg-blue-900">
-                    <i class="fa-solid fa-arrow-up-right-from-square w-5 text-center text-xs"></i>
-                    <span>Public Site</span>
                 </a>
             </div>
             <div class="mt-4 pt-3 border-t border-blue-800/80">

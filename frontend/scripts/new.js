@@ -248,7 +248,7 @@ function applyFilters() {
 async function loadLiveNews() {
     if (resultCount) resultCount.textContent = 'Loading news...';
     try {
-        const res = await fetch('/api/news');
+        const res = await fetch(getApiUrl('/api/news'));
         if (!res.ok) throw new Error('Failed to load');
         const newsItems = await res.json();
         if (Array.isArray(newsItems)) {
