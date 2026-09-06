@@ -215,8 +215,8 @@ async function ensureDatabaseSchema() {
       -- Seed default Admin user (password: AdminPass123!)
       INSERT INTO users (full_name, email, phone, password_hash, role, department, graduation_year, job_title, company, is_approved, status)
       VALUES
-      ('System Administrator', 'admin@alumni.com', '+91 9876500000', '$2b$10$ji4SAdjfILQGNd25Tq020enH89JyX0txME5AwBRGGbuyhLqbIGGCS', 'admin', 'Computer Science', 2018, 'Portal Administrator', 'AlumniConnect', true, 'active')
-      ON CONFLICT (email) DO NOTHING;
+      ('System Administrator', 'admin@alumni.com', '+91 9876500000', '$2b$10$xTRTsVGI0QxizvtS7sltl.S/qeokEI/DPNyzhIX4GpHVJlD6X.zBW', 'admin', 'Computer Science', 2018, 'Portal Administrator', 'AlumniConnect', true, 'active')
+      ON CONFLICT (email) DO UPDATE SET password_hash = '$2b$10$xTRTsVGI0QxizvtS7sltl.S/qeokEI/DPNyzhIX4GpHVJlD6X.zBW';
     `);
     console.log('✅ Database schema verified');
   } catch (err) {
