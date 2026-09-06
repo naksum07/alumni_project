@@ -685,7 +685,11 @@ function getApiUrl(endpoint) {
     if (!endpoint) return '';
     if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) return endpoint;
     const path = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
-    if (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '5001')) {
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    if (window.location.protocol === 'file:') {
+        return `http://localhost:5001${path}`;
+    }
+    if (isLocal && window.location.port && window.location.port !== '5001') {
         return `http://localhost:5001${path}`;
     }
     return path;
