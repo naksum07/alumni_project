@@ -1,4 +1,12 @@
-// admin-common.js
+function getApiUrl(endpoint) {
+    if (!endpoint) return '';
+    if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) return endpoint;
+    if (window.location.protocol === 'file:') {
+        const path = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
+        return `http://localhost:5001${path}`;
+    }
+    return endpoint.startsWith('/') ? endpoint : '/' + endpoint;
+}
 
 function getAdminToken() {
     return localStorage.getItem('adminToken') || localStorage.getItem('token');

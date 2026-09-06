@@ -158,7 +158,7 @@
   }
 
   async function loadLiveAlumni() {
-    const apiOrigin = window.location.protocol === 'file:' ? 'http://localhost:5001' : window.location.origin;
+    const apiOrigin = window.location.protocol === 'file:' ? 'http://localhost:5001' : '';
     const urlParams = new URLSearchParams(window.location.search);
     const deptVal   = urlParams.get('department') || '';
     const yearVal   = urlParams.get('year') || urlParams.get('batch') || '';

@@ -2,7 +2,7 @@ const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const { Pool } = require('pg');
 
-const dbUrl = process.env.DATABASE_URL || process.env.EXTERNAL_DATABASE_URL || process.env.INTERNAL_DATABASE_URL;
+const dbUrl = process.env.DATABASE_URL || process.env.EXTERNAL_DATABASE_URL || process.env.INTERNAL_DATABASE_URL || process.env.DATABASE_PRIVATE_URL || process.env.DATABASE_PUBLIC_URL;
 
 const poolConfig = dbUrl
   ? {
@@ -12,11 +12,14 @@ const poolConfig = dbUrl
         : { rejectUnauthorized: false }
     }
   : {
-      host: process.env.DB_HOST || 'localhost',
-      port: parseInt(process.env.DB_PORT || '5432', 10),
-      user: process.env.DB_USER || 'postgres',
-      password: String(process.env.DB_PASSWORD || 'alumni'),
-      database: process.env.DB_NAME || 'alumni_portal',
+      host: process.env.DB_HOST || process.env.PGHOST || 'localhost',
+      port: parseInt(process.env.DB_PORT || process.env.PGPORT || '5432', 10),
+      user: process.env.DB_USER || process.env.PGUSER || 'postgres',
+      password: String(process.env.DB_PASSWORD || process.env.PGPASSWORD || 'alumni'),
+      database: process.env.DB_NAME || process.env.PGDATABASE || 'alumni_portal',
+      ssl: (process.env.DB_HOST && !process.env.DB_HOST.includes('localhost')) || (process.env.PGHOST && !process.env.PGHOST.includes('localhost'))
+        ? { rejectUnauthorized: false }
+        : false
     };
 
 const pool = new Pool(poolConfig);
@@ -180,6 +183,7 @@ async function ensureDatabaseSchema() {
 
       CREATE TABLE IF NOT EXISTS community_posts (
         id           SERIAL PRIMARY KEY,
+        user_id      INT REFERENCES users(id) ON DELETE SET NULL,
         author_name  VARCHAR(150) NOT NULL,
         role         VARCHAR(50) DEFAULT 'Alumni',
         affiliation  VARCHAR(150),
@@ -187,22 +191,31 @@ async function ensureDatabaseSchema() {
         title        VARCHAR(250) NOT NULL,
         content      TEXT NOT NULL,
         likes        INT DEFAULT 0,
-        created_at   TIMESTAMP NOT NULL DEFAULT NOW()
+        created_at   TIMESTAMP NOT NULL DEFAULT NOW(),
+        updated_at   TIMESTAMP DEFAULT NOW()
       );
+
+      ALTER TABLE community_posts
+        ADD COLUMN IF NOT EXISTS user_id INT REFERENCES users(id) ON DELETE SET NULL,
+        ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW();
 
       CREATE TABLE IF NOT EXISTS community_comments (
         id           SERIAL PRIMARY KEY,
         post_id      INT NOT NULL REFERENCES community_posts(id) ON DELETE CASCADE,
+        user_id      INT REFERENCES users(id) ON DELETE SET NULL,
         author_name  VARCHAR(150) NOT NULL,
         role         VARCHAR(50) DEFAULT 'Student',
         content      TEXT NOT NULL,
         created_at   TIMESTAMP NOT NULL DEFAULT NOW()
       );
 
+      ALTER TABLE community_comments
+        ADD COLUMN IF NOT EXISTS user_id INT REFERENCES users(id) ON DELETE SET NULL;
+
       -- Seed default Admin user (password: AdminPass123!)
       INSERT INTO users (full_name, email, phone, password_hash, role, department, graduation_year, job_title, company, is_approved, status)
       VALUES
-      ('System Administrator', 'admin@alumni.com', '+91 9876500000', '$2b$10$Ky7HClFaLJW3cGHHOA1C5ud4dG8PZVNqPTLpaZfjboSLl3dCa7LDy', 'admin', 'Computer Science', 2018, 'Portal Administrator', 'AlumniConnect', true, 'active')
+      ('System Administrator', 'admin@alumni.com', '+91 9876500000', '$2b$10$ji4SAdjfILQGNd25Tq020enH89JyX0txME5AwBRGGbuyhLqbIGGCS', 'admin', 'Computer Science', 2018, 'Portal Administrator', 'AlumniConnect', true, 'active')
       ON CONFLICT (email) DO NOTHING;
     `);
     console.log('✅ Database schema verified');
@@ -220,8 +233,8 @@ pool.connect()
   })
   .catch((err) => {
     console.error('❌ PostgreSQL connection failed:', err ? (err.stack || err.message || err) : 'Unknown error');
-    if (!process.env.DATABASE_URL && !process.env.INTERNAL_DATABASE_URL) {
-      console.error('⚠️ WARNING: DATABASE_URL environment variable is NOT set on Render! Please set DATABASE_URL in Render Environment settings.');
+    if (!dbUrl) {
+      console.error('⚠️ WARNING: DATABASE_URL environment variable is NOT set! Please add a PostgreSQL database in Railway and link it (or set DATABASE_URL in Variables).');
     }
     process.exit(1);
   });

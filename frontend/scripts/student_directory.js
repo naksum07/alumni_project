@@ -146,7 +146,7 @@
   });
 
   async function loadLiveStudents() {
-    const apiOrigin = window.location.protocol === 'file:' ? 'http://localhost:5001' : window.location.origin;
+    const apiOrigin = window.location.protocol === 'file:' ? 'http://localhost:5001' : '';
     const url = apiOrigin + '/api/students';
     const token = localStorage.getItem('token');
     const headers = token ? { 'Authorization': 'Bearer ' + token } : {};

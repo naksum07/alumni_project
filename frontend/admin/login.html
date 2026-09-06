@@ -174,11 +174,12 @@ function triggerShake() {
 }
 
 function getApiUrl(endpoint) {
-    const origin = window.location.origin;
-    if (window.location.protocol === 'file:' || (origin && !origin.endsWith(':5001'))) {
+    if (!endpoint) return '';
+    if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) return endpoint;
+    if (window.location.protocol === 'file:') {
         return `http://localhost:5001${endpoint.startsWith('/') ? endpoint : '/' + endpoint}`;
     }
-    return endpoint;
+    return endpoint.startsWith('/') ? endpoint : '/' + endpoint;
 }
 
 document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {

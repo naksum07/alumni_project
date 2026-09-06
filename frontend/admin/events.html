@@ -250,7 +250,7 @@ async function loadEvents() {
     if (dateTo) params.append('date_to', dateTo);
     if (status) params.append('status', status);
 
-    const res = await fetch('/api/admin/events?' + params.toString(), { headers: { 'Authorization': 'Bearer ' + getToken() } });
+    const res = await fetch(getApiUrl('/api/admin/events?' + params.toString()), { headers: { 'Authorization': 'Bearer ' + getToken() } });
     if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
             if (typeof clearAdminTokens === 'function') clearAdminTokens();
@@ -280,7 +280,7 @@ document.getElementById('addEventForm').addEventListener('submit', async (e) => 
         status: document.getElementById('evStatus').value
     };
     try {
-        const res = await fetch('/api/admin/events', {
+        const res = await fetch(getApiUrl('/api/admin/events'), {
             method: 'POST',
             headers: { 'Authorization': 'Bearer ' + (localStorage.getItem('adminToken') || getToken()), 'Content-Type': 'application/json' },
             body: JSON.stringify(newEvent)
@@ -299,7 +299,7 @@ document.getElementById('addEventForm').addEventListener('submit', async (e) => 
 window.deleteEvent = async (id) => {
     showConfirmPopup('Are you sure you want to delete this event?', 'Delete Event', async () => {
         try {
-            const res = await fetch('/api/admin/events/' + id, {
+            const res = await fetch(getApiUrl('/api/admin/events/' + id), {
                 method: 'DELETE',
                 headers: { 'Authorization': 'Bearer ' + getToken() }
             });
@@ -317,7 +317,7 @@ window.deleteEvent = async (id) => {
 };
 
 window.viewParticipants = async (id) => {
-    const res = await fetch('/api/admin/events/' + id + '/registrations', { headers: { 'Authorization': 'Bearer ' + getToken() } });
+    const res = await fetch(getApiUrl('/api/admin/events/' + id + '/registrations'), { headers: { 'Authorization': 'Bearer ' + getToken() } });
     const data = await res.json();
     const participants = Array.isArray(data) ? data : [];
     const tbody = document.getElementById('participantsList');
