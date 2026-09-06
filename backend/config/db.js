@@ -2,10 +2,12 @@ const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 const { Pool } = require('pg');
 
-const poolConfig = process.env.DATABASE_URL
+const dbUrl = process.env.DATABASE_URL || process.env.INTERNAL_DATABASE_URL;
+
+const poolConfig = dbUrl
   ? {
-      connectionString: process.env.DATABASE_URL,
-      ssl: process.env.DATABASE_URL.includes('localhost') || process.env.DATABASE_URL.includes('127.0.0.1')
+      connectionString: dbUrl,
+      ssl: dbUrl.includes('localhost') || dbUrl.includes('127.0.0.1')
         ? false
         : { rejectUnauthorized: false }
     }
@@ -197,7 +199,7 @@ pool.connect()
   })
   .catch((err) => {
     console.error('❌ PostgreSQL connection failed:', err ? (err.stack || err.message || err) : 'Unknown error');
-    if (!process.env.DATABASE_URL) {
+    if (!process.env.DATABASE_URL && !process.env.INTERNAL_DATABASE_URL) {
       console.error('⚠️ WARNING: DATABASE_URL environment variable is NOT set on Render! Please set DATABASE_URL in Render Environment settings.');
     }
     process.exit(1);
