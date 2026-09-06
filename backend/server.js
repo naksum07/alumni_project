@@ -18,13 +18,18 @@ const announcementRoutes = require('./routes/announcementRoutes');
 const successStoryRoutes = require('./routes/successStoryRoutes');
 const communityRoutes = require('./routes/communityRoutes');
 
+const fs = require('fs');
+
 const app = express();
 app.use(cors({ origin: process.env.ALLOWED_ORIGIN || '*' }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-app.use(express.static(path.join(__dirname, '..', 'frontend', 'pages')));
-app.use('/pages', express.static(path.join(__dirname, '..', 'frontend', 'pages')));
+const pagesDir = path.join(__dirname, '..', 'frontend', 'pages');
+
+// Static file mounts
+app.use(express.static(pagesDir));
+app.use('/pages', express.static(pagesDir));
 app.use('/styles', express.static(path.join(__dirname, '..', 'frontend', 'styles')));
 app.use('/scripts', express.static(path.join(__dirname, '..', 'frontend', 'scripts')));
 app.use('/public', express.static(path.join(__dirname, '..', 'frontend', 'public')));
@@ -32,6 +37,47 @@ app.use('/assets', express.static(path.join(__dirname, '..', 'frontend', 'assets
 app.use('/admin', express.static(path.join(__dirname, '..', 'frontend', 'admin')));
 app.use('/community-blog', express.static(path.join(__dirname, '..', 'frontend', 'community-blog')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Explicit page route fallbacks (handles /pages/index.html, /index.html, /pages/, /)
+app.get(['/', '/index.html', '/pages/index.html', '/pages', '/pages/'], (req, res) => {
+  const indexPath = path.join(pagesDir, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    return res.sendFile(indexPath);
+  }
+  res.status(404).send('Page not found');
+});
+
+// Admin root redirect
+app.get(['/admin', '/admin/'], (req, res) => {
+  const adminLoginPath = path.join(__dirname, '..', 'frontend', 'admin', 'login.html');
+  if (fs.existsSync(adminLoginPath)) {
+    return res.sendFile(adminLoginPath);
+  }
+  res.redirect('/admin/login.html');
+});
+
+app.get('/pages/:page', (req, res) => {
+  const pageFile = req.params.page.endsWith('.html') ? req.params.page : `${req.params.page}.html`;
+  const filePath = path.join(pagesDir, pageFile);
+  if (fs.existsSync(filePath)) {
+    return res.sendFile(filePath);
+  }
+  res.status(404).send('Page not found');
+});
+
+app.get('/:page', (req, res, next) => {
+  const pageName = req.params.page;
+  // Skip API, static asset directories, or existing routes
+  if (['api', 'admin', 'scripts', 'styles', 'public', 'assets', 'uploads', 'community-blog', 'favicon.ico'].includes(pageName)) {
+    return next();
+  }
+  const pageFile = pageName.endsWith('.html') ? pageName : `${pageName}.html`;
+  const filePath = path.join(pagesDir, pageFile);
+  if (fs.existsSync(filePath)) {
+    return res.sendFile(filePath);
+  }
+  next();
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
