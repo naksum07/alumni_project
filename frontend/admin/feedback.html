@@ -14,23 +14,25 @@
 
 <div class="admin-content">
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <h1 class="text-3xl font-bold text-gray-800">Feedback Dashboard</h1>
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Feedback Dashboard</h1>
     </div>
 
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-        <table class="admin-table" id="feedbackTable">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>User</th>
-                    <th>Status</th>
-                    <th>Rating</th>
-                    <th>Message</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-slate-200">
+        <div class="overflow-x-auto">
+            <table class="admin-table min-w-full" id="feedbackTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>User</th>
+                        <th>Status</th>
+                        <th>Rating</th>
+                        <th>Message</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
 </div>
 

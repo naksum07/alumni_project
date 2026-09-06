@@ -125,6 +125,7 @@ function renderSidebar() {
 
     const currentPath = window.location.pathname;
     const navLinkClasses = 'inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition';
+    const mobileLinkClasses = 'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition border-b border-blue-800/60';
 
     navbar.innerHTML = `
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -172,23 +173,90 @@ function renderSidebar() {
                     </a>
                 </div>
 
-                <button id="logoutBtn" class="inline-flex items-center gap-2 rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-red-700 cursor-pointer">
+                <div class="flex items-center gap-2">
+                    <button id="logoutBtn" class="hidden md:inline-flex items-center gap-2 rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-red-700 cursor-pointer">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Logout</span>
+                    </button>
+                    <button id="adminMenuBtn" aria-label="Toggle Admin Menu" class="md:hidden text-2xl text-white p-2 focus:outline-none">☰</button>
+                </div>
+            </nav>
+        </div>
+
+        <div id="adminMobileMenu" class="hidden md:hidden bg-blue-950 px-4 pb-5 pt-3 border-t border-blue-800 text-white shadow-xl">
+            <div class="space-y-1">
+                <a href="dashboard.html" class="${mobileLinkClasses} ${currentPath.includes('dashboard') ? 'bg-blue-800 text-white font-semibold' : 'text-blue-100 hover:bg-blue-900'}">
+                    <i class="fa-solid fa-chart-line w-5 text-center"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="events.html" class="${mobileLinkClasses} ${currentPath.includes('events') ? 'bg-blue-800 text-white font-semibold' : 'text-blue-100 hover:bg-blue-900'}">
+                    <i class="fa-solid fa-calendar-alt w-5 text-center"></i>
+                    <span>Events</span>
+                </a>
+                <a href="news.html" class="${mobileLinkClasses} ${currentPath.includes('news') ? 'bg-blue-800 text-white font-semibold' : 'text-blue-100 hover:bg-blue-900'}">
+                    <i class="fa-solid fa-bullhorn w-5 text-center"></i>
+                    <span>News</span>
+                </a>
+                <a href="announcements.html" class="${mobileLinkClasses} ${currentPath.includes('announcements') ? 'bg-blue-800 text-white font-semibold' : 'text-blue-100 hover:bg-blue-900'}">
+                    <i class="fa-solid fa-bell w-5 text-center"></i>
+                    <span>Announcements</span>
+                </a>
+                <a href="members.html" class="${mobileLinkClasses} ${currentPath.includes('members') ? 'bg-blue-800 text-white font-semibold' : 'text-blue-100 hover:bg-blue-900'}">
+                    <i class="fa-solid fa-users w-5 text-center"></i>
+                    <span>Members</span>
+                </a>
+                <a href="feedback.html" class="${mobileLinkClasses} ${currentPath.includes('feedback') ? 'bg-blue-800 text-white font-semibold' : 'text-blue-100 hover:bg-blue-900'}">
+                    <i class="fa-solid fa-comments w-5 text-center"></i>
+                    <span>Feedback</span>
+                </a>
+                <a href="success-stories.html" class="${mobileLinkClasses} ${currentPath.includes('success-stories') ? 'bg-blue-800 text-white font-semibold' : 'text-blue-100 hover:bg-blue-900'}">
+                    <i class="fa-solid fa-star w-5 text-center"></i>
+                    <span>Stories</span>
+                </a>
+                <a href="../pages/index.html" class="${mobileLinkClasses} text-yellow-300 hover:bg-blue-900">
+                    <i class="fa-solid fa-arrow-up-right-from-square w-5 text-center text-xs"></i>
+                    <span>Public Site</span>
+                </a>
+            </div>
+            <div class="mt-4 pt-3 border-t border-blue-800/80">
+                <button id="mobileAdminLogoutBtn" class="w-full flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700 cursor-pointer shadow-sm">
                     <i class="fa-solid fa-right-from-bracket"></i>
                     <span>Logout</span>
                 </button>
-            </nav>
+            </div>
         </div>
     `;
 
     document.body.prepend(navbar);
     document.body.style.paddingTop = '80px';
 
+    const handleLogout = (e) => {
+        if (e) e.preventDefault();
+        clearAdminTokens();
+        window.location.href = 'login.html';
+    };
+
     const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            clearAdminTokens();
-            window.location.href = 'login.html';
+    if (logoutBtn) logoutBtn.addEventListener('click', handleLogout);
+
+    const mobileLogoutBtn = document.getElementById('mobileAdminLogoutBtn');
+    if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', handleLogout);
+
+    const adminMenuBtn = document.getElementById('adminMenuBtn');
+    const adminMobileMenu = document.getElementById('adminMobileMenu');
+
+    if (adminMenuBtn && adminMobileMenu) {
+        adminMenuBtn.addEventListener('click', () => {
+            adminMobileMenu.classList.toggle('hidden');
+            const isOpen = !adminMobileMenu.classList.contains('hidden');
+            adminMenuBtn.innerHTML = isOpen ? '✕' : '☰';
+        });
+
+        adminMobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                adminMobileMenu.classList.add('hidden');
+                adminMenuBtn.innerHTML = '☰';
+            });
         });
     }
 }

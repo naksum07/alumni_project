@@ -10,15 +10,17 @@
 <script src="../scripts/popup.js"></script>
 <script src="../scripts/admin-common.js"></script>
 </head>
-    <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold text-gray-800">News & Announcements</h1>
-        <button onclick="document.getElementById('addNewsModal').classList.remove('hidden')" class="bg-[#c4161c] hover:bg-[#a01217] text-white px-5 py-2.5 rounded-xl shadow-sm flex items-center gap-2 font-semibold transition">
+<body class="bg-[#f8fafc] text-slate-800">
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-10">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">News & Announcements</h1>
+        <button onclick="document.getElementById('addNewsModal').classList.remove('hidden')" class="bg-[#c4161c] hover:bg-[#a01217] text-white px-4 sm:px-5 py-2.5 rounded-xl shadow-sm flex items-center gap-2 font-semibold transition text-sm sm:text-base cursor-pointer">
             <i class="fa-solid fa-plus"></i> New Post
         </button>
     </div>
 
     <!-- FILTERS CARD -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-8">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5 mb-8">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
             
             <!-- SEARCH -->
@@ -29,7 +31,7 @@
 
             <!-- DATE RANGE -->
             <div class="flex gap-2 relative">
-                <input type="date" id="dateFrom" class="w-1/2 border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-blue-500 text-sm transition" title="From">
+                <input type="date" id="dateFrom" class="w-full border border-slate-200 rounded-xl px-3 py-2.5 outline-none focus:border-blue-500 text-sm transition" title="From">
             </div>
 
             <!-- STATUS -->
@@ -47,26 +49,28 @@
         </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-        <table class="admin-table" id="mainNewsTable">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Category</th>
-                    <th>Audience</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-4 border border-slate-200">
+        <div class="overflow-x-auto">
+            <table class="admin-table min-w-full" id="mainNewsTable">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Audience</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
     </div>
-</div>
+</main>
 
 <!-- Add News Modal -->
-<div id="addNewsModal" class="modal-overlay hidden">
-    <div class="modal-content max-w-lg">
+<div id="addNewsModal" class="modal-overlay hidden p-4">
+    <div class="modal-content max-w-lg w-full max-h-[90vh] overflow-y-auto">
         <h2 class="text-xl font-bold mb-4">Create New Post</h2>
         <form id="addNewsForm">
             <div class="mb-3">
