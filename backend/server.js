@@ -25,17 +25,40 @@ app.use(cors({ origin: process.env.ALLOWED_ORIGIN || '*' }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
-const pagesDir = path.join(__dirname, '..', 'frontend', 'pages');
+function getFrontendSubdir(subdir = '') {
+  const candidates = [
+    path.join(__dirname, '..', 'frontend', subdir),
+    path.join(__dirname, 'frontend', subdir),
+    path.join(process.cwd(), 'frontend', subdir),
+    path.join(process.cwd(), '..', 'frontend', subdir),
+    path.resolve('frontend', subdir),
+    path.resolve('../frontend', subdir)
+  ];
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+  return path.join(__dirname, '..', 'frontend', subdir);
+}
+
+const pagesDir = getFrontendSubdir('pages');
+const stylesDir = getFrontendSubdir('styles');
+const scriptsDir = getFrontendSubdir('scripts');
+const publicDir = getFrontendSubdir('public');
+const assetsDir = getFrontendSubdir('assets');
+const adminDir = getFrontendSubdir('admin');
+const communityBlogDir = getFrontendSubdir('community-blog');
 
 // Static file mounts
 app.use(express.static(pagesDir));
 app.use('/pages', express.static(pagesDir));
-app.use('/styles', express.static(path.join(__dirname, '..', 'frontend', 'styles')));
-app.use('/scripts', express.static(path.join(__dirname, '..', 'frontend', 'scripts')));
-app.use('/public', express.static(path.join(__dirname, '..', 'frontend', 'public')));
-app.use('/assets', express.static(path.join(__dirname, '..', 'frontend', 'assets')));
-app.use('/admin', express.static(path.join(__dirname, '..', 'frontend', 'admin')));
-app.use('/community-blog', express.static(path.join(__dirname, '..', 'frontend', 'community-blog')));
+app.use('/styles', express.static(stylesDir));
+app.use('/scripts', express.static(scriptsDir));
+app.use('/public', express.static(publicDir));
+app.use('/assets', express.static(assetsDir));
+app.use('/admin', express.static(adminDir));
+app.use('/community-blog', express.static(communityBlogDir));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Explicit page route fallbacks (handles /pages/index.html, /index.html, /pages/, /)

@@ -232,11 +232,10 @@ pool.connect()
     await ensureDatabaseSchema();
   })
   .catch((err) => {
-    console.error('❌ PostgreSQL connection failed:', err ? (err.stack || err.message || err) : 'Unknown error');
+    console.error('❌ PostgreSQL connection warning:', err ? (err.stack || err.message || err) : 'Unknown error');
     if (!dbUrl) {
-      console.error('⚠️ WARNING: DATABASE_URL environment variable is NOT set! Please add a PostgreSQL database in Railway and link it (or set DATABASE_URL in Variables).');
+      console.error('⚠️ WARNING: DATABASE_URL environment variable is NOT set in environment variables!');
     }
-    process.exit(1);
   });
 
 
