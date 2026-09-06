@@ -303,8 +303,8 @@ async function adminLogin(req, res) {
       },
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: 'Server error during admin login' });
+    console.error('Error during admin login:', err);
+    res.status(500).json({ message: err.message || 'Server error during admin login' });
   }
 }
 
