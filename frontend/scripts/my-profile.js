@@ -932,7 +932,7 @@ function togglePasswordVisibility(inputId, btn) {
       }
 
       const method = storyId ? 'PUT' : 'POST';
-      const url = storyId ? `/api/success-stories/${storyId}` : '/api/success-stories';
+      const url = storyId ? `${API_BASE}/success-stories/${storyId}` : `${API_BASE}/success-stories`;
 
       try {
         const res = await fetch(url, {
@@ -965,7 +965,7 @@ function togglePasswordVisibility(inputId, btn) {
 
       const doDelete = async () => {
         try {
-          const res = await fetch(`/api/success-stories/${storyId}`, {
+          const res = await fetch(`${API_BASE}/success-stories/${storyId}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
           });

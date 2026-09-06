@@ -15,6 +15,11 @@ const transporter = nodemailer.createTransport({
 });
 
 async function sendEmail(to, subject, html) {
+  if (!gmailUser || !gmailPass) {
+    console.log(`[DEV EMAIL LOG] To: ${to} | Subject: ${subject}`);
+    return { devMode: true };
+  }
+
   const mailOptions = {
     from: `"Alumni Portal" <${gmailUser}>`,
     to,
