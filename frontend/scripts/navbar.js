@@ -3,6 +3,13 @@ window.getApiUrl = function(endpoint) {
     if (!endpoint) return '';
     if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) return endpoint;
     const path = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
+
+    const customBackend = localStorage.getItem('API_BASE_URL') || window.API_BASE_URL;
+    if (customBackend) {
+        const base = customBackend.endsWith('/') ? customBackend.slice(0, -1) : customBackend;
+        return `${base}${path}`;
+    }
+
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     if (window.location.protocol === 'file:') {
         return `http://localhost:5001${path}`;

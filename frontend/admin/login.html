@@ -188,6 +188,13 @@ function getApiUrl(endpoint) {
     if (!endpoint) return '';
     if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) return endpoint;
     const path = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
+
+    const customBackend = localStorage.getItem('API_BASE_URL') || window.API_BASE_URL;
+    if (customBackend) {
+        const base = customBackend.endsWith('/') ? customBackend.slice(0, -1) : customBackend;
+        return `${base}${path}`;
+    }
+
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     if (window.location.protocol === 'file:') {
         return `http://localhost:5001${path}`;
@@ -255,14 +262,18 @@ document.getElementById('adminLoginForm').addEventListener('submit', async (e) =
             triggerShake();
             usernameInput.classList.add('input-error');
             passcodeInput.classList.add('input-error');
-            const data = await response.json();
+            const data = await response.json().catch(() => ({ message: 'Invalid admin credentials.' }));
             const message = data.message || 'Invalid admin credentials.';
             showAdminAlert(message, 'error');
         }
     } catch (err) {
         console.error(err);
         triggerShake();
-        showAdminAlert("Could not reach backend server. Make sure server is running on port 5000.", 'network');
+        const isRemote = window.location.hostname.includes('onrender.com') || (!window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1'));
+        const errorMsg = isRemote
+            ? "Could not connect to backend server on Render. If using Render free tier, the server may be waking up from sleep. Please wait 30 seconds and click login again."
+            : "Could not reach backend server. Make sure server is running on port 5001.";
+        showAdminAlert(errorMsg, 'network');
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = `<span>Login to Dashboard</span>`;
