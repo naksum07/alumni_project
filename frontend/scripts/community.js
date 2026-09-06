@@ -4,70 +4,7 @@
 
 const STORAGE_KEY = 'alumni_community_posts_v1';
 
-const DEFAULT_POSTS = [
-    {
-        id: 'post-1',
-        user_id: null,
-        author: 'Priya Sharma',
-        role: 'Alumni',
-        affiliation: 'Senior SDE @ Microsoft (Batch \'20)',
-        category: 'Career',
-        title: 'Tips for 3rd & 4th Year Students Preparing for Tech Interviews',
-        content: `Hey everyone! For all students aiming for software engineering roles this placement season:
-
-1. Focus deeply on Data Structures (Trees, Graphs, Dynamic Programming).
-2. Build at least 2 production-grade full-stack projects with clean git commits and documentation.
-3. Practice mock behavioral interviews using the STAR method.
-
-Feel free to ask your questions or request resume reviews below!`,
-        likes: 28,
-        liked: false,
-        createdAt: new Date(Date.now() - 4 * 3600 * 1000).toISOString(),
-        comments: [
-            {
-                id: 'c-1',
-                user_id: null,
-                author: 'Rohan Verma',
-                role: 'Student',
-                content: 'Thank you Priya ma\'am! Should we focus more on LeetCode or system design for entry-level roles?',
-                createdAt: new Date(Date.now() - 3 * 3600 * 1000).toISOString()
-            },
-            {
-                id: 'c-2',
-                user_id: null,
-                author: 'Priya Sharma',
-                role: 'Alumni',
-                content: 'For fresher roles, DSA and core CS subjects (OS, DBMS, Networks) are 90% of the evaluation. Basic low-level design is enough!',
-                createdAt: new Date(Date.now() - 2 * 3600 * 1000).toISOString()
-            }
-        ]
-    },
-    {
-        id: 'post-2',
-        user_id: null,
-        author: 'Amit Kumar',
-        role: 'Alumni',
-        affiliation: 'Product Lead @ FinTech (Batch \'18)',
-        category: 'Mentorship',
-        title: '🤝 Offering 1-on-1 Resume Reviews & Product Management Guidance',
-        content: `Happy to mentor current students and recent graduates interested in transitioning from engineering to Product Management, UI/UX design, or Business Analysis.
-
-Drop a comment with your areas of interest or reach out through the Alumni Directory. Happy to schedule mock sessions!`,
-        likes: 23,
-        liked: false,
-        createdAt: new Date(Date.now() - 14 * 3600 * 1000).toISOString(),
-        comments: [
-            {
-                id: 'c-3',
-                user_id: null,
-                author: 'Anjali Rai',
-                role: 'Student',
-                content: 'Would love to connect regarding PM roadmaps and APM program preparation!',
-                createdAt: new Date(Date.now() - 8 * 3600 * 1000).toISOString()
-            }
-        ]
-    }
-];
+const DEFAULT_POSTS = [];
 
 function getAuthToken() {
     return localStorage.getItem('token');
@@ -167,11 +104,19 @@ async function handleResponse(res, defaultErrMsg) {
 function getPosts() {
     try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return DEFAULT_POSTS;
+        if (!raw) return [];
         const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_POSTS;
+        if (Array.isArray(parsed)) {
+            const hasLegacy = parsed.some(p => p.author === 'Priya Sharma' || p.author === 'Amit Kumar' || p.author_name === 'Priya Sharma' || p.author_name === 'Amit Kumar');
+            if (hasLegacy) {
+                localStorage.removeItem(STORAGE_KEY);
+                return [];
+            }
+            return parsed;
+        }
+        return [];
     } catch (e) {
-        return DEFAULT_POSTS;
+        return [];
     }
 }
 
@@ -199,9 +144,9 @@ async function fetchPostsFromAPI() {
             }
         }
     } catch (err) {
-        console.warn('Backend API fetch unavailable, using cached posts:', err.message || err);
+        console.warn('Backend API fetch unavailable:', err.message || err);
     }
-    return getPosts();
+    return [];
 }
 
 function isOwner(itemUserId) {

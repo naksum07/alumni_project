@@ -1,55 +1,5 @@
 const pool = require('../config/db');
 
-// Default seed posts in case table is empty
-const DEFAULT_POSTS = [
-    {
-        author_name: 'Priya Sharma',
-        role: 'Alumni',
-        affiliation: 'Senior SDE @ Microsoft (Batch \'20)',
-        category: 'Career',
-        title: 'Tips for 3rd & 4th Year Students Preparing for Tech Interviews',
-        content: `Hey everyone! For all students aiming for software engineering roles this placement season:
-
-1. Focus deeply on Data Structures (Trees, Graphs, Dynamic Programming).
-2. Build at least 2 production-grade full-stack projects with clean git commits and documentation.
-3. Practice mock behavioral interviews using the STAR method.
-
-Feel free to ask your questions or request resume reviews below!`,
-        likes: 28
-    },
-    {
-        author_name: 'Amit Kumar',
-        role: 'Alumni',
-        affiliation: 'Product Lead @ FinTech (Batch \'18)',
-        category: 'Mentorship',
-        title: '🤝 Offering 1-on-1 Resume Reviews & Product Management Guidance',
-        content: `Happy to mentor current students and recent graduates interested in transitioning from engineering to Product Management, UI/UX design, or Business Analysis.
-
-Drop a comment with your areas of interest or reach out through the Alumni Directory. Happy to schedule mock sessions!`,
-        likes: 23
-    },
-    {
-        author_name: 'Sneha Subba',
-        role: 'Student',
-        affiliation: 'BTech CSE (Batch \'26)',
-        category: 'Academics',
-        title: '🚀 Starting an AI/ML Open-Source Study Group on Campus',
-        content: `A few of us 3rd-year students are starting a weekly peer study group to explore Generative AI, PyTorch models, and real-world open-source contributions.
-
-Any seniors or alumni working in AI/Data Science who would like to guide us, suggest roadmaps, or give a guest talk? All students are welcome to join!`,
-        likes: 19
-    },
-    {
-        author_name: 'Dr. Tashi Dorjee',
-        role: 'Faculty',
-        affiliation: 'Dept. of Science & Technology',
-        category: 'General',
-        title: 'Call for Alumni Guest Speakers: Tech Innovate Symposium 2026',
-        content: `The Department of Science & Technology is inviting distinguished alumni working in cloud computing, cybersecurity, and data analytics to deliver keynote sessions at our upcoming Tech Innovate Symposium next month. Interested alumni may comment or email the department.`,
-        likes: 31
-    }
-];
-
 function formatRole(role) {
     if (!role) return 'Student';
     const lower = String(role).toLowerCase();
@@ -105,35 +55,6 @@ async function getPosts(req, res) {
         `);
 
         let posts = postsRes.rows;
-
-        // If table is empty, seed default posts
-        if (posts.length === 0) {
-            for (const p of DEFAULT_POSTS) {
-                await pool.query(`
-                    INSERT INTO community_posts (author_name, role, affiliation, category, title, content, likes)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7)
-                `, [p.author_name, p.role, p.affiliation, p.category, p.title, p.content, p.likes]);
-            }
-            const seededRes = await pool.query(`
-                SELECT 
-                    id, 
-                    user_id,
-                    user_id AS "userId",
-                    author_name AS author,
-                    author_name,
-                    role,
-                    affiliation,
-                    category,
-                    title,
-                    content,
-                    likes,
-                    created_at AS "createdAt",
-                    created_at
-                FROM community_posts
-                ORDER BY created_at DESC
-            `);
-            posts = seededRes.rows;
-        }
 
         // Fetch comments for each post
         for (let post of posts) {
