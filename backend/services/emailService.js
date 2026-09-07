@@ -1,16 +1,23 @@
 const path = require('path');
-// Ensure .env is loaded regardless of the process working directory
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
-require('dotenv').config();
+const dotenv = require('dotenv');
+
+// Ensure .env is loaded from the backend first, then the workspace root.
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config();
 
 const nodemailer = require('nodemailer');
 
 function getEmailCredentials() {
-  const user = (process.env.GMAIL_USER || 'alumniconnect.iu@gmail.com').trim();
-  const rawPass = process.env.GMAIL_APP_PASS || 'opjt edee gedn dcpr';
+  const fromEmail = (process.env.SENDGRID_FROM_EMAIL || '').trim();
+  const rawPass = (process.env.SENDGRID_API_KEY || '').trim();
   const pass = rawPass.replace(/\s+/g, '');
-  return { user, pass };
+
+  return {
+    user: 'apikey',
+    pass,
+    fromEmail
+  };
 }
 
 let cachedTransporter = null;
@@ -18,11 +25,16 @@ let cachedAuthKey = null;
 
 function getTransporter() {
   const { user, pass } = getEmailCredentials();
+
+  if (!pass) {
+    return null;
+  }
+
   const authKey = `${user}:${pass}`;
 
   if (!cachedTransporter || cachedAuthKey !== authKey) {
     cachedTransporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: 'smtp.sendgrid.net',
       port: 465,
       secure: true,
       auth: { user, pass },
@@ -37,16 +49,21 @@ function getTransporter() {
 }
 
 async function sendEmail(to, subject, html) {
-  const { user, pass } = getEmailCredentials();
+  const { fromEmail, pass } = getEmailCredentials();
 
-  if (!user || !pass) {
-    console.warn(`[DEV EMAIL LOG] No credentials configured. To: ${to} | Subject: ${subject}`);
+  if (!pass || !fromEmail) {
+    console.warn(`[DEV EMAIL LOG] No valid SendGrid credentials configured. To: ${to} | Subject: ${subject}`);
     return { devMode: true, sent: false };
   }
 
   const transporter = getTransporter();
+  if (!transporter) {
+    console.warn(`[DEV EMAIL LOG] Email transport is unavailable. To: ${to} | Subject: ${subject}`);
+    return { devMode: true, sent: false };
+  }
+
   const mailOptions = {
-    from: `"Alumni Portal" <${user}>`,
+    from: `"Alumni Portal" <${fromEmail}>`,
     to,
     subject,
     html
@@ -65,6 +82,11 @@ async function sendEmail(to, subject, html) {
 async function verifyEmailService() {
   try {
     const transporter = getTransporter();
+    if (!transporter) {
+      console.warn('⚠️ Email service not configured: SENDGRID_API_KEY is missing.');
+      return false;
+    }
+
     await transporter.verify();
     console.log('✅ Email service (SMTP) ready');
     return true;
@@ -77,4 +99,4 @@ async function verifyEmailService() {
 module.exports = sendEmail;
 module.exports.sendEmail = sendEmail;
 module.exports.verifyEmailService = verifyEmailService;
-module.exports.getTransporter = getTransporter;
+module.exports.getTransporter = getTransporter;
