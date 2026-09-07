@@ -1,5 +1,3 @@
-/* HOMEPAGE SCRIPT MODULES (Tailwind & Backend Integrated)*/
-
 // 1. AOS Animation Initialization
 if (typeof AOS !== "undefined") {
     AOS.init({
@@ -77,7 +75,7 @@ window.goTop = goTop;
     });
 })();
 
-// 5. User Profile Button & Search Form Handlers
+// User Profile Button & Search Form Handlers
 (function() {
     document.addEventListener("DOMContentLoaded", () => {
         const profileBtn = document.getElementById("profileBtn");
@@ -107,7 +105,7 @@ window.goTop = goTop;
     });
 })();
 
-// 6. Hero Image Slider
+// Hero Image Slider
 (function() {
     document.addEventListener('DOMContentLoaded', () => {
         const track = document.getElementById('heroSliderTrack');
@@ -177,7 +175,7 @@ window.goTop = goTop;
     });
 })();
 
-// 7. Announcements Carousel
+// Announcements Carousel
 (function() {
     document.addEventListener('DOMContentLoaded', async () => {
         const section = document.getElementById('announcements-section');
@@ -329,7 +327,7 @@ window.goTop = goTop;
     });
 })();
 
-// 8. Community Blog Carousel
+// Community Blog Carousel
 (function() {
     function initBlogCarousel() {
         const blogCarousel = document.getElementById('blog-carousel');
