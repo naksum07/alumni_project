@@ -398,7 +398,8 @@ window.goTop = goTop;
                 if (author.profile_picture) {
                     avatarContent = `<img src="${escapeHTML(author.profile_picture)}" alt="${authorName}" class="w-full h-full object-cover">`;
                 } else {
-                    avatarContent = `<img src="../assets/${(idx % 4) + 1}.png" alt="${authorName}" class="w-full h-full object-cover">`;
+                    const initial = authorName.charAt(0).toUpperCase();
+                    avatarContent = `<div class="w-full h-full bg-[#012970] text-white flex items-center justify-center text-3xl font-bold">${initial}</div>`;
                 }
 
                 slide.innerHTML = `

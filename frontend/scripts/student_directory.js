@@ -67,7 +67,7 @@
         const initial = (s.full_name || '?').charAt(0).toUpperCase();
         const avatarHtml = s.profile_picture
           ? `<img src="${s.profile_picture}" class="w-20 h-20 mx-auto rounded-full object-cover border-2 border-emerald-200 shadow-sm" alt="${s.full_name}">`
-          : `<img src="../assets/${((s.id || 1) % 4) + 1}.png" class="w-20 h-20 mx-auto rounded-full object-cover border-2 border-emerald-200 shadow-sm" alt="${s.full_name}">`;
+          : `<div class="w-20 h-20 mx-auto rounded-full flex items-center justify-center bg-emerald-100 text-emerald-700 text-3xl font-bold border-2 border-emerald-200 shadow-sm">${initial}</div>`;
 
         return `
           <div class="student-card bg-white rounded-xl shadow-md p-6 text-center border border-gray-100 hover:-translate-y-1 hover:shadow-lg transition flex flex-col justify-between">
