@@ -9,8 +9,8 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    user: gmailUser,
-    pass: gmailPass
+    user: 'alumniconnect.iu@gmail.com',
+    pass: 'opjt edee gedn dcpr'
   }
 });
 
