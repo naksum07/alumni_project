@@ -75,7 +75,7 @@ window.goTop = goTop;
     });
 })();
 
-// User Profile Button & Search Form Handlers
+// 5. User Profile Button & Search Form Handlers
 (function() {
     document.addEventListener("DOMContentLoaded", () => {
         const profileBtn = document.getElementById("profileBtn");
@@ -105,7 +105,7 @@ window.goTop = goTop;
     });
 })();
 
-// Hero Image Slider
+// 6. Hero Image Slider
 (function() {
     document.addEventListener('DOMContentLoaded', () => {
         const track = document.getElementById('heroSliderTrack');
@@ -175,7 +175,7 @@ window.goTop = goTop;
     });
 })();
 
-// Announcements Carousel
+// 7. Announcements Carousel
 (function() {
     document.addEventListener('DOMContentLoaded', async () => {
         const section = document.getElementById('announcements-section');
@@ -327,170 +327,8 @@ window.goTop = goTop;
     });
 })();
 
-// Community Blog Carousel
-(function() {
-    function initBlogCarousel() {
-        const blogCarousel = document.getElementById('blog-carousel');
-        if (!blogCarousel) return;
 
-        try {
-            if (window.CommunityBlog && typeof window.CommunityBlog.getPosts === 'function') {
-                const allPosts = window.CommunityBlog.getPosts();
-                if (!Array.isArray(allPosts) || allPosts.length === 0) return;
-
-                const blogPosts = [...allPosts]
-                    .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
-                    .slice(0, 3);
-
-                const dotsContainer = document.getElementById('blog-dots');
-                const prevBtn = document.getElementById('blog-prev-btn');
-                const nextBtn = document.getElementById('blog-next-btn');
-                const wrapper = document.getElementById('blog-carousel-wrapper');
-
-                blogCarousel.innerHTML = blogPosts.map(post => {
-                    const roleBadge = window.CommunityBlog.getRoleBadge ? window.CommunityBlog.getRoleBadge(post.role) : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">${post.role || 'Student'}</span>`;
-                    const categoryBadge = window.CommunityBlog.getCategoryBadge ? window.CommunityBlog.getCategoryBadge(post.category) : `<span class="text-[11px] font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-full">${post.category || 'General'}</span>`;
-                    const timeStr = window.CommunityBlog.timeAgo ? window.CommunityBlog.timeAgo(post.createdAt) : '';
-
-                    return `
-                    <a href="../community-blog/index.html" class="shrink-0 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group cursor-pointer">
-                        <div>
-                            <div class="flex items-center justify-between gap-2 mb-3">
-                                <div>${roleBadge}</div>
-                                <div>${categoryBadge}</div>
-                            </div>
-                            <h3 class="text-base sm:text-lg font-bold text-[#012970] group-hover:text-[#c4161c] transition-colors mb-2 line-clamp-2 leading-snug">
-                                ${post.title}
-                            </h3>
-                            <p class="text-slate-600 text-xs sm:text-sm leading-relaxed line-clamp-2 mb-4">
-                                ${post.content}
-                            </p>
-                        </div>
-                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                            <div class="flex items-center gap-3">
-                                <span class="inline-flex items-center gap-1 font-medium text-slate-600">
-                                    <i class="fa-solid fa-heart text-[#c4161c]"></i>
-                                    ${post.likes || 0}
-                                </span>
-                                <span class="inline-flex items-center gap-1 font-medium text-slate-600">
-                                    <i class="fa-solid fa-comment text-blue-600"></i>
-                                    ${post.comments ? post.comments.length : 0}
-                                </span>
-                            </div>
-                            <span class="text-slate-400 font-normal">
-                                <i class="fa-regular fa-clock mr-1 text-slate-400"></i>${timeStr}
-                            </span>
-                        </div>
-                    </a>`;
-                }).join('');
-
-                let currentIndex = 0;
-                let autoPlayTimer = null;
-
-                function getVisibleCards() {
-                    if (window.innerWidth >= 1024) return 3;
-                    if (window.innerWidth >= 768) return 2;
-                    return 1;
-                }
-
-                function getMaxIndex() {
-                    const visible = getVisibleCards();
-                    return Math.max(0, blogPosts.length - visible);
-                }
-
-                function updateCarousel() {
-                    const maxIndex = getMaxIndex();
-                    if (currentIndex > maxIndex) currentIndex = maxIndex;
-                    if (currentIndex < 0) currentIndex = 0;
-
-                    const card = blogCarousel.children[0];
-                    if (card) {
-                        const gap = 24;
-                        const cardWidth = card.getBoundingClientRect().width || card.offsetWidth || 0;
-                        const shift = currentIndex * (cardWidth + gap);
-                        blogCarousel.style.transform = `translateX(-${shift}px)`;
-                    }
-
-                    renderDots();
-                }
-
-                function renderDots() {
-                    const maxIndex = getMaxIndex();
-                    if (!dotsContainer) return;
-                    if (maxIndex <= 0) {
-                        dotsContainer.innerHTML = '';
-                        return;
-                    }
-                    dotsContainer.innerHTML = Array.from({ length: maxIndex + 1 }, (_, i) => `
-                        <button class="h-2.5 rounded-full transition-all duration-300 ${i === currentIndex ? 'bg-[#c4161c] w-6' : 'bg-slate-300 hover:bg-slate-400 w-2.5'}"
-                            aria-label="Go to slide ${i + 1}" data-index="${i}"></button>
-                    `).join('');
-
-                    dotsContainer.querySelectorAll('button').forEach(btn => {
-                        btn.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            currentIndex = parseInt(btn.getAttribute('data-index'), 10);
-                            updateCarousel();
-                            resetTimer();
-                        });
-                    });
-                }
-
-                function nextSlide() {
-                    const maxIndex = getMaxIndex();
-                    if (maxIndex <= 0) return;
-                    currentIndex = (currentIndex >= maxIndex) ? 0 : currentIndex + 1;
-                    updateCarousel();
-                }
-
-                function prevSlide() {
-                    const maxIndex = getMaxIndex();
-                    if (maxIndex <= 0) return;
-                    currentIndex = (currentIndex <= 0) ? maxIndex : currentIndex - 1;
-                    updateCarousel();
-                }
-
-                if (prevBtn) prevBtn.addEventListener('click', (e) => { e.preventDefault(); prevSlide(); resetTimer(); });
-                if (nextBtn) nextBtn.addEventListener('click', (e) => { e.preventDefault(); nextSlide(); resetTimer(); });
-
-                function startTimer() {
-                    stopTimer();
-                    autoPlayTimer = setInterval(nextSlide, 5500);
-                }
-
-                function stopTimer() {
-                    if (autoPlayTimer) clearInterval(autoPlayTimer);
-                }
-
-                function resetTimer() {
-                    stopTimer();
-                    startTimer();
-                }
-
-                if (wrapper) {
-                    wrapper.addEventListener('mouseenter', stopTimer);
-                    wrapper.addEventListener('mouseleave', startTimer);
-                    wrapper.addEventListener('touchstart', stopTimer, { passive: true });
-                    wrapper.addEventListener('touchend', startTimer, { passive: true });
-                }
-
-                window.addEventListener('resize', updateCarousel);
-                setTimeout(updateCarousel, 50);
-                startTimer();
-            }
-        } catch (err) {
-            // Handle blog load errors silently
-        }
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initBlogCarousel);
-    } else {
-        initBlogCarousel();
-    }
-})();
-
-// 9. Feedback Carousel
+// 8. Feedback Carousel
 (function() {
     document.addEventListener('DOMContentLoaded', async () => {
         const section = document.getElementById('feedback-section');
@@ -522,7 +360,7 @@ window.goTop = goTop;
     });
 })();
 
-// 10. Success Stories Carousel
+// 9. Success Stories Carousel
 (function() {
     document.addEventListener('DOMContentLoaded', async () => {
         const section = document.getElementById('success-stories-section');
@@ -844,163 +682,4 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     } catch(err) { console.error('Failed to load feedbacks', err); }
 
-    // Load Community Blog Carousel
-    try {
-        if (window.CommunityBlog && typeof window.CommunityBlog.getPosts === 'function') {
-            const allPosts = window.CommunityBlog.getPosts();
-            if (allPosts && allPosts.length > 0) {
-                // Sort by createdAt desc (newest first) and take top 3
-                const blogPosts = [...allPosts]
-                    .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
-                    .slice(0, 3);
-
-                const blogCarousel = document.getElementById('blog-carousel');
-                const dotsContainer = document.getElementById('blog-dots');
-                const prevBtn = document.getElementById('blog-prev-btn');
-                const nextBtn = document.getElementById('blog-next-btn');
-                const wrapper = document.getElementById('blog-carousel-wrapper');
-
-                if (blogCarousel) {
-                    blogCarousel.innerHTML = blogPosts.map(post => {
-                        const roleBadge = window.CommunityBlog.getRoleBadge ? window.CommunityBlog.getRoleBadge(post.role) : `<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">${post.role || 'Student'}</span>`;
-                        const categoryBadge = window.CommunityBlog.getCategoryBadge ? window.CommunityBlog.getCategoryBadge(post.category) : `<span class="text-[11px] font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded-full">${post.category || 'General'}</span>`;
-                        const timeStr = window.CommunityBlog.timeAgo ? window.CommunityBlog.timeAgo(post.createdAt) : '';
-
-                        return `
-                        <a href="community-blog/index.html" class="shrink-0 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group cursor-pointer">
-                            <div>
-                                <div class="flex items-center justify-between gap-2 mb-3">
-                                    <div>${roleBadge}</div>
-                                    <div>${categoryBadge}</div>
-                                </div>
-                                <h3 class="text-base sm:text-lg font-bold text-[#012970] group-hover:text-[#c4161c] transition-colors mb-2 line-clamp-2 leading-snug">
-                                    ${post.title}
-                                </h3>
-                                <p class="text-slate-600 text-xs sm:text-sm leading-relaxed line-clamp-2 mb-4">
-                                    ${post.content}
-                                </p>
-                            </div>
-                            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                                <div class="flex items-center gap-3">
-                                    <span class="inline-flex items-center gap-1 font-medium text-slate-600">
-                                        <i class="fa-solid fa-heart text-[#c4161c]"></i>
-                                        ${post.likes || 0}
-                                    </span>
-                                    <span class="inline-flex items-center gap-1 font-medium text-slate-600">
-                                        <i class="fa-solid fa-comment text-blue-600"></i>
-                                        ${post.comments ? post.comments.length : 0}
-                                    </span>
-                                </div>
-                                <span class="text-slate-400 font-normal">
-                                    <i class="fa-regular fa-clock mr-1 text-slate-400"></i>${timeStr}
-                                </span>
-                            </div>
-                        </a>`;
-                    }).join('');
-
-                    let currentIndex = 0;
-                    let autoPlayTimer = null;
-
-                    function getVisibleCards() {
-                        if (window.innerWidth >= 1024) return 3;
-                        if (window.innerWidth >= 768) return 2;
-                        return 1;
-                    }
-
-                    function getMaxIndex() {
-                        const visible = getVisibleCards();
-                        return Math.max(0, blogPosts.length - visible);
-                    }
-
-                    function updateCarousel() {
-                        const maxIndex = getMaxIndex();
-                        if (currentIndex > maxIndex) currentIndex = maxIndex;
-                        if (currentIndex < 0) currentIndex = 0;
-
-                        const card = blogCarousel.children[0];
-                        if (card) {
-                            const gap = 24; // gap-6
-                            const cardWidth = card.getBoundingClientRect().width;
-                            const shift = currentIndex * (cardWidth + gap);
-                            blogCarousel.style.transform = `translateX(-${shift}px)`;
-                        }
-
-                        renderDots();
-                    }
-
-                    function renderDots() {
-                        const maxIndex = getMaxIndex();
-                        if (!dotsContainer) return;
-                        if (maxIndex <= 0) {
-                            dotsContainer.innerHTML = '';
-                            return;
-                        }
-                        dotsContainer.innerHTML = Array.from({ length: maxIndex + 1 }, (_, i) => `
-                            <button class="h-2.5 rounded-full transition-all duration-300 ${i === currentIndex ? 'bg-[#c4161c] w-6' : 'bg-slate-300 hover:bg-slate-400 w-2.5'}"
-                                aria-label="Go to slide ${i + 1}" data-index="${i}"></button>
-                        `).join('');
-
-                        dotsContainer.querySelectorAll('button').forEach(btn => {
-                            btn.addEventListener('click', (e) => {
-                                e.preventDefault();
-                                currentIndex = parseInt(btn.getAttribute('data-index'), 10);
-                                updateCarousel();
-                                resetTimer();
-                            });
-                        });
-                    }
-
-                    function nextSlide() {
-                        const maxIndex = getMaxIndex();
-                        if (maxIndex <= 0) return;
-                        if (currentIndex >= maxIndex) {
-                            currentIndex = 0;
-                        } else {
-                            currentIndex++;
-                        }
-                        updateCarousel();
-                    }
-
-                    function prevSlide() {
-                        const maxIndex = getMaxIndex();
-                        if (maxIndex <= 0) return;
-                        if (currentIndex <= 0) {
-                            currentIndex = maxIndex;
-                        } else {
-                            currentIndex--;
-                        }
-                        updateCarousel();
-                    }
-
-                    if (prevBtn) prevBtn.addEventListener('click', (e) => { e.preventDefault(); prevSlide(); resetTimer(); });
-                    if (nextBtn) nextBtn.addEventListener('click', (e) => { e.preventDefault(); nextSlide(); resetTimer(); });
-
-                    function startTimer() {
-                        stopTimer();
-                        autoPlayTimer = setInterval(nextSlide, 5500);
-                    }
-
-                    function stopTimer() {
-                        if (autoPlayTimer) clearInterval(autoPlayTimer);
-                    }
-
-                    function resetTimer() {
-                        stopTimer();
-                        startTimer();
-                    }
-
-                    if (wrapper) {
-                        wrapper.addEventListener('mouseenter', stopTimer);
-                        wrapper.addEventListener('mouseleave', startTimer);
-                        wrapper.addEventListener('touchstart', stopTimer, { passive: true });
-                        wrapper.addEventListener('touchend', startTimer, { passive: true });
-                    }
-
-                    window.addEventListener('resize', updateCarousel);
-                    updateCarousel();
-                    startTimer();
-                }
-            }
-        }
-    } catch(err) { console.error('Failed to load blog posts', err); }
 });
