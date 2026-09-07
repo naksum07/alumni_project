@@ -5,23 +5,10 @@
 const DB_KEY = 'alumni_mock_db';
 
 const initialData = {
-    users: [
-        { id: 1, name: 'Alice Smith', email: 'alice@example.com', type: 'Alumni', dateJoined: '2023-01-15' },
-        { id: 2, name: 'Bob Johnson', email: 'bob@example.com', type: 'Student', dateJoined: '2023-05-20' },
-        { id: 3, name: 'Charlie Brown', email: 'charlie@example.com', type: 'Alumni', dateJoined: '2024-02-10' }
-    ],
-    events: [
-        { id: 1, title: 'Annual Alumni Meet', host: 'Alumni Association', date: '2024-12-15', status: 'upcoming', participantCount: 150 },
-        { id: 2, title: 'Tech Talk: Web Dev', host: 'Alice Smith', date: '2024-10-05', status: 'completed', participantCount: 45 },
-        { id: 3, title: 'Career Guidance Session', host: 'Career Cell', date: '2024-11-20', status: 'upcoming', participantCount: 80 }
-    ],
-    news: [
-        { id: 1, title: 'New Mentorship Program Launched', category: 'Announcement', audience: 'Everyone', status: 'Published', date: '2024-10-01' },
-        { id: 2, title: 'Upcoming Tech Symposium', category: 'News', audience: 'Students only', status: 'Draft', date: '2024-10-15' }
-    ],
-    eventParticipants: {
-        1: [ { id: 2, name: 'Bob Johnson', email: 'bob@example.com', type: 'Student' } ]
-    },
+    users: [],
+    events: [],
+    news: [],
+    eventParticipants: {},
     adminSession: null
 };
 
