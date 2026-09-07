@@ -9,12 +9,12 @@ dotenv.config();
 const nodemailer = require('nodemailer');
 
 function getEmailCredentials() {
-  const fromEmail = (process.env.SENDGRID_FROM_EMAIL || '').trim();
-  const rawPass = (process.env.SENDGRID_API_KEY || '').trim();
+  const fromEmail = (process.env.GMAIL_USER || '').trim();
+  const rawPass = (process.env.GMAIL_APP_PASS || '').trim();
   const pass = rawPass.replace(/\s+/g, '');
 
   return {
-    user: 'apikey',
+    user: fromEmail,
     pass,
     fromEmail
   };
@@ -34,7 +34,7 @@ function getTransporter() {
 
   if (!cachedTransporter || cachedAuthKey !== authKey) {
     cachedTransporter = nodemailer.createTransport({
-      host: 'smtp.sendgrid.net',
+      host: 'smtp.gmail.com',
       port: 465,
       secure: true,
       auth: { user, pass },
@@ -52,7 +52,7 @@ async function sendEmail(to, subject, html) {
   const { fromEmail, pass } = getEmailCredentials();
 
   if (!pass || !fromEmail) {
-    console.warn(`[DEV EMAIL LOG] No valid SendGrid credentials configured. To: ${to} | Subject: ${subject}`);
+    console.warn(`[DEV EMAIL LOG] No valid Gmail credentials configured. To: ${to} | Subject: ${subject}`);
     return { devMode: true, sent: false };
   }
 
@@ -83,7 +83,7 @@ async function verifyEmailService() {
   try {
     const transporter = getTransporter();
     if (!transporter) {
-      console.warn('⚠️ Email service not configured: SENDGRID_API_KEY is missing.');
+      console.warn('⚠️ Email service not configured: GMAIL_APP_PASS is missing.');
       return false;
     }
 
