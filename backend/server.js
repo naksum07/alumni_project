@@ -141,7 +141,11 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5001;
 if (require.main === module) {
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    const { verifyEmailService } = require('./services/emailService');
+    verifyEmailService();
+  });
 }
 
 module.exports = app;

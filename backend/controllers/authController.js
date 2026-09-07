@@ -165,7 +165,7 @@ async function forgotPassword(req, res) {
 
   try {
     const cleanEmail = email.trim().toLowerCase();
-    const result = await pool.query('SELECT id, email FROM users WHERE email = $1', [cleanEmail]);
+    const result = await pool.query('SELECT id, email FROM users WHERE LOWER(email) = LOWER($1)', [cleanEmail]);
     const user = result.rows[0];
 
     if (!user) {
@@ -184,35 +184,29 @@ async function forgotPassword(req, res) {
 
     const resetLink = `${frontendUrl}/reset-password.html?token=${token}`;
 
-    try {
-      await sendEmail(
-        user.email || cleanEmail,
-        'Password Reset Request - Alumni Portal',
-        `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
-          <h2 style="color: #012970; margin-top: 0;">Password Reset Request</h2>
-          <p style="color: #334155; font-size: 15px;">Hello,</p>
-          <p style="color: #334155; font-size: 15px;">You requested a password reset for your Alumni Portal account.</p>
-          
-          <div style="margin: 25px 0;">
-            <a href="${resetLink}" style="background-color: #c4161c; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Reset Password</a>
-          </div>
+    sendEmail(
+      user.email || cleanEmail,
+      'Password Reset Request - Alumni Portal',
+      `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
+        <h2 style="color: #012970; margin-top: 0;">Password Reset Request</h2>
+        <p style="color: #334155; font-size: 15px;">Hello,</p>
+        <p style="color: #334155; font-size: 15px;">You requested a password reset for your Alumni Portal account.</p>
+        
+        <div style="margin: 25px 0;">
+          <a href="${resetLink}" style="background-color: #c4161c; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Reset Password</a>
+        </div>
 
-          <p style="color: #64748b; font-size: 14px; margin-top: 25px;">If the button above does not open (due to email tracking), please copy and paste the link below directly into your browser address bar:</p>
+        <p style="color: #64748b; font-size: 14px; margin-top: 25px;">If the button above does not open (due to email tracking), please copy and paste the link below directly into your browser address bar:</p>
 
-          <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 13px; color: #0f172a; word-break: break-all; -webkit-user-select: all; user-select: all;">
-            ${resetLink}
-          </div>
+        <div style="background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 13px; color: #0f172a; word-break: break-all; -webkit-user-select: all; user-select: all;">
+          ${resetLink}
+        </div>
 
-          <p style="color: #94a3b8; font-size: 12px; margin-top: 20px;">This link will expire in 15 minutes. If you did not request a password reset, please ignore this email.</p>
-        </div>`
-
-      );
-    } catch (emailErr) {
+        <p style="color: #94a3b8; font-size: 12px; margin-top: 20px;">This link will expire in 15 minutes. If you did not request a password reset, please ignore this email.</p>
+      </div>`
+    ).catch(emailErr => {
       console.error('Failed to send reset email via SMTP:', emailErr.response || emailErr.message || emailErr);
-      return res.status(500).json({
-        message: emailErr.response || emailErr.message || 'Failed to dispatch email via mail service'
-      });
-    }
+    });
 
     res.json({ message: 'If that email exists, a reset link has been sent.' });
 

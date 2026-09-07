@@ -56,10 +56,10 @@ async function registerForEvent(req, res) {
     );
 
     // Send confirmation email to attendee
-    try {
-      const formattedDate = event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', { dateStyle: 'full' }) : 'TBD';
-      const eventTimeStr = event.event_time ? ` at ${event.event_time}` : '';
-      await sendEmail(
+    const formattedDate = event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', { dateStyle: 'full' }) : 'TBD';
+    const eventTimeStr = event.event_time ? ` at ${event.event_time}` : '';
+
+    sendEmail(
         email,
         `Event Registration Confirmed: ${event.name}`,
         `<div style="font-family: sans-serif; padding: 20px;">
@@ -70,10 +70,9 @@ async function registerForEvent(req, res) {
           <p><strong>Location:</strong> ${event.venue || 'To be announced'}</p>
           <p>Thank you for registering! We look forward to seeing you there.</p>
         </div>`
-      );
-    } catch (emailErr) {
-      console.error('Failed to send event confirmation email:', emailErr.response || emailErr.message || emailErr);
-    }
+      ).catch(emailErr => {
+        console.error('Failed to send event confirmation email:', emailErr.response || emailErr.message || emailErr);
+      });
 
     res.status(201).json({ success: true, message: 'Registered successfully', registrationId: result.rows[0].id });
   } catch (err) {
