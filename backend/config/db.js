@@ -206,7 +206,8 @@ async function ensureDatabaseSchema() {
         author_name  VARCHAR(150) NOT NULL,
         role         VARCHAR(50) DEFAULT 'Student',
         content      TEXT NOT NULL,
-        created_at   TIMESTAMP NOT NULL DEFAULT NOW()
+        created_at   TIMESTAMP NOT NULL DEFAULT NOW(),
+        updated_at   TIMESTAMP NOT NULL DEFAULT NOW()
       );
 
       ALTER TABLE community_comments

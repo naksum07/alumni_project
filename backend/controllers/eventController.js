@@ -27,6 +27,10 @@ async function listEvents(req, res) {
 // POST /api/events/:id/register
 async function registerForEvent(req, res) {
   const { id } = req.params;
+  const eventId = parseInt(id, 10);
+  if (isNaN(eventId)) {
+    return res.status(400).json({ success: false, message: 'Invalid event ID' });
+  }
   const { fullName, email, phone, message, attendeeType, designationOrOrg } = req.body;
 
   if (!fullName || !email) {
@@ -35,7 +39,7 @@ async function registerForEvent(req, res) {
 
   try {
     // Confirm the event exists before registering
-    const eventCheck = await pool.query('SELECT id, name, event_date, event_time, venue FROM events WHERE id = $1', [id]);
+    const eventCheck = await pool.query('SELECT id, name, event_date, event_time, venue FROM events WHERE id = $1', [eventId]);
     if (eventCheck.rows.length === 0) {
       return res.status(404).json({ success: false, message: 'Event not found' });
     }
@@ -43,17 +47,17 @@ async function registerForEvent(req, res) {
 
     const existing = await pool.query(
       'SELECT id FROM event_registrations WHERE event_id = $1 AND email = $2',
-      [id, email]
+      [eventId, email]
     );
     if (existing.rows.length > 0) {
       return res.status(409).json({ success: false, message: 'You have already registered for this event' });
     }
 
-   await pool.query(
-  `INSERT INTO event_registrations (event_id, user_id, full_name, email, phone, attendee_type, designation_or_org, message)
-   VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
-  [id, req.user?.id || null, fullName, email, phone || null, attendeeType || 'Student', designationOrOrg || null, message || null]
-);
+    const result = await pool.query(
+      `INSERT INTO event_registrations (event_id, user_id, full_name, email, phone, attendee_type, designation_or_org, message)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+      [eventId, req.user?.id || null, fullName, email, phone || null, attendeeType || 'Student', designationOrOrg || null, message || null]
+    );
     // Send confirmation email to attendee
     const formattedDate = event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', { dateStyle: 'full' }) : 'TBD';
     const eventTimeStr = event.event_time ? ` at ${event.event_time}` : '';

@@ -6,6 +6,17 @@ if (typeof AOS !== "undefined") {
     });
 }
 
+// Utility: HTML Escaping
+function escapeHTML(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 // 2. Mobile Menu Toggle
 function toggleMenu() {
     const menu = document.getElementById("mobileMenu");
@@ -220,8 +231,8 @@ window.goTop = goTop;
                             </span>
                             <span class="text-xs text-slate-400"><i class="fa-regular fa-clock mr-1"></i>${dateStr}</span>
                         </div>
-                        <h3 class="text-lg font-bold text-slate-900 mb-2">${a.title}</h3>
-                        <p class="text-slate-600 text-sm leading-relaxed">${a.content}</p>
+                        <h3 class="text-lg font-bold text-slate-900 mb-2">${escapeHTML(a.title)}</h3>
+                        <p class="text-slate-600 text-sm leading-relaxed">${escapeHTML(a.content)}</p>
                     </div>
                 </div>`;
             }).join('');
@@ -346,9 +357,9 @@ window.goTop = goTop;
                         <div class="snap-center shrink-0 w-80 bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
                             <div>
                                 <div class="flex gap-1 mb-4 text-sm">${stars}</div>
-                                <p class="text-gray-600 italic">"${f.message}"</p>
+                                <p class="text-gray-600 italic">"${escapeHTML(f.message)}"</p>
                             </div>
-                            <div class="mt-6 font-semibold text-[#012970]">- ${f.author_name || 'Anonymous User'}</div>
+                            <div class="mt-6 font-semibold text-[#012970]">- ${escapeHTML(f.author_name || 'Anonymous User')}</div>
                         </div>`;
                     }).join('');
                     section.style.display = 'block';
@@ -498,189 +509,6 @@ window.goTop = goTop;
             section.style.display = 'none';
         }
     });
-
-    function escapeHTML(str) {
-        if (!str) return '';
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
 })();
-document.addEventListener('DOMContentLoaded', async () => {
-    // Load announcements for carousel
-    try {
-        const annRes = await fetch(getApiUrl('/api/announcements'));
-        if (annRes.ok) {
-            const announcements = await annRes.json();
-            if (announcements && announcements.length > 0) {
-                // Priority ranking: urgent (1) -> normal (2) -> low (3), then newest date
-                const priorityRank = { urgent: 1, normal: 2, low: 3 };
-                announcements.sort((a, b) => {
-                    const rankA = priorityRank[(a.priority || 'normal').toLowerCase()] || 2;
-                    const rankB = priorityRank[(b.priority || 'normal').toLowerCase()] || 2;
-                    if (rankA !== rankB) return rankA - rankB;
-                    return new Date(b.created_at || 0) - new Date(a.created_at || 0);
-                });
 
-                const annCarousel = document.getElementById('announcements-carousel');
-                const dotsContainer = document.getElementById('announcements-dots');
-                const prevBtn = document.getElementById('announcements-prev-btn');
-                const nextBtn = document.getElementById('announcements-next-btn');
-                const wrapper = document.getElementById('announcements-carousel-wrapper');
 
-                annCarousel.innerHTML = announcements.map(a => {
-                    const priorityClass = a.priority === 'urgent' 
-                        ? 'bg-red-100 text-red-700 border-red-200' 
-                        : (a.priority === 'low' ? 'bg-blue-100 text-blue-700 border-blue-200' : 'bg-amber-100 text-amber-700 border-amber-200');
-                    const priorityIcon = a.priority === 'urgent'
-                        ? 'fa-triangle-exclamation'
-                        : (a.priority === 'low' ? 'fa-circle-info' : 'fa-bullhorn');
-                    const dateStr = a.created_at ? new Date(a.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '';
-                    return `
-                    <div class="shrink-0 w-full md:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${priorityClass}">
-                                    <i class="fa-solid ${priorityIcon}"></i>
-                                    <span class="capitalize">${a.priority || 'Normal'}</span>
-                                </span>
-                                <span class="text-xs text-slate-400"><i class="fa-regular fa-clock mr-1"></i>${dateStr}</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-slate-900 mb-2">${escapeHTML(a.title)}</h3>
-                            <p class="text-slate-600 text-sm leading-relaxed">${escapeHTML(a.content)}</p>
-                        </div>
-                    </div>`;
-                }).join('');
-                document.getElementById('announcements-section').style.display = 'block';
-
-                let currentIndex = 0;
-                let autoPlayTimer = null;
-
-                function getVisibleCards() {
-                    if (window.innerWidth >= 1024) return 3;
-                    if (window.innerWidth >= 768) return 2;
-                    return 1;
-                }
-
-                function getMaxIndex() {
-                    const visible = getVisibleCards();
-                    return Math.max(0, announcements.length - visible);
-                }
-
-                function updateCarousel() {
-                    const maxIndex = getMaxIndex();
-                    if (currentIndex > maxIndex) currentIndex = maxIndex;
-                    if (currentIndex < 0) currentIndex = 0;
-
-                    const card = annCarousel.children[0];
-                    if (card) {
-                        const gap = 24; // gap-6
-                        const cardWidth = card.getBoundingClientRect().width;
-                        const shift = currentIndex * (cardWidth + gap);
-                        annCarousel.style.transform = `translateX(-${shift}px)`;
-                    }
-
-                    renderDots();
-                }
-
-                function renderDots() {
-                    const maxIndex = getMaxIndex();
-                    if (!dotsContainer) return;
-                    if (maxIndex <= 0) {
-                        dotsContainer.innerHTML = '';
-                        return;
-                    }
-                    dotsContainer.innerHTML = Array.from({ length: maxIndex + 1 }, (_, i) => `
-                        <button class="h-2.5 rounded-full transition-all duration-300 ${i === currentIndex ? 'bg-[#c4161c] w-6' : 'bg-slate-300 hover:bg-slate-400 w-2.5'}"
-                            aria-label="Go to slide ${i + 1}" data-index="${i}"></button>
-                    `).join('');
-
-                    dotsContainer.querySelectorAll('button').forEach(btn => {
-                        btn.addEventListener('click', () => {
-                            currentIndex = parseInt(btn.getAttribute('data-index'), 10);
-                            updateCarousel();
-                            resetTimer();
-                        });
-                    });
-                }
-
-                function nextSlide() {
-                    const maxIndex = getMaxIndex();
-                    if (maxIndex <= 0) return;
-                    if (currentIndex >= maxIndex) {
-                        currentIndex = 0;
-                    } else {
-                        currentIndex++;
-                    }
-                    updateCarousel();
-                }
-
-                function prevSlide() {
-                    const maxIndex = getMaxIndex();
-                    if (maxIndex <= 0) return;
-                    if (currentIndex <= 0) {
-                        currentIndex = maxIndex;
-                    } else {
-                        currentIndex--;
-                    }
-                    updateCarousel();
-                }
-
-                if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(); resetTimer(); });
-                if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(); resetTimer(); });
-
-                function startTimer() {
-                    stopTimer();
-                    autoPlayTimer = setInterval(nextSlide, 5500);
-                }
-
-                function stopTimer() {
-                    if (autoPlayTimer) clearInterval(autoPlayTimer);
-                }
-
-                function resetTimer() {
-                    stopTimer();
-                    startTimer();
-                }
-
-                if (wrapper) {
-                    wrapper.addEventListener('mouseenter', stopTimer);
-                    wrapper.addEventListener('mouseleave', startTimer);
-                    wrapper.addEventListener('touchstart', stopTimer, { passive: true });
-                    wrapper.addEventListener('touchend', startTimer, { passive: true });
-                }
-
-                window.addEventListener('resize', updateCarousel);
-                updateCarousel();
-                startTimer();
-            }
-        }
-    } catch(err) { console.error('Failed to load announcements', err); }
-
-    // Load feedbacks for carousel
-    try {
-        const res = await fetch(getApiUrl('/api/feedback'));
-        if (res.ok) {
-            const feedbacks = await res.json();
-            if (feedbacks && feedbacks.length > 0) {
-                const carousel = document.getElementById('feedback-carousel');
-                carousel.innerHTML = feedbacks.map(f => {
-                    const stars = Array(5).fill(0).map((_, i) => i < f.rating ? '<i class="fa-solid fa-star text-yellow-400"></i>' : '<i class="fa-solid fa-star text-gray-300"></i>').join('');
-                    return `
-                    <div class="snap-center shrink-0 w-80 bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
-                        <div>
-                            <div class="flex gap-1 mb-4 text-sm">${stars}</div>
-                            <p class="text-gray-600 italic">"${escapeHTML(f.message)}"</p>
-                        </div>
-                        <div class="mt-6 font-semibold text-[#012970]">- ${escapeHTML(f.author_name || 'Anonymous User')}</div>
-                    </div>`;
-                }).join('');
-                document.getElementById('feedback-section').style.display = 'block';
-            }
-        }
-    } catch(err) { console.error('Failed to load feedbacks', err); }
-
-});

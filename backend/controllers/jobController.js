@@ -72,13 +72,17 @@ async function listJobs(req, res) {
 // GET /api/jobs/:id
 async function getJobById(req, res) {
   const { id } = req.params;
+  const jobId = parseInt(id, 10);
+  if (isNaN(jobId)) {
+    return res.status(400).json({ message: 'Invalid job ID' });
+  }
 
   try {
     const result = await pool.query(
       `SELECT j.*, u.full_name AS posted_by_name
        FROM jobs j LEFT JOIN users u ON u.id = j.posted_by
        WHERE j.id = $1`,
-      [id]
+      [jobId]
     );
 
     if (result.rows.length === 0) {
@@ -121,7 +125,10 @@ async function postJob(req, res) {
 
 // Shared helper: only the job's poster or an admin may modify/close/delete it
 async function canModifyJob(req, jobId) {
-  const result = await pool.query('SELECT posted_by FROM jobs WHERE id = $1', [jobId]);
+  const parsedId = parseInt(jobId, 10);
+  if (isNaN(parsedId)) return { found: false };
+
+  const result = await pool.query('SELECT posted_by FROM jobs WHERE id = $1', [parsedId]);
   if (result.rows.length === 0) return { found: false };
   const isAdmin = String(req.user?.role || '').toLowerCase() === 'admin';
   const isOwner = Number(result.rows[0].posted_by) === Number(req.user.id);
@@ -199,6 +206,11 @@ async function deleteJob(req, res) {
 // POST /api/jobs/:id/apply (requires logged-in student)
 async function applyToJob(req, res) {
   const { id } = req.params;
+  const jobId = parseInt(id, 10);
+  if (isNaN(jobId)) {
+    return res.status(400).json({ message: 'Invalid job ID' });
+  }
+
   const { fullName, email, phone, coverLetter, resumeUrl, resumeImage } = req.body;
 
   if (!req.user || String(req.user.role || '').toLowerCase() !== 'student') {
@@ -210,7 +222,7 @@ async function applyToJob(req, res) {
   }
 
   try {
-    const job = await pool.query('SELECT id, status FROM jobs WHERE id = $1', [id]);
+    const job = await pool.query('SELECT id, status FROM jobs WHERE id = $1', [jobId]);
     if (job.rows.length === 0) {
       return res.status(404).json({ message: 'Job not found' });
     }
@@ -220,7 +232,7 @@ async function applyToJob(req, res) {
 
     const existingApp = await pool.query(
       'SELECT id FROM job_applications WHERE job_id = $1 AND (applicant_id = $2 OR LOWER(email) = LOWER($3))',
-      [id, req.user.id, email.trim()]
+      [jobId, req.user.id, email.trim()]
     );
     if (existingApp.rows.length > 0) {
       return res.status(409).json({ message: 'You have already submitted an application for this opportunity.' });
@@ -235,7 +247,7 @@ async function applyToJob(req, res) {
     const result = await pool.query(
       `INSERT INTO job_applications (job_id, applicant_id, full_name, email, phone, cover_letter, resume_url, resume_image_path)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
-      [id, applicantId, fullName, email, phone, coverLetter, savedResumePath, savedResumePath]
+      [jobId, applicantId, fullName, email, phone, coverLetter, savedResumePath, savedResumePath]
     );
 
     res.status(201).json({ message: 'Application submitted successfully', applicationId: result.rows[0].id });
