@@ -3,6 +3,7 @@ const router = express.Router();
 const { listEvents, registerForEvent } = require('../controllers/eventController');
 
 router.get('/', listEvents);
-router.post('/:id/register', registerForEvent);
+const { optionalAuth } = require('../middleware/auth');
+router.post('/:id/register', optionalAuth, registerForEvent);
 
 module.exports = router;

@@ -218,6 +218,14 @@ async function applyToJob(req, res) {
       return res.status(400).json({ message: 'This job is no longer accepting applications' });
     }
 
+    const existingApp = await pool.query(
+      'SELECT id FROM job_applications WHERE job_id = $1 AND (applicant_id = $2 OR LOWER(email) = LOWER($3))',
+      [id, req.user.id, email.trim()]
+    );
+    if (existingApp.rows.length > 0) {
+      return res.status(409).json({ message: 'You have already submitted an application for this opportunity.' });
+    }
+
     const applicantId = req.user.id;
     let savedResumePath = saveBase64Image(resumeImage || resumeUrl, 'resumes');
     if (!savedResumePath && (resumeImage || resumeUrl)) {

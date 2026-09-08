@@ -163,12 +163,12 @@
     const yearVal   = urlParams.get('year') || urlParams.get('batch') || '';
     const token     = localStorage.getItem('token');
 
-    const params = new URLSearchParams();
-    if (deptVal)   params.set('department', deptVal);
-    if (yearVal)   params.set('year', yearVal);
+    // Set dropdown values from URL params
+    if (deptVal && filterDepartment) filterDepartment.value = deptVal;
+    if (yearVal && filterYear) filterYear.value = yearVal;
 
-    const queryStr = params.toString();
-    const url = getApiUrl('/api/alumni' + (queryStr ? `?${queryStr}` : ''));
+    // Fetch full list from backend (no filters)
+    const url = getApiUrl('/api/alumni');
     const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
 
     try {

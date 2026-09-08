@@ -59,6 +59,10 @@ function sanitizePublicUser(user, isLoggedIn) {
 
 async function getUserProfile(req, res) {
   const { id } = req.params;
+  const userId = parseInt(id, 10);
+  if (isNaN(userId)) {
+    return res.status(400).json({ message: 'Invalid user ID' });
+  }
 
   try {
     const result = await pool.query(
@@ -117,6 +121,10 @@ async function getUserProfile(req, res) {
 
 async function updateUserProfile(req, res) {
   const { id } = req.params;
+  const userId = parseInt(id, 10);
+  if (isNaN(userId)) {
+    return res.status(400).json({ message: 'Invalid user ID' });
+  }
 
   if (!req.user || Number(req.user.id) !== Number(id)) {
     return res.status(403).json({ message: 'You can only update your own profile' });
@@ -407,6 +415,10 @@ async function updateMyProfile(req, res) {
 
 async function updateUserSettings(req, res) {
   const { id } = req.params;
+  const userId = parseInt(id, 10);
+  if (isNaN(userId)) {
+    return res.status(400).json({ message: 'Invalid user ID' });
+  }
 
   if (!req.user || Number(req.user.id) !== Number(id)) {
     return res.status(403).json({ message: 'You can only update your own settings' });

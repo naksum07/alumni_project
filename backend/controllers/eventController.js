@@ -49,12 +49,11 @@ async function registerForEvent(req, res) {
       return res.status(409).json({ success: false, message: 'You have already registered for this event' });
     }
 
-    const result = await pool.query(
-      `INSERT INTO event_registrations (event_id, full_name, email, phone, attendee_type, designation_or_org, message)
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-      [id, fullName, email, phone || null, attendeeType || 'Student', designationOrOrg || null, message || null]
-    );
-
+   await pool.query(
+  `INSERT INTO event_registrations (event_id, user_id, full_name, email, phone, attendee_type, designation_or_org, message)
+   VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+  [id, req.user?.id || null, fullName, email, phone || null, attendeeType || 'Student', designationOrOrg || null, message || null]
+);
     // Send confirmation email to attendee
     const formattedDate = event.event_date ? new Date(event.event_date).toLocaleDateString('en-US', { dateStyle: 'full' }) : 'TBD';
     const eventTimeStr = event.event_time ? ` at ${event.event_time}` : '';

@@ -407,7 +407,7 @@ window.goTop = goTop;
                     <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-slate-800 border-2 border-amber-400/60 shadow-lg overflow-hidden flex items-center justify-center mb-3">
                         ${avatarContent}
                     </div>
-                    <h4 class="text-base sm:text-lg font-bold text-[#012970] leading-snug">${authorName}</h4>
+                   <h4 class="text-base sm:text-lg font-bold text-white leading-snug">${authorName}</h4>
                     ${roleInfo ? `<p class="text-xs text-amber-300 font-medium mt-0.5">${roleInfo}</p>` : ''}
                     ${eduInfo ? `<p class="text-[11px] text-slate-400 mt-0.5">${eduInfo}</p>` : ''}
                 </div>
@@ -549,8 +549,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 </span>
                                 <span class="text-xs text-slate-400"><i class="fa-regular fa-clock mr-1"></i>${dateStr}</span>
                             </div>
-                            <h3 class="text-lg font-bold text-slate-900 mb-2">${a.title}</h3>
-                            <p class="text-slate-600 text-sm leading-relaxed">${a.content}</p>
+                            <h3 class="text-lg font-bold text-slate-900 mb-2">${escapeHTML(a.title)}</h3>
+                            <p class="text-slate-600 text-sm leading-relaxed">${escapeHTML(a.content)}</p>
                         </div>
                     </div>`;
                 }).join('');
@@ -673,9 +673,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="snap-center shrink-0 w-80 bg-white p-8 rounded-xl shadow-sm border border-gray-100 flex flex-col justify-between">
                         <div>
                             <div class="flex gap-1 mb-4 text-sm">${stars}</div>
-                            <p class="text-gray-600 italic">"${f.message}"</p>
+                            <p class="text-gray-600 italic">"${escapeHTML(f.message)}"</p>
                         </div>
-                        <div class="mt-6 font-semibold text-[#012970]">- ${f.author_name || 'Anonymous User'}</div>
+                        <div class="mt-6 font-semibold text-[#012970]">- ${escapeHTML(f.author_name || 'Anonymous User')}</div>
                     </div>`;
                 }).join('');
                 document.getElementById('feedback-section').style.display = 'block';

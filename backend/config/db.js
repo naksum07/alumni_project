@@ -210,8 +210,9 @@ async function ensureDatabaseSchema() {
       );
 
       ALTER TABLE community_comments
-        ADD COLUMN IF NOT EXISTS user_id INT REFERENCES users(id) ON DELETE SET NULL;
-
+        ADD COLUMN IF NOT EXISTS user_id INT REFERENCES users(id) ON DELETE SET NULL,
+        ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP NOT NULL DEFAULT NOW();
+        
       -- Seed default Admin user (password: AdminPass123!)
       INSERT INTO users (full_name, email, phone, password_hash, role, department, graduation_year, job_title, company, is_approved, status)
       VALUES
@@ -239,4 +240,4 @@ pool.connect()
   });
 
 
-module.exports = pool;
+module.exports = pool;
