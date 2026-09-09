@@ -19,6 +19,25 @@
   body {
     overflow-x: hidden;
   }
+
+  /* Mobile Menu Animations */
+  #mobileMenu {
+      transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+      max-height: 100vh;
+      opacity: 1;
+      visibility: visible;
+  }
+
+  #mobileMenu.hidden {
+      max-height: 0;
+      opacity: 0;
+      visibility: hidden;
+      overflow: hidden;
+  }
+
+  #menuBtn {
+      transition: transform 0.3s ease-in-out;
+  }
 </style>
 </head>
 <body class="bg-[#f8fafc] text-slate-800">
