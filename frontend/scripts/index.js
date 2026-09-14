@@ -408,7 +408,7 @@ window.goTop = goTop;
 
             stories.forEach((story, idx) => {
                 const slide = document.createElement('div');
-                slide.className = 'min-w-full shrink-0 flex flex-col md:flex-row items-center md:items-start gap-6 sm:gap-8 md:gap-8 lg:gap-12 xl:gap-14 px-2 sm:px-4 py-2 sm:py-4 select-none';
+                slide.className = 'w-full min-w-full min-w-0 shrink-0 flex flex-col md:flex-row items-center md:items-start gap-6 sm:gap-8 md:gap-8 lg:gap-12 xl:gap-14 px-2 sm:px-4 py-2 sm:py-4 select-none';
 
                 const author = story.author || {};
                 const authorName = escapeHTML(author.name || 'Alumni Member');
@@ -424,7 +424,7 @@ window.goTop = goTop;
                 }
 
                 slide.innerHTML = `
-                <div class="w-full md:w-56 lg:w-64 xl:w-72 shrink-0 flex flex-col items-center md:items-start text-center md:text-left" data-aos="fade-up" data-aos-delay="200">
+                <div class="w-full md:w-56 lg:w-64 xl:w-72 shrink-0 min-w-0 flex flex-col items-center md:items-start text-center md:text-left" data-aos="fade-up" data-aos-delay="200">
                     <div class="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full bg-slate-800 border-2 border-amber-400/60 shadow-lg overflow-hidden flex items-center justify-center mb-3 sm:mb-4 shrink-0 transition-transform duration-300 hover:scale-105">
                         ${avatarContent}
                     </div>
@@ -438,8 +438,8 @@ window.goTop = goTop;
                         <i class="fa-solid fa-quote-left"></i>
                     </div>
                     <h3 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white leading-snug mb-3 sm:mb-4 break-words">${escapeHTML(story.title)}</h3>
-                    <div class="relative story-text-container">
-                        <p class="story-text text-xs sm:text-sm md:text-base text-slate-300 leading-relaxed whitespace-pre-line line-clamp-3 md:line-clamp-4 transition-all duration-300 ease-in-out">${escapeHTML(story.story_text)}</p>
+                    <div class="relative story-text-container w-full min-w-0">
+                        <p class="story-text text-xs sm:text-sm md:text-base text-slate-300 leading-relaxed whitespace-pre-line break-words line-clamp-3 md:line-clamp-4 transition-all duration-300 ease-in-out">${escapeHTML(story.story_text)}</p>
                         <div class="flex justify-center md:justify-start">
                             <button class="read-more-btn mt-2.5 sm:mt-3 text-amber-400 hover:text-amber-300 text-xs sm:text-sm font-semibold focus:outline-none hidden inline-flex items-center gap-1.5 transition-colors cursor-pointer py-1 px-2 -ml-2 rounded hover:bg-white/5" data-expanded="false" aria-label="Toggle full story text">
                                 <span class="read-more-text">Read More</span> <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200"></i>
