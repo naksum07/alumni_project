@@ -441,41 +441,12 @@ window.goTop = goTop;
                     <div class="relative story-text-container w-full min-w-0">
                         <p class="story-text text-xs sm:text-sm md:text-base text-slate-300 leading-relaxed whitespace-pre-line break-words line-clamp-3 md:line-clamp-4 transition-all duration-300 ease-in-out">${escapeHTML(story.story_text)}</p>
                         <div class="flex justify-center md:justify-start">
-                            <button class="read-more-btn mt-2.5 sm:mt-3 text-amber-400 hover:text-amber-300 text-xs sm:text-sm font-semibold focus:outline-none hidden inline-flex items-center gap-1.5 transition-colors cursor-pointer py-1 px-2 -ml-2 rounded hover:bg-white/5" data-expanded="false" aria-label="Toggle full story text">
-                                <span class="read-more-text">Read More</span> <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200"></i>
-                            </button>
+                            <a href="success-story-detail.html?id=${story.id}" class="read-more-btn mt-2.5 sm:mt-3 text-amber-400 hover:text-amber-300 text-xs sm:text-sm font-semibold focus:outline-none hidden inline-flex items-center gap-1.5 transition-colors cursor-pointer py-1 px-2 -ml-2 rounded hover:bg-white/5" aria-label="Read full story">
+                                <span>Read More</span> <i class="fa-solid fa-chevron-right text-[10px] transition-transform duration-200"></i>
+                            </a>
                         </div>
                     </div>
                 </div>`;
-
-                const btn = slide.querySelector('.read-more-btn');
-                const p = slide.querySelector('.story-text');
-                if (btn && p) {
-                    btn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const isExpanded = btn.getAttribute('data-expanded') === 'true';
-                        if (isExpanded) {
-                            p.classList.remove('line-clamp-none');
-                            p.classList.add('line-clamp-3', 'md:line-clamp-4');
-                            btn.setAttribute('data-expanded', 'false');
-                            const textSpan = btn.querySelector('.read-more-text');
-                            if (textSpan) textSpan.textContent = 'Read More';
-                            const icon = btn.querySelector('i');
-                            if (icon) icon.className = 'fa-solid fa-chevron-down text-[10px] transition-transform duration-200';
-                            startAutoPlay();
-                        } else {
-                            p.classList.remove('line-clamp-3', 'md:line-clamp-4');
-                            p.classList.add('line-clamp-none');
-                            btn.setAttribute('data-expanded', 'true');
-                            const textSpan = btn.querySelector('.read-more-text');
-                            if (textSpan) textSpan.textContent = 'Show Less';
-                            const icon = btn.querySelector('i');
-                            if (icon) icon.className = 'fa-solid fa-chevron-up text-[10px] transition-transform duration-200';
-                            stopAutoPlay();
-                        }
-                        refreshAOS();
-                    });
-                }
 
                 track.appendChild(slide);
 
@@ -498,12 +469,6 @@ window.goTop = goTop;
                     const p = container.querySelector('.story-text');
                     const btn = container.querySelector('.read-more-btn');
                     if (!p || !btn) return;
-
-                    const isExpanded = btn.getAttribute('data-expanded') === 'true';
-                    if (isExpanded) {
-                        btn.classList.remove('hidden');
-                        return;
-                    }
 
                     if (p.clientHeight > 0) {
                         const isTruncated = p.scrollHeight > (p.clientHeight + 2);

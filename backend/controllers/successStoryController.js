@@ -171,10 +171,52 @@ async function getApprovedSuccessStories(req, res) {
   }
 }
 
+// GET /api/success-stories/public/:id — Public endpoint for a single approved story
+async function getPublicSuccessStoryById(req, res) {
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      `SELECT s.id, s.title, s.story_text, s.status, s.created_at, s.updated_at,
+              u.id AS author_id, u.full_name AS author_name, u.department, u.graduation_year,
+              u.job_title, u.company, u.profile_picture, u.show_picture_publicly
+       FROM success_stories s
+       JOIN users u ON u.id = s.alumni_id
+       WHERE s.id = $1 AND s.status = 'approved' AND u.status = 'active'`,
+      [id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'Success story not found' });
+    }
+
+    const story = result.rows[0];
+    res.json({
+      id: story.id,
+      title: story.title,
+      story_text: story.story_text,
+      created_at: story.created_at,
+      updated_at: story.updated_at,
+      author: {
+        id: story.author_id,
+        name: story.author_name,
+        department: story.department || '',
+        graduation_year: story.graduation_year || '',
+        job_title: story.job_title || '',
+        company: story.company || '',
+        profile_picture: story.show_picture_publicly === true ? story.profile_picture : null
+      }
+    });
+  } catch (err) {
+    console.error('Error fetching public success story by ID:', err);
+    res.status(500).json({ message: 'Server error while fetching success story' });
+  }
+}
+
 module.exports = {
   createSuccessStory,
   getMySuccessStory,
   updateSuccessStory,
   deleteSuccessStory,
-  getApprovedSuccessStories
+  getApprovedSuccessStories,
+  getPublicSuccessStoryById
 };

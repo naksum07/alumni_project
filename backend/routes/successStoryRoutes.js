@@ -5,12 +5,14 @@ const {
   getMySuccessStory,
   updateSuccessStory,
   deleteSuccessStory,
-  getApprovedSuccessStories
+  getApprovedSuccessStories,
+  getPublicSuccessStoryById
 } = require('../controllers/successStoryController');
 const { requireAlumni } = require('../middleware/auth');
 
-// Public route for homepage carousel
+// Public routes for homepage carousel and story detail page
 router.get('/public', getApprovedSuccessStories);
+router.get('/public/:id', getPublicSuccessStoryById);
 
 // Alumni-only protected routes
 router.get('/my-story', requireAlumni, getMySuccessStory);
