@@ -232,8 +232,26 @@ window.CommunityBlog = {
             await fetchPostsFromAPI();
             return newPost;
         } catch (err) {
-            console.error('Error creating post:', err);
-            return null;
+            console.warn('Error creating post, saving locally:', err);
+            const posts = getPosts();
+            const user = getCurrentUser() || { id: 'local_' + Date.now(), fullName: 'Guest User', role: 'Student' };
+            const newPost = {
+                id: 'local_' + Date.now(),
+                user_id: user.id,
+                userId: user.id,
+                author: user.fullName || user.name || 'You',
+                role: user.role || 'Student',
+                affiliation: user.department || '',
+                category: postData.category || 'General',
+                title: postData.title,
+                content: postData.content,
+                likes: 0,
+                createdAt: new Date().toISOString(),
+                comments: []
+            };
+            posts.unshift(newPost);
+            savePosts(posts);
+            return newPost;
         }
     },
 
@@ -254,7 +272,20 @@ window.CommunityBlog = {
             await fetchPostsFromAPI();
             return updatedPost;
         } catch (err) {
-            console.error('Error updating post:', err);
+            console.warn('Error updating post, saving locally:', err);
+            const posts = getPosts();
+            const postIndex = posts.findIndex(p => String(p.id) === String(postId));
+            if (postIndex !== -1) {
+                posts[postIndex] = { 
+                    ...posts[postIndex], 
+                    title: postData.title, 
+                    content: postData.content, 
+                    category: postData.category,
+                    updatedAt: new Date().toISOString()
+                };
+                savePosts(posts);
+                return posts[postIndex];
+            }
             return null;
         }
     },
@@ -271,7 +302,14 @@ window.CommunityBlog = {
             await fetchPostsFromAPI();
             return true;
         } catch (err) {
-            console.error('Error deleting post:', err);
+            console.warn('Error deleting post, deleting locally:', err);
+            let posts = getPosts();
+            const initialLength = posts.length;
+            posts = posts.filter(p => String(p.id) !== String(postId));
+            if (posts.length !== initialLength) {
+                savePosts(posts);
+                return true;
+            }
             return false;
         }
     },

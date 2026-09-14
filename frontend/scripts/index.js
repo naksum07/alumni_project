@@ -428,7 +428,10 @@ window.goTop = goTop;
                         <i class="fa-solid fa-quote-left mr-2"></i>
                     </div>
                     <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-white leading-snug mb-3">${escapeHTML(story.title)}</h3>
-                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-h-48 overflow-y-auto whitespace-pre-line pr-2">${escapeHTML(story.story_text)}</p>
+                    <div class="relative story-text-container">
+                        <p class="story-text text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line line-clamp-3 transition-all duration-300 ease-in-out">${escapeHTML(story.story_text)}</p>
+                        <button class="read-more-btn mt-2 text-amber-400 text-xs font-semibold hover:text-amber-300 focus:outline-none hidden inline-flex items-center gap-1 transition-colors">Read More <i class="fa-solid fa-chevron-down text-[10px]"></i></button>
+                    </div>
                 </div>`;
 
                 track.appendChild(slide);
@@ -446,6 +449,26 @@ window.goTop = goTop;
                     dotsContainer.appendChild(dot);
                 }
             });
+
+            setTimeout(() => {
+                track.querySelectorAll('.story-text-container').forEach(container => {
+                    const p = container.querySelector('.story-text');
+                    const btn = container.querySelector('.read-more-btn');
+                    if (p.scrollHeight > p.clientHeight || p.scrollHeight > 60) {
+                        btn.classList.remove('hidden');
+                        btn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            if (p.classList.contains('line-clamp-3')) {
+                                p.classList.remove('line-clamp-3');
+                                btn.innerHTML = 'Show Less <i class="fa-solid fa-chevron-up text-[10px]"></i>';
+                            } else {
+                                p.classList.add('line-clamp-3');
+                                btn.innerHTML = 'Read More <i class="fa-solid fa-chevron-down text-[10px]"></i>';
+                            }
+                        });
+                    }
+                });
+            }, 100);
 
             const totalSlides = stories.length;
             let currentSlide = 0;

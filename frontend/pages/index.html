@@ -118,74 +118,66 @@
   </header>
 <!-- MAIN CONTENT -->
 <main id="home" class="pt-20">
-<!-- HERO SECTION (FULL-WIDTH SLIDER WITH CLEAN DIRECT TEXT OVERLAY) -->
-<section data-aos="fade-up" class="relative w-full h-[520px] sm:h-[580px] md:h-[620px] lg:h-[650px] overflow-hidden bg-black group">
-    <!-- Full-Width Background Slider Track -->
-    <div id="heroSliderTrack" class="flex h-full w-full transition-transform duration-700 ease-in-out">
-        <!-- Slide 1: Networking -->
-        <div class="min-w-full h-full relative shrink-0">
-            <img loading="lazy" src="../assets/1.png" alt="Alumni and student networking" class="w-full h-full object-cover select-none">
-            <div class="absolute inset-0 bg-black/70"></div>
-        </div>
-        <!-- Slide 2: Convocation & Alumni -->
-        <div class="min-w-full h-full relative shrink-0">
-            <img loading="lazy" src="../assets/2.png" alt="Alumni convocation and graduation celebration" class="w-full h-full object-cover select-none">
-            <div class="absolute inset-0 bg-black/70"></div>
-        </div>
-        <!-- Slide 3: Campus & Academics -->
-        <div class="min-w-full h-full relative shrink-0">
-            <img loading="lazy" src="../assets/3.png" alt="Campus and academic excellence" class="w-full h-full object-cover select-none">
-            <div class="absolute inset-0 bg-black/70"></div>
-        </div>
-        <!-- Slide 4: Mentorship & Careers -->
-        <div class="min-w-full h-full relative shrink-0">
-            <img loading="lazy" src="../assets/4.png" alt="Alumni mentorship and career development" class="w-full h-full object-cover select-none">
-            <div class="absolute inset-0 bg-black/70"></div>
-        </div>
-    </div>
-
-    <!-- CLEAN DIRECT HERO TEXT OVERLAY (NO SOLID WHITE BOX) -->
-    <div class="absolute inset-0 z-10 flex items-center pointer-events-none">
-        <div class="max-w-7xl mx-auto px-6 lg:px-12 w-full">
-            <div class="pointer-events-auto max-w-2xl space-y-5 text-center md:text-left">
-                <!-- Main Headline -->
-                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight drop-shadow-lg">
-                    Connect With Your <span class="text-yellow-400">Alumni Network</span>
-                </h1>
-
-                <!-- Subtitle Paragraph -->
-                <p class="text-sm sm:text-lg lg:text-xl text-slate-200 leading-relaxed font-normal drop-shadow-md">
-                    A platform where students and alumni connect, share experiences, discover opportunities, and build professional relationships.
-                </p>
-
-                <!-- Action CTA Buttons -->
-                <div class="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-3.5">
-                    <a href="register.html" class="bg-[#c4161c] hover:bg-[#a01217] text-white px-7 py-3 rounded-xl font-bold text-sm sm:text-base shadow-xl hover:scale-105 transition duration-300 flex items-center gap-2">
-                        <span>🚀 Get Started</span>
-                    </a>
-                    <a href="alumni-directory.html" class="border border-white/40 bg-white/10 hover:bg-white/20 text-white backdrop-blur-md px-7 py-3 rounded-xl font-semibold text-sm sm:text-base hover:scale-105 transition duration-300 shadow-lg flex items-center gap-2">
-                        <i class="fa-solid fa-users"></i>
-                        <span>Explore Alumni</span>
-                    </a>
-                </div>
+<!-- HERO SECTION (RESPONSIVE SPLIT LAYOUT) -->
+<section data-aos="fade-up" class="relative w-full min-h-[90vh] md:min-h-0 md:h-[650px] bg-black flex flex-col md:flex-row overflow-hidden group">
+    <!-- TEXT CONTENT -->
+    <div class="w-full md:w-1/2 lg:w-[45%] flex items-center justify-center p-8 sm:p-10 md:p-12 lg:p-16 z-10 bg-black/90">
+        <div class="w-full max-w-xl space-y-6 text-center md:text-left mt-8 md:mt-0">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight drop-shadow-lg">
+                Connect With Your <span class="text-yellow-400">Alumni Network</span>
+            </h1>
+            <p class="text-sm sm:text-base lg:text-lg text-slate-300 leading-relaxed font-normal">
+                A platform where students and alumni connect, share experiences, discover opportunities, and build professional relationships.
+            </p>
+            <div class="pt-4 flex flex-wrap items-center justify-center md:justify-start gap-4">
+                <a href="register.html" class="bg-[#c4161c] hover:bg-[#a01217] text-white px-7 py-3 rounded-xl font-bold text-sm sm:text-base shadow-xl hover:scale-105 transition duration-300 flex items-center gap-2">
+                    <span>🚀 Get Started</span>
+                </a>
+                <a href="alumni-directory.html" class="border border-white/40 bg-white/10 hover:bg-white/20 text-white backdrop-blur-md px-7 py-3 rounded-xl font-semibold text-sm sm:text-base hover:scale-105 transition duration-300 shadow-lg flex items-center gap-2">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Explore Alumni</span>
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- Navigation Arrows -->
-    <button id="heroSliderPrevBtn" aria-label="Previous Slide" class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900/40 hover:bg-slate-900/80 text-white backdrop-blur-md transition-all duration-200 opacity-70 hover:opacity-100 flex items-center justify-center cursor-pointer border border-white/20 shadow-lg hover:scale-105 z-20">
-        <i class="fa-solid fa-chevron-left text-sm sm:text-base"></i>
-    </button>
-    <button id="heroSliderNextBtn" aria-label="Next Slide" class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-900/40 hover:bg-slate-900/80 text-white backdrop-blur-md transition-all duration-200 opacity-70 hover:opacity-100 flex items-center justify-center cursor-pointer border border-white/20 shadow-lg hover:scale-105 z-20">
-        <i class="fa-solid fa-chevron-right text-sm sm:text-base"></i>
-    </button>
+    <!-- IMAGE SLIDER -->
+    <div class="w-full md:w-1/2 lg:w-[55%] relative h-[45vh] min-h-[350px] md:h-full flex-grow">
+        <!-- Full-Width Background Slider Track -->
+        <div id="heroSliderTrack" class="flex h-full w-full transition-transform duration-700 ease-in-out">
+            <div class="min-w-full h-full relative shrink-0">
+                <img loading="lazy" src="../assets/1.png" alt="Alumni and student networking" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/30"></div>
+            </div>
+            <div class="min-w-full h-full relative shrink-0">
+                <img loading="lazy" src="../assets/2.png" alt="Alumni convocation and graduation celebration" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/30"></div>
+            </div>
+            <div class="min-w-full h-full relative shrink-0">
+                <img loading="lazy" src="../assets/3.png" alt="Campus and academic excellence" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/30"></div>
+            </div>
+            <div class="min-w-full h-full relative shrink-0">
+                <img loading="lazy" src="../assets/4.png" alt="Alumni mentorship and career development" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-black/30"></div>
+            </div>
+        </div>
 
-    <!-- Slide Indicators / Dots (Bottom Center) -->
-    <div id="heroSliderDots" class="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-1.5 sm:gap-2 bg-black/40 backdrop-blur-md px-3 sm:px-4 py-1.5 rounded-full border border-white/20 z-20">
-        <button class="h-1.5 sm:h-2 rounded-full bg-white transition-all duration-300 w-4 sm:w-5 cursor-pointer" data-slide="0" aria-label="Slide 1"></button>
-        <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="1" aria-label="Slide 2"></button>
-        <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="2" aria-label="Slide 3"></button>
-        <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="3" aria-label="Slide 4"></button>
+        <!-- Navigation Arrows -->
+        <button id="heroSliderPrevBtn" aria-label="Previous Slide" class="absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/80 text-white backdrop-blur-md transition-all duration-200 flex items-center justify-center cursor-pointer border border-white/20 shadow-lg z-20">
+            <i class="fa-solid fa-chevron-left text-sm"></i>
+        </button>
+        <button id="heroSliderNextBtn" aria-label="Next Slide" class="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/40 hover:bg-black/80 text-white backdrop-blur-md transition-all duration-200 flex items-center justify-center cursor-pointer border border-white/20 shadow-lg z-20">
+            <i class="fa-solid fa-chevron-right text-sm"></i>
+        </button>
+
+        <!-- Slide Indicators / Dots -->
+        <div id="heroSliderDots" class="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 z-20">
+            <button class="h-1.5 sm:h-2 rounded-full bg-white transition-all duration-300 w-4 sm:w-5 cursor-pointer" data-slide="0" aria-label="Slide 1"></button>
+            <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="1" aria-label="Slide 2"></button>
+            <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="2" aria-label="Slide 3"></button>
+            <button class="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-white/40 hover:bg-white/80 transition-all duration-300 cursor-pointer" data-slide="3" aria-label="Slide 4"></button>
+        </div>
     </div>
 </section>
 
