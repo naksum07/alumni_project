@@ -425,23 +425,23 @@ window.goTop = goTop;
 
                 slide.innerHTML = `
                 <div class="w-full md:w-56 lg:w-64 xl:w-72 shrink-0 min-w-0 flex flex-col items-center md:items-start text-center md:text-left" data-aos="fade-up" data-aos-delay="200">
-                    <div class="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full bg-slate-800 border-2 border-amber-400/60 shadow-lg overflow-hidden flex items-center justify-center mb-3 sm:mb-4 shrink-0 transition-transform duration-300 hover:scale-105">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full bg-[#012970] border-2 border-white shadow-lg overflow-hidden flex items-center justify-center mb-3 sm:mb-4 shrink-0 transition-transform duration-300 hover:scale-105">
                         ${avatarContent}
                     </div>
-                    <h4 class="text-base sm:text-lg lg:text-xl font-bold text-white leading-snug w-full break-words">${authorName}</h4>
-                    ${roleInfo ? `<p class="text-xs sm:text-sm text-amber-300 font-medium mt-1 w-full break-words">${roleInfo}</p>` : ''}
-                    ${eduInfo ? `<p class="text-[11px] sm:text-xs text-slate-400 mt-1 w-full break-words">${eduInfo}</p>` : ''}
+                    <h4 class="text-base sm:text-lg lg:text-xl font-bold text-slate-900 leading-snug w-full break-words">${authorName}</h4>
+                    ${roleInfo ? `<p class="text-xs sm:text-sm text-[#012970] font-semibold mt-1 w-full break-words">${roleInfo}</p>` : ''}
+                    ${eduInfo ? `<p class="text-[11px] sm:text-xs text-slate-600 mt-1 w-full break-words">${eduInfo}</p>` : ''}
                 </div>
 
                 <div class="flex-1 min-w-0 w-full flex flex-col justify-center text-center md:text-left" data-aos="fade-up" data-aos-delay="250">
-                    <div class="flex justify-center md:justify-start mb-2 sm:mb-3 text-amber-400 text-lg sm:text-xl lg:text-2xl">
+                    <div class="flex justify-center md:justify-start mb-2 sm:mb-3 text-[#012970] text-lg sm:text-xl lg:text-2xl">
                         <i class="fa-solid fa-quote-left"></i>
                     </div>
-                    <h3 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white leading-snug mb-3 sm:mb-4 break-words">${escapeHTML(story.title)}</h3>
+                    <h3 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-slate-900 leading-snug mb-3 sm:mb-4 break-words">${escapeHTML(story.title)}</h3>
                     <div class="relative story-text-container w-full min-w-0">
-                        <p class="story-text text-xs sm:text-sm md:text-base text-slate-300 leading-relaxed whitespace-pre-line break-words line-clamp-3 md:line-clamp-4 transition-all duration-300 ease-in-out">${escapeHTML(story.story_text)}</p>
+                        <p class="story-text text-xs sm:text-sm md:text-base text-slate-700 leading-relaxed whitespace-pre-line break-words line-clamp-3 md:line-clamp-4 transition-all duration-300 ease-in-out">${escapeHTML(story.story_text)}</p>
                         <div class="flex justify-center md:justify-start">
-                            <button class="read-more-btn mt-2.5 sm:mt-3 text-amber-400 hover:text-amber-300 text-xs sm:text-sm font-semibold focus:outline-none hidden inline-flex items-center gap-1.5 transition-colors cursor-pointer py-1 px-2 -ml-2 rounded hover:bg-white/5" data-expanded="false" aria-label="Toggle full story text">
+                            <button class="read-more-btn mt-2.5 sm:mt-3 text-[#012970] hover:text-[#01184a] text-xs sm:text-sm font-bold focus:outline-none hidden inline-flex items-center gap-1.5 transition-colors cursor-pointer py-1 px-2.5 -ml-2 rounded-lg hover:bg-black/5" data-expanded="false" aria-label="Toggle full story text">
                                 <span class="read-more-text">Read More</span> <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200"></i>
                             </button>
                         </div>
@@ -483,8 +483,8 @@ window.goTop = goTop;
                     const dot = document.createElement('button');
                     dot.setAttribute('aria-label', `Slide ${idx + 1}`);
                     dot.className = idx === 0
-                        ? 'h-2 rounded-full bg-amber-400 transition-all duration-300 w-6 cursor-pointer'
-                        : 'h-2 w-2 rounded-full bg-slate-400 hover:bg-slate-200 transition-all duration-300 cursor-pointer';
+                        ? 'h-2 rounded-full bg-[#012970] transition-all duration-300 w-6 cursor-pointer'
+                        : 'h-2 w-2 rounded-full bg-slate-300 hover:bg-slate-500 transition-all duration-300 cursor-pointer';
                     dot.addEventListener('click', () => {
                         goToSlide(idx);
                         startAutoPlay();
@@ -559,9 +559,9 @@ window.goTop = goTop;
                     const dots = dotsContainer.querySelectorAll('button');
                     dots.forEach((dot, i) => {
                         if (i === currentSlide) {
-                            dot.className = 'h-2 rounded-full bg-amber-400 transition-all duration-300 w-6 cursor-pointer';
+                            dot.className = 'h-2 rounded-full bg-[#012970] transition-all duration-300 w-6 cursor-pointer';
                         } else {
-                            dot.className = 'h-2 w-2 rounded-full bg-slate-400 hover:bg-slate-200 transition-all duration-300 cursor-pointer';
+                            dot.className = 'h-2 w-2 rounded-full bg-slate-300 hover:bg-slate-500 transition-all duration-300 cursor-pointer';
                         }
                     });
                 }
