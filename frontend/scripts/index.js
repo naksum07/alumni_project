@@ -382,6 +382,16 @@ window.goTop = goTop;
 
         if (!section || !track) return;
 
+        function refreshAOS() {
+            if (typeof AOS !== 'undefined') {
+                if (typeof AOS.refreshHard === 'function') {
+                    AOS.refreshHard();
+                } else if (typeof AOS.refresh === 'function') {
+                    AOS.refresh();
+                }
+            }
+        }
+
         try {
             const res = await fetch(getApiUrl('/api/success-stories/public')).catch(() => null);
             if (!res || !res.ok) return;
@@ -398,7 +408,7 @@ window.goTop = goTop;
 
             stories.forEach((story, idx) => {
                 const slide = document.createElement('div');
-                slide.className = 'min-w-full shrink-0 flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 px-2 py-4 select-none';
+                slide.className = 'min-w-full shrink-0 flex flex-col md:flex-row items-center md:items-start gap-6 sm:gap-8 md:gap-8 lg:gap-12 xl:gap-14 px-2 sm:px-4 py-2 sm:py-4 select-none';
 
                 const author = story.author || {};
                 const authorName = escapeHTML(author.name || 'Alumni Member');
@@ -410,29 +420,62 @@ window.goTop = goTop;
                     avatarContent = `<img src="${escapeHTML(author.profile_picture)}" alt="${authorName}" class="w-full h-full object-cover">`;
                 } else {
                     const initial = authorName.charAt(0).toUpperCase();
-                    avatarContent = `<div class="w-full h-full bg-[#012970] text-white flex items-center justify-center text-3xl font-bold">${initial}</div>`;
+                    avatarContent = `<div class="w-full h-full bg-[#012970] text-white flex items-center justify-center text-2xl sm:text-3xl lg:text-4xl font-bold">${initial}</div>`;
                 }
 
                 slide.innerHTML = `
-                <div class="flex flex-col items-center md:items-start shrink-0 text-center md:text-left">
-                    <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-slate-800 border-2 border-amber-400/60 shadow-lg overflow-hidden flex items-center justify-center mb-3">
+                <div class="w-full md:w-56 lg:w-64 xl:w-72 shrink-0 flex flex-col items-center md:items-start text-center md:text-left" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full bg-slate-800 border-2 border-amber-400/60 shadow-lg overflow-hidden flex items-center justify-center mb-3 sm:mb-4 shrink-0 transition-transform duration-300 hover:scale-105">
                         ${avatarContent}
                     </div>
-                   <h4 class="text-base sm:text-lg font-bold text-white leading-snug">${authorName}</h4>
-                    ${roleInfo ? `<p class="text-xs text-amber-300 font-medium mt-0.5">${roleInfo}</p>` : ''}
-                    ${eduInfo ? `<p class="text-[11px] text-slate-400 mt-0.5">${eduInfo}</p>` : ''}
+                    <h4 class="text-base sm:text-lg lg:text-xl font-bold text-white leading-snug w-full break-words">${authorName}</h4>
+                    ${roleInfo ? `<p class="text-xs sm:text-sm text-amber-300 font-medium mt-1 w-full break-words">${roleInfo}</p>` : ''}
+                    ${eduInfo ? `<p class="text-[11px] sm:text-xs text-slate-400 mt-1 w-full break-words">${eduInfo}</p>` : ''}
                 </div>
 
-                <div class="flex-1 text-center md:text-left flex flex-col justify-center">
-                    <div class="flex justify-center md:justify-start mb-2 text-amber-400 text-lg">
-                        <i class="fa-solid fa-quote-left mr-2"></i>
+                <div class="flex-1 min-w-0 w-full flex flex-col justify-center text-center md:text-left" data-aos="fade-up" data-aos-delay="250">
+                    <div class="flex justify-center md:justify-start mb-2 sm:mb-3 text-amber-400 text-lg sm:text-xl lg:text-2xl">
+                        <i class="fa-solid fa-quote-left"></i>
                     </div>
-                    <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-white leading-snug mb-3">${escapeHTML(story.title)}</h3>
+                    <h3 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white leading-snug mb-3 sm:mb-4 break-words">${escapeHTML(story.title)}</h3>
                     <div class="relative story-text-container">
-                        <p class="story-text text-xs sm:text-sm text-slate-300 leading-relaxed whitespace-pre-line line-clamp-3 transition-all duration-300 ease-in-out">${escapeHTML(story.story_text)}</p>
-                        <button class="read-more-btn mt-2 text-amber-400 text-xs font-semibold hover:text-amber-300 focus:outline-none hidden inline-flex items-center gap-1 transition-colors">Read More <i class="fa-solid fa-chevron-down text-[10px]"></i></button>
+                        <p class="story-text text-xs sm:text-sm md:text-base text-slate-300 leading-relaxed whitespace-pre-line line-clamp-3 md:line-clamp-4 transition-all duration-300 ease-in-out">${escapeHTML(story.story_text)}</p>
+                        <div class="flex justify-center md:justify-start">
+                            <button class="read-more-btn mt-2.5 sm:mt-3 text-amber-400 hover:text-amber-300 text-xs sm:text-sm font-semibold focus:outline-none hidden inline-flex items-center gap-1.5 transition-colors cursor-pointer py-1 px-2 -ml-2 rounded hover:bg-white/5" data-expanded="false" aria-label="Toggle full story text">
+                                <span class="read-more-text">Read More</span> <i class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>`;
+
+                const btn = slide.querySelector('.read-more-btn');
+                const p = slide.querySelector('.story-text');
+                if (btn && p) {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const isExpanded = btn.getAttribute('data-expanded') === 'true';
+                        if (isExpanded) {
+                            p.classList.remove('line-clamp-none');
+                            p.classList.add('line-clamp-3', 'md:line-clamp-4');
+                            btn.setAttribute('data-expanded', 'false');
+                            const textSpan = btn.querySelector('.read-more-text');
+                            if (textSpan) textSpan.textContent = 'Read More';
+                            const icon = btn.querySelector('i');
+                            if (icon) icon.className = 'fa-solid fa-chevron-down text-[10px] transition-transform duration-200';
+                            startAutoPlay();
+                        } else {
+                            p.classList.remove('line-clamp-3', 'md:line-clamp-4');
+                            p.classList.add('line-clamp-none');
+                            btn.setAttribute('data-expanded', 'true');
+                            const textSpan = btn.querySelector('.read-more-text');
+                            if (textSpan) textSpan.textContent = 'Show Less';
+                            const icon = btn.querySelector('i');
+                            if (icon) icon.className = 'fa-solid fa-chevron-up text-[10px] transition-transform duration-200';
+                            stopAutoPlay();
+                        }
+                        refreshAOS();
+                    });
+                }
 
                 track.appendChild(slide);
 
@@ -450,25 +493,59 @@ window.goTop = goTop;
                 }
             });
 
-            setTimeout(() => {
+            function updateReadMoreVisibility() {
                 track.querySelectorAll('.story-text-container').forEach(container => {
                     const p = container.querySelector('.story-text');
                     const btn = container.querySelector('.read-more-btn');
-                    if (p.scrollHeight > p.clientHeight || p.scrollHeight > 60) {
+                    if (!p || !btn) return;
+
+                    const isExpanded = btn.getAttribute('data-expanded') === 'true';
+                    if (isExpanded) {
                         btn.classList.remove('hidden');
-                        btn.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            if (p.classList.contains('line-clamp-3')) {
-                                p.classList.remove('line-clamp-3');
-                                btn.innerHTML = 'Show Less <i class="fa-solid fa-chevron-up text-[10px]"></i>';
-                            } else {
-                                p.classList.add('line-clamp-3');
-                                btn.innerHTML = 'Read More <i class="fa-solid fa-chevron-down text-[10px]"></i>';
-                            }
-                        });
+                        return;
+                    }
+
+                    if (p.clientHeight > 0) {
+                        const isTruncated = p.scrollHeight > (p.clientHeight + 2);
+                        if (isTruncated) {
+                            btn.classList.remove('hidden');
+                        } else {
+                            btn.classList.add('hidden');
+                        }
                     }
                 });
+            }
+
+            requestAnimationFrame(() => {
+                updateReadMoreVisibility();
+                refreshAOS();
+            });
+
+            setTimeout(() => {
+                updateReadMoreVisibility();
+                refreshAOS();
             }, 100);
+
+            setTimeout(() => {
+                updateReadMoreVisibility();
+                refreshAOS();
+            }, 350);
+
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(() => {
+                    updateReadMoreVisibility();
+                    refreshAOS();
+                });
+            }
+
+            let resizeTimer = null;
+            window.addEventListener('resize', () => {
+                if (resizeTimer) clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    updateReadMoreVisibility();
+                    refreshAOS();
+                }, 150);
+            });
 
             const totalSlides = stories.length;
             let currentSlide = 0;
