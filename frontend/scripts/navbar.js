@@ -23,7 +23,12 @@ window.getApiUrl = function(endpoint) {
 (function () {
   function initNav() {
     const token = localStorage.getItem('token');
-    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    let user = null;
+    try {
+      user = JSON.parse(localStorage.getItem('user') || 'null');
+    } catch (e) {
+      console.warn('[navbar] Error parsing user from localStorage:', e);
+    }
     const navAuth = document.getElementById('navAuth');
     const mobileNavAuth = document.getElementById('mobileNavAuth');
 

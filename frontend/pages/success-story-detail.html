@@ -81,7 +81,7 @@
           <a href="login.html" class="bg-[#c4161c] hover:bg-[#a01217] text-white font-semibold px-5 py-2 rounded-lg transition text-sm shadow-sm">Login / Register</a>
         </div>
 
-        <button id="menuBtn" aria-label="Open Menu" aria-expanded="false" class="md:hidden text-2xl text-slate-800 focus:outline-none">☰</button>
+        <button id="menuBtn" onclick="toggleMobileMenu()" aria-label="Open Menu" aria-expanded="false" class="md:hidden text-2xl text-slate-800 focus:outline-none">☰</button>
       </div>
 
       <div id="mobileMenu" class="hidden md:hidden bg-white px-6 pb-6 border-b border-gray-200 text-slate-700 shadow-lg">
@@ -140,7 +140,7 @@
       </div>
 
       <!-- Story Full Content Card -->
-      <article id="storyContent" class="hidden overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-900 via-[#0b1728] to-slate-900 text-white p-6 sm:p-10 md:p-14 shadow-2xl border border-slate-800 relative" data-aos="fade-up">
+      <article id="storyContent" class="hidden overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-900 via-[#0b1728] to-slate-900 text-white p-6 sm:p-10 md:p-14 shadow-2xl border border-slate-800 relative transition-opacity duration-300">
         <!-- Watermark Quote Icon -->
         <i class="fa-solid fa-quote-right absolute right-6 sm:right-10 bottom-6 text-7xl sm:text-8xl lg:text-9xl text-white/5 pointer-events-none"></i>
 
@@ -280,6 +280,9 @@
   </button>
 
   <script>
+    console.log('[SuccessStoryDetail] Script started');
+
+    // Helper: HTML escaping
     function escapeHTML(str) {
       if (!str) return '';
       return String(str)
@@ -288,6 +291,47 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
+    }
+
+    // Fallback getApiUrl in case navbar.js has not executed yet
+    if (typeof window.getApiUrl !== 'function') {
+      window.getApiUrl = function(endpoint) {
+        if (!endpoint) return '';
+        if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) return endpoint;
+        const path = endpoint.startsWith('/') ? endpoint : '/' + endpoint;
+
+        const customBackend = localStorage.getItem('API_BASE_URL') || window.API_BASE_URL;
+        if (customBackend) {
+          const base = customBackend.endsWith('/') ? customBackend.slice(0, -1) : customBackend;
+          return `${base}${path}`;
+        }
+
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        if (window.location.protocol === 'file:' || (isLocal && window.location.port && window.location.port !== '5001')) {
+          return `http://localhost:5001${path}`;
+        }
+        return path;
+      };
+    }
+
+    // Fallback Mobile menu toggle in case navbar.js hasn't loaded yet
+    if (typeof window.toggleMobileMenu !== 'function') {
+      window.toggleMobileMenu = function(e) {
+        if (e && typeof e.preventDefault === 'function') e.preventDefault();
+        const mobMenu = document.getElementById('mobileMenu');
+        const mBtn = document.getElementById('menuBtn');
+        if (mobMenu) {
+          mobMenu.classList.toggle('hidden');
+          const isOpen = !mobMenu.classList.contains('hidden');
+          if (mBtn) {
+            mBtn.setAttribute('aria-expanded', isOpen);
+            mBtn.innerHTML = isOpen ? '✕' : '☰';
+          }
+          if (window.innerWidth < 768) {
+            document.body.style.overflow = isOpen ? 'hidden' : 'auto';
+          }
+        }
+      };
     }
 
     // Scroll to Top Handlers
@@ -310,16 +354,25 @@
     }
     window.goTop = goTop;
 
-    document.addEventListener('DOMContentLoaded', async () => {
+    async function loadStory() {
       const params = new URLSearchParams(window.location.search);
       const storyId = params.get('id');
+      console.log('[SuccessStoryDetail] Story ID parsed from URL:', storyId);
 
       const loadingEl = document.getElementById('storyLoading');
       const errorEl = document.getElementById('storyError');
       const contentEl = document.getElementById('storyContent');
 
+      function showError(msg) {
+        console.warn('[SuccessStoryDetail] Showing error state:', msg || 'Story not found');
+        if (loadingEl) loadingEl.classList.add('hidden');
+        if (contentEl) contentEl.classList.add('hidden');
+        if (errorEl) errorEl.classList.remove('hidden');
+        document.title = 'Story Not Found | AlumniConnect';
+      }
+
       if (!storyId || isNaN(Number(storyId))) {
-        showError();
+        showError('No valid numeric ID provided in URL');
         return;
       }
 
@@ -327,30 +380,28 @@
         const apiUrl = typeof getApiUrl === 'function' 
           ? getApiUrl(`/api/success-stories/public/${encodeURIComponent(storyId)}`)
           : `/api/success-stories/public/${encodeURIComponent(storyId)}`;
+        console.log('[SuccessStoryDetail] API URL constructed:', apiUrl);
 
         const res = await fetch(apiUrl);
+        console.log('[SuccessStoryDetail] Fetch response status:', res.status);
+
         if (!res.ok) {
-          showError();
+          showError(`HTTP response error: ${res.status}`);
           return;
         }
 
         const story = await res.json();
+        console.log('[SuccessStoryDetail] Story data received:', story);
+
         if (!story || !story.title) {
-          showError();
+          showError('Incomplete or missing story payload');
           return;
         }
 
         renderStory(story);
       } catch (err) {
-        console.error('Error fetching story detail:', err);
-        showError();
-      }
-
-      function showError() {
-        if (loadingEl) loadingEl.classList.add('hidden');
-        if (contentEl) contentEl.classList.add('hidden');
-        if (errorEl) errorEl.classList.remove('hidden');
-        document.title = 'Story Not Found | AlumniConnect';
+        console.error('[SuccessStoryDetail] Error fetching story detail:', err);
+        showError(err.message || 'Fetch failed');
       }
 
       function renderStory(story) {
@@ -364,7 +415,11 @@
         const avatarContainer = document.getElementById('authorAvatar');
         if (avatarContainer) {
           if (author.profile_picture) {
-            avatarContainer.innerHTML = `<img src="${escapeHTML(author.profile_picture)}" alt="${escapeHTML(authorName)}" class="w-full h-full object-cover">`;
+            let picUrl = author.profile_picture;
+            if (!picUrl.startsWith('http://') && !picUrl.startsWith('https://') && !picUrl.startsWith('data:')) {
+              picUrl = typeof getApiUrl === 'function' ? getApiUrl(picUrl) : picUrl;
+            }
+            avatarContainer.innerHTML = `<img src="${escapeHTML(picUrl)}" alt="${escapeHTML(authorName)}" class="w-full h-full object-cover">`;
           } else {
             const initial = authorName.charAt(0).toUpperCase();
             avatarContainer.innerHTML = `<div class="w-full h-full bg-[#012970] text-white flex items-center justify-center text-3xl sm:text-4xl font-bold">${escapeHTML(initial)}</div>`;
@@ -404,6 +459,8 @@
         if (errorEl) errorEl.classList.add('hidden');
         if (contentEl) contentEl.classList.remove('hidden');
 
+        console.log('[SuccessStoryDetail] Render complete');
+
         if (typeof AOS !== 'undefined') {
           if (typeof AOS.refreshHard === 'function') {
             AOS.refreshHard();
@@ -414,7 +471,13 @@
           }
         }
       }
-    });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', loadStory);
+    } else {
+      loadStory();
+    }
   </script>
 </body>
 </html>
