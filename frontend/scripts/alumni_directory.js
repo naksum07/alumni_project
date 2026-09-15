@@ -94,6 +94,7 @@
                   <div>
                     ${avatarHtml}
                     <h3 class="text-xl font-bold mt-5 text-gray-900">${fullName}</h3>
+                    <p class="text-gray-500 text-xs mt-1">${escapeHTML(a.email || '-')}</p>
                     <p class="text-blue-700 mt-1 font-medium text-sm">${escapeHTML(a.job_title || 'Alumni')}</p>
                     <p class="text-gray-500 text-sm mt-2">${escapeHTML(a.department || 'Department')} ${a.graduation_year ? `• Batch ${escapeHTML(String(a.graduation_year))}` : ''}</p>
                     <p class="text-gray-500 text-sm mt-1">${escapeHTML(a.company || 'AlumniConnect')}</p>

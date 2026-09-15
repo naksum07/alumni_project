@@ -3,7 +3,7 @@ const pool = require('../config/db');
 async function searchStudents(req, res) {
   const { department, year, search } = req.query;
 
-  let query = `SELECT id, full_name, department, graduation_year, job_title, company, city, linkedin_url, enrollment_number, profile_picture, show_picture_publicly
+  let query = `SELECT id, full_name, email, department, graduation_year, job_title, company, city, linkedin_url, enrollment_number, profile_picture, show_picture_publicly
                FROM users WHERE role = 'student' AND is_approved = TRUE AND status = 'active'`;
   const params = [];
 
@@ -26,7 +26,8 @@ async function searchStudents(req, res) {
     const result = await pool.query(query, params);
     const sanitized = result.rows.map(s => ({
       ...s,
-      profile_picture: s.show_picture_publicly === true ? s.profile_picture : null
+      profile_picture: s.show_picture_publicly === true ? s.profile_picture : null,
+      email: req.user ? s.email : null
     }));
     res.json(sanitized);
   } catch (err) {

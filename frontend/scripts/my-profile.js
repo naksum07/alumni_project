@@ -106,7 +106,7 @@ function togglePasswordVisibility(inputId, btn) {
 
     const name = profileUser.fullName || 'Member';
     fill('[data-user-name]', name);
-    fill('[data-user-email]', profileUser.email || (token ? '—' : 'Sign in to view email'));
+    fill('[data-user-email]', profileUser.email || '-');
     fill('[data-user-role]', profileUser.role);
     fill('[data-user-gender]', profileUser.gender, '—');
     fill('[data-user-dept]', profileUser.department, '—');
