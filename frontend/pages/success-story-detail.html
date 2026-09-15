@@ -167,8 +167,22 @@
             <h1 id="storyTitle" class="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-snug mb-4 break-words"></h1>
             <div class="w-16 h-1 bg-amber-400/60 rounded-full mb-6 mx-auto md:mx-0"></div>
             
-            <!-- Full Story Text (untruncated) -->
-            <div id="storyText" class="text-sm sm:text-base text-slate-200 leading-relaxed whitespace-pre-line break-words font-normal"></div>
+            <!-- Expandable Story Text Container -->
+            <div class="relative w-full min-w-0">
+              <div id="storyTextWrapper" class="relative overflow-hidden transition-all duration-500 ease-in-out">
+                <div id="storyText" class="text-sm sm:text-base text-slate-200 leading-relaxed whitespace-pre-line break-words font-normal"></div>
+                <!-- Gradient Fade Overlay when wrapped up -->
+                <div id="storyFadeOverlay" class="absolute bottom-0 inset-x-0 h-28 bg-gradient-to-t from-[#0b1728] via-[#0b1728]/85 to-transparent pointer-events-none transition-opacity duration-300 hidden"></div>
+              </div>
+
+              <!-- Read More / Read Less Toggle Button -->
+              <div id="storyToggleWrapper" class="mt-4 sm:mt-6 flex justify-center md:justify-start hidden">
+                <button id="storyToggleBtn" type="button" class="group inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-400/10 hover:bg-amber-400/20 text-amber-300 hover:text-amber-200 border border-amber-400/30 hover:border-amber-400/60 font-semibold text-xs sm:text-sm transition-all duration-200 cursor-pointer shadow-sm focus:outline-none" aria-expanded="false" data-expanded="false" aria-label="Read more of this success story">
+                  <span id="storyToggleText">Read More</span>
+                  <i id="storyToggleIcon" class="fa-solid fa-chevron-down text-xs transition-transform duration-300 group-hover:translate-y-0.5"></i>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </article>
@@ -453,11 +467,130 @@
         if (titleEl) titleEl.textContent = story.title;
 
         const textEl = document.getElementById('storyText');
+        const textWrapper = document.getElementById('storyTextWrapper');
+        const fadeOverlay = document.getElementById('storyFadeOverlay');
+        const toggleWrapper = document.getElementById('storyToggleWrapper');
+        const toggleBtn = document.getElementById('storyToggleBtn');
+        const toggleText = document.getElementById('storyToggleText');
+        const toggleIcon = document.getElementById('storyToggleIcon');
+
         if (textEl) textEl.textContent = story.story_text;
 
         if (loadingEl) loadingEl.classList.add('hidden');
         if (errorEl) errorEl.classList.add('hidden');
         if (contentEl) contentEl.classList.remove('hidden');
+
+        // Setup Read More / Read Less (Wrap Up)
+        if (textEl && textWrapper && toggleWrapper && toggleBtn) {
+          const getCollapsedHeight = () => (window.innerWidth < 640 ? 240 : 300);
+
+          function applyCollapseState() {
+            const collapsedHeight = getCollapsedHeight();
+            const fullHeight = textEl.scrollHeight;
+            const threshold = collapsedHeight + 40; // buffer threshold
+
+            if (fullHeight > threshold) {
+              const isExpanded = toggleBtn.getAttribute('data-expanded') === 'true';
+
+              if (!isExpanded) {
+                // Initial or collapsed state
+                textWrapper.style.maxHeight = collapsedHeight + 'px';
+                if (fadeOverlay) {
+                  fadeOverlay.classList.remove('hidden');
+                  fadeOverlay.classList.remove('opacity-0');
+                }
+                toggleWrapper.classList.remove('hidden');
+                toggleBtn.setAttribute('data-expanded', 'false');
+                toggleBtn.setAttribute('aria-expanded', 'false');
+                if (toggleText) toggleText.textContent = 'Read More';
+                if (toggleIcon) toggleIcon.className = 'fa-solid fa-chevron-down text-xs transition-transform duration-300 group-hover:translate-y-0.5';
+              } else {
+                // If already expanded on resize
+                textWrapper.style.maxHeight = 'none';
+                if (fadeOverlay) {
+                  fadeOverlay.classList.add('hidden');
+                  fadeOverlay.classList.add('opacity-0');
+                }
+                toggleWrapper.classList.remove('hidden');
+                if (toggleText) toggleText.textContent = 'Read Less';
+                if (toggleIcon) toggleIcon.className = 'fa-solid fa-chevron-up text-xs transition-transform duration-300 group-hover:-translate-y-0.5';
+              }
+
+              toggleBtn.onclick = function() {
+                const currentlyExpanded = toggleBtn.getAttribute('data-expanded') === 'true';
+
+                if (!currentlyExpanded) {
+                  // EXPAND
+                  const targetHeight = textEl.scrollHeight + 50;
+                  textWrapper.style.maxHeight = targetHeight + 'px';
+
+                  if (fadeOverlay) {
+                    fadeOverlay.classList.add('opacity-0');
+                    setTimeout(() => {
+                      if (toggleBtn.getAttribute('data-expanded') === 'true') {
+                        fadeOverlay.classList.add('hidden');
+                      }
+                    }, 300);
+                  }
+
+                  toggleBtn.setAttribute('data-expanded', 'true');
+                  toggleBtn.setAttribute('aria-expanded', 'true');
+                  if (toggleText) toggleText.textContent = 'Read Less';
+                  if (toggleIcon) toggleIcon.className = 'fa-solid fa-chevron-up text-xs transition-transform duration-300 group-hover:-translate-y-0.5';
+
+                  setTimeout(() => {
+                    if (toggleBtn.getAttribute('data-expanded') === 'true') {
+                      textWrapper.style.maxHeight = 'none';
+                    }
+                  }, 500);
+
+                } else {
+                  // READ LESS / WRAP UP
+                  textWrapper.style.maxHeight = textEl.scrollHeight + 'px';
+                  void textWrapper.offsetHeight; // force reflow
+
+                  const curCollapsed = getCollapsedHeight();
+                  textWrapper.style.maxHeight = curCollapsed + 'px';
+
+                  if (fadeOverlay) {
+                    fadeOverlay.classList.remove('hidden');
+                    setTimeout(() => fadeOverlay.classList.remove('opacity-0'), 20);
+                  }
+
+                  toggleBtn.setAttribute('data-expanded', 'false');
+                  toggleBtn.setAttribute('aria-expanded', 'false');
+                  if (toggleText) toggleText.textContent = 'Read More';
+                  if (toggleIcon) toggleIcon.className = 'fa-solid fa-chevron-down text-xs transition-transform duration-300 group-hover:translate-y-0.5';
+
+                  // Smoothly scroll up so user isn't lost in whitespace after wrap up
+                  const scrollAnchor = document.getElementById('storyTitle') || contentEl;
+                  if (scrollAnchor) {
+                    const navOffset = 90;
+                    const topPos = scrollAnchor.getBoundingClientRect().top + window.pageYOffset - navOffset;
+                    window.scrollTo({ top: Math.max(0, topPos), behavior: 'smooth' });
+                  }
+                }
+              };
+            } else {
+              // Story is short enough to show completely without Read More
+              textWrapper.style.maxHeight = 'none';
+              if (fadeOverlay) fadeOverlay.classList.add('hidden');
+              toggleWrapper.classList.add('hidden');
+            }
+          }
+
+          // Initial check with double rAF for accurate layout metrics
+          requestAnimationFrame(() => {
+            requestAnimationFrame(applyCollapseState);
+          });
+
+          // Debounced resize handler
+          let resizeTimer;
+          window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(applyCollapseState, 150);
+          });
+        }
 
         console.log('[SuccessStoryDetail] Render complete');
 
