@@ -21,9 +21,29 @@ window.getApiUrl = function(endpoint) {
 };
 
 (function () {
+  function isTokenExpired(t) {
+    if (!t || typeof t !== 'string') return true;
+    try {
+      const parts = t.split('.');
+      if (parts.length !== 3) return false;
+      const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+      if (payload.exp && Date.now() >= payload.exp * 1000) {
+        return true;
+      }
+    } catch (e) {
+      return false;
+    }
+    return false;
+  }
+
   function initNav() {
-    const token = localStorage.getItem('token');
+    let token = localStorage.getItem('token');
     let user = null;
+    if (token && isTokenExpired(token)) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      token = null;
+    }
     try {
       user = JSON.parse(localStorage.getItem('user') || 'null');
     } catch (e) {

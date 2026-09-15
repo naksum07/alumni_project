@@ -124,7 +124,7 @@ async function login(req, res) {
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET || 'secret-key-fallback',
-      { expiresIn: '2h' }
+      { expiresIn: '7d' }
     );
 
     res.json({
@@ -283,7 +283,7 @@ async function adminLogin(req, res) {
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET || 'secret-key-fallback',
-      { expiresIn: '2h' }
+      { expiresIn: '7d' }
     );
 
     res.json({

@@ -59,10 +59,6 @@ async function getAlumniProfile(req, res) {
       alumni.profile_picture = null;
     }
 
-    if (!isLoggedIn) {
-      delete alumni.email;
-    }
-
     res.json({ user: alumni, contactLocked: !isLoggedIn });
   } catch (err) {
     console.error(err);

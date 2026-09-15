@@ -47,10 +47,6 @@ function sanitizePublicUser(user, isLoggedIn) {
     publicUser.profile_picture = null;
   }
 
-  if (!isLoggedIn) {
-    delete publicUser.email;
-  }
-
   delete publicUser.password_hash;
   delete publicUser.show_phone_publicly;
   delete publicUser.show_picture_publicly;

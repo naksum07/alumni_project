@@ -64,10 +64,6 @@ async function getStudentProfile(req, res) {
       student.profile_picture = null;
     }
 
-    if (!isLoggedIn) {
-      delete student.email;
-    }
-
     res.json({
       user: student,
       contactLocked: !isLoggedIn
