@@ -110,24 +110,24 @@
 
   <!-- MAIN CONTENT -->
   <main class="flex-grow pt-24 pb-16">
-    <div class="max-w-7xl mx-auto px-6 w-full mb-6">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 w-full mb-6">
       <!-- Breadcrumb / Back Button -->
-      <a href="index.html#success-stories-section" class="inline-flex items-center gap-2 text-sm font-semibold text- hover:text-[#c4161c] transition-colors py-2 px-3 rounded-lg hover:bg-slate-100">
+      <a href="index.html#success-stories-section" class="inline-flex items-center gap-2 text-sm font-semibold text-[#012970] hover:text-[#c4161c] transition-colors py-2 px-3 rounded-lg hover:bg-slate-100">
         <i class="fa-solid fa-arrow-left text-xs"></i>
         <span>Back to Success Stories</span>
       </a>
     </div>
 
-    <!-- Full-Width Edge-to-Edge Story Section Wrapper -->
-    <div class="relative w-full group" id="success-story-detail-wrapper">
-      <!-- Loading State (matching main page carousel dimensions) -->
-      <div id="storyLoading" class="overflow-hidden w-full bg-gradient-to-br from-slate-900 via-[#0b1728] to-slate-900 text-white p-6 sm:p-10 shadow-2xl border-y border-slate-800 text-center min-h-[426px] flex flex-col justify-center items-center">
+    <!-- Contained Story Container Card (matching previous width) -->
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 w-full" id="success-story-detail-wrapper">
+      <!-- Loading State -->
+      <div id="storyLoading" class="bg-gradient-to-br from-slate-900 via-[#0b1728] to-slate-900 text-white rounded-2xl sm:rounded-3xl p-12 sm:p-16 shadow-2xl border border-slate-800 text-center min-h-[400px] flex flex-col justify-center items-center">
         <i class="fa-solid fa-circle-notch fa-spin text-amber-400 text-4xl mb-4"></i>
         <p class="text-slate-300 text-base font-medium">Loading success story...</p>
       </div>
 
-      <!-- Error / Not Found State (matching main page carousel dimensions) -->
-      <div id="storyError" class="hidden overflow-hidden w-full bg-gradient-to-br from-slate-900 via-[#0b1728] to-slate-900 text-white p-10 sm:p-16 shadow-2xl border-y border-slate-800 text-center min-h-[426px] flex flex-col justify-center items-center">
+      <!-- Error / Not Found State -->
+      <div id="storyError" class="hidden bg-gradient-to-br from-slate-900 via-[#0b1728] to-slate-900 text-white rounded-2xl sm:rounded-3xl p-10 sm:p-16 shadow-2xl border border-slate-800 text-center min-h-[400px] flex flex-col justify-center items-center">
         <div class="w-16 h-16 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-4 text-amber-400 text-2xl">
           <i class="fa-solid fa-triangle-exclamation"></i>
         </div>
@@ -139,13 +139,13 @@
         </a>
       </div>
 
-      <!-- Story Full Content Card (matching main page carousel width and styling) -->
-      <article id="storyContent" class="hidden overflow-hidden w-full bg-gradient-to-br from-slate-900 via-[#0b1728] to-slate-900 text-white p-6 sm:p-10 shadow-2xl border-y border-slate-800 relative transition-all duration-500">
-        <!-- Watermark Quote Icon (matching main page) -->
-        <i class="fa-solid fa-quote-right absolute right-6 sm:right-10 bottom-6 text-6xl sm:text-7xl lg:text-8xl text-white/5 pointer-events-none"></i>
+      <!-- Story Full Content Card -->
+      <article id="storyContent" class="hidden overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-900 via-[#0b1728] to-slate-900 text-white p-6 sm:p-10 md:p-12 shadow-2xl border border-slate-800 relative transition-all duration-500">
+        <!-- Watermark Quote Icon -->
+        <i class="fa-solid fa-quote-right absolute right-6 sm:right-10 bottom-6 text-7xl sm:text-8xl lg:text-9xl text-white/5 pointer-events-none"></i>
 
-        <div class="max-w-7xl mx-auto w-full flex flex-col md:flex-row items-center md:items-start justify-center gap-6 sm:gap-8 md:gap-10 lg:gap-14 px-4 sm:px-8 md:px-12 lg:px-16 py-2 sm:py-4 select-none relative z-10">
-          <!-- Author Profile Column (matching main page carousel author block) -->
+        <div class="flex flex-col md:flex-row items-center md:items-start justify-center gap-6 sm:gap-8 md:gap-10 lg:gap-12 relative z-10">
+          <!-- Author Profile Column -->
           <div class="w-full md:w-56 lg:w-64 xl:w-72 shrink-0 min-w-0 flex flex-col items-center md:items-start text-center md:text-left">
             <div id="authorAvatar" class="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full bg-slate-800 border-2 border-amber-400/60 shadow-lg overflow-hidden flex items-center justify-center mb-3 sm:mb-4 shrink-0 transition-transform duration-300 hover:scale-105">
             </div>
@@ -159,8 +159,8 @@
             </div>
           </div>
 
-          <!-- Story Text Column (matching main page carousel text block) -->
-          <div class="flex-1 min-w-0 max-w-4xl w-full flex flex-col justify-center text-center md:text-left">
+          <!-- Story Text Column -->
+          <div class="flex-1 min-w-0 w-full flex flex-col justify-center text-center md:text-left">
             <div class="flex justify-center md:justify-start mb-2 sm:mb-3 text-amber-400 text-lg sm:text-xl lg:text-2xl">
               <i class="fa-solid fa-quote-left"></i>
             </div>
