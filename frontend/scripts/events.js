@@ -209,17 +209,39 @@ function renderCurrentPage() {
     let dateDisplay = formatDate(event.event_date);
     if (event.event_date_end) dateDisplay += ' – ' + formatDate(event.event_date_end);
 
-    const eventImgSrc = event.image_url || `../assets/${(index % 4) + 1}.png`;
+    const hasCustomImage = Boolean(event.image_url && typeof event.image_url === 'string' && event.image_url.trim().length > 0);
+    const palette = PALETTES[index % PALETTES.length];
 
-    card.innerHTML = `
-      <div>
+    const bannerHTML = hasCustomImage
+      ? `
         <div class="relative h-48 w-full overflow-hidden">
-          <img src="${eventImgSrc}" alt="${event.name}" class="w-full h-full object-cover">
+          <img src="${event.image_url}" alt="${event.name || 'Event'}" class="w-full h-full object-cover">
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent p-5 flex flex-col justify-end text-white">
             <p class="font-bold text-sm text-amber-300">${dateDisplay}</p>
             ${event.event_time ? `<p class="text-xs opacity-90 mt-0.5">${event.event_time}</p>` : ''}
           </div>
-        </div>
+        </div>`
+      : `
+        <div class="relative h-44 w-full bg-gradient-to-br from-[#012970] via-[#0d3b82] to-[#1e3a8a] p-5 flex flex-col justify-between text-white overflow-hidden">
+          <div class="absolute -right-6 -bottom-6 w-28 h-28 bg-white/5 rounded-full pointer-events-none"></div>
+          <div class="absolute right-10 -top-6 w-20 h-20 bg-white/5 rounded-full pointer-events-none"></div>
+          <div class="relative z-10 flex items-center justify-between">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/15 backdrop-blur-md text-amber-300 border border-white/10 shadow-sm">
+              <i class="fa-solid ${palette.icon}"></i> Event
+            </span>
+            ${event.status ? `<span class="text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full ${event.status === 'completed' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : event.status === 'ongoing' ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30' : 'bg-blue-400/20 text-blue-200 border border-blue-400/30'}">${event.status}</span>` : ''}
+          </div>
+          <div class="relative z-10">
+            <p class="font-bold text-sm text-amber-300 flex items-center gap-1.5">
+              <i class="fa-regular fa-calendar text-xs opacity-80"></i> ${dateDisplay}
+            </p>
+            ${event.event_time ? `<p class="text-xs text-slate-200 mt-1 flex items-center gap-1.5"><i class="fa-regular fa-clock text-xs opacity-80"></i> ${event.event_time}</p>` : ''}
+          </div>
+        </div>`;
+
+    card.innerHTML = `
+      <div>
+        ${bannerHTML}
         <div class="p-6">
           <h2 class="text-xl font-bold text-slate-800">${event.name}</h2>
           <p class="text-gray-600 mt-3 text-sm leading-relaxed">${event.description || ''}</p>
